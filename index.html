@@ -1,9 +1,129 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>This is the title of the webpage!</title>
-  </head>
-  <body>
-    <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
-  </body>
+<style>
+    input {
+        width: 100%
+    }
+</style>
+    <head>
+        <title>test</title>
+    </head>
+    <body onload="script()">
+        <!-- Rounded switch -->
+        <label class="switch">
+            Limit ranges to US lower 48 records
+            <input type="checkbox" value="False">
+            <span class="slider round"></span>
+        </label>
+        <select name ="letter" id="letter">
+            <option value="a">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+            <option value="d">D</option>
+        </select>
+        <form>
+            <label for="123">Current Date:</label>
+            <input type="datetime-local" id="123" name="date" onload="blah()">
+        </form>
+        <script type="text/javascript" defer>
+            function blah(){
+            // Get the current date
+            var today = new Date();
+            // Format the date as YYYY-MM-DD
+            var yyyy = today.getFullYear();
+            var mm = today.getMonth() + 3;
+            var dd = today.getDate();
+            if (mm < 10) {
+            mm = '0' + mm;
+            }
+            if (dd < 10) {
+            dd = '0' + dd;
+            }
+            var formattedDate = yyyy + '-' + mm + '-' + dd;
+            // Set the input element value to the formatted date
+            document.getElementById('123').value = formattedDate;
+            alert(formattedDate);
+            return formattedDate + "T09:22";
+            };
+        </script>
+        <div class="slidecontainer">
+            <input type="range" min="0" max="359" value="180" step="10" class="slider" id="windDirPicker">
+            <input type="range" min="0" max="30" value="0" step="1" class="slider" id="windVelPicker">
+            <p>Wind: <output id="windDirText"></output> @ <output id="windVelText"></output></p>
+            <input type="range" value="0" step="1" class="slider" id="tempPicker">
+            <!-- max dew point from https://en.wikipedia.org/wiki/Dew_point -->
+            <input type="range" value="0" step="1" class="slider" id="dewPicker">
+            <p>Temperature / Dew point: <output id="tempText"></output> / <output id="dewText"></output></p>
+            <p>Spread: <output id="spreadText"></output></p>
+            <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
+            <p>Altimeter setting: <output id="altimeterText"></output></p>
+        </div>
+        <script>
+            const windDirText = document.querySelector("#windDirText");
+            const windDir = document.querySelector("#windDirPicker");
+            windDirText.textContent = windDir.value;
+            windDir.addEventListener("input", (event) => {
+              windDirText.textContent = event.target.value;
+            });
+
+            const windVelText = document.querySelector("#windVelText");
+            const windVel = document.querySelector("#windVelPicker");
+            windVelText.textContent = windVel.value;
+            windVel.addEventListener("input", (event) => {
+              windVelText.textContent = event.target.value;
+            });
+
+            const tempText = document.querySelector("#tempText");
+            const temp = document.querySelector("#tempPicker");
+            tempText.textContent = temp.value;
+            temp.addEventListener("input", (event) => {
+              tempText.textContent = event.target.value;
+            });
+
+            const dewText = document.querySelector("#dewText");
+            const dew = document.querySelector("#dewPicker");
+            dewText.textContent = dew.value;
+            dew.addEventListener("input", (event) => {
+              dewText.textContent = event.target.value;
+              dew.color = "#F55050";
+            });
+
+            const altimeterText = document.querySelector("#altimeterText");
+            const altimeter = document.querySelector("#altimeterPicker");
+            altimeterText.textContent = altimeter.value;
+            altimeter.addEventListener("input", (event) => {
+              altimeterText.textContent = event.target.value;
+            });
+
+            function update_ranges (useUSRecords) {
+                if (useUSRecords) {
+                    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
+                    // record excludes tropical storms
+                    altimeter.min = 27.31;
+                    altimeter.max = 31.85;
+                    // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
+                    temp.min = -62;
+                    temp.max = 57;
+                    https://homework.study.com/explanation/what-is-the-highest-dew-point-recorded-in-the-u-s.html
+                    dew.max = 32;
+                } else {
+                    altimeter.min = 25.69;
+                    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-anticyclonic-high-barometric-pressure-records.html
+                    altimeter.max = 32.01;
+                    temp.min = -83;
+                    temp.max = 57;
+                    https://www.noaa.gov/jetstream/synoptic/heat-index
+                    dew.max = 35;
+                }
+                // i think this is how it works...
+                dew.min = temp.min
+            }
+
+            var checkbox = document.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', function () {
+                update_ranges(checkbox.checked);
+            });
+            update_ranges(false);
+        </script>
+    </body>
 </html>
