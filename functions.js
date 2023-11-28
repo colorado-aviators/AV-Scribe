@@ -9,7 +9,26 @@ function set_information_alphabet() {
 
 function update_wind() {
     const windText = document.querySelector("#windText");
-    windText.textContent = windVel.value > 0 ?  `${windDir.value} @ ${windVel.value} KT G ${windGust.value} KT`: 'Calm';
+    if (windVel.value == 0) {
+        document.querySelector("#windDirPickerLabel").style.display = "none";
+        document.querySelector("#windGustPickerLabel").style.display = "none";
+        windText.textContent = 'Calm';
+    } else {
+        windDirText = windDir.value
+        if (windVariableBox.checked) {
+            document.querySelector("#windDirPickerLabel").style.display = "none";
+            windDirText = "VRB";
+        } else {
+            display = document.querySelector("#windVelPickerLabel").style.display;
+            document.querySelector("#windDirPickerLabel").style.display = display;
+        }
+        display = document.querySelector("#windVelPickerLabel").style.display
+        document.querySelector("#windGustPickerLabel").style.display = display;
+        windText.textContent = `${windDirText} @ ${windVel.value} KT`
+        if (windGust.value > 0) {
+            windText.textContent = windText.textContent + ` G ${windGust.value} KT`
+        }
+    }
     windVel.style.accentColor = get_caution_color(windVel.value, 15, 25);
     windGust.style.accentColor = get_caution_color(windGust.value, 5, 15);
 }
@@ -20,6 +39,11 @@ function update_visibility() {
     color = get_caution_color(visibility.value, 5, 3);
     visibility.style.accentColor = color;
     visibilityText.style.color = color;
+}
+
+function update_visibility2() {
+    const visibilityText = document.querySelector("#visibilityText2");
+    visibilityText.textContent = visibility.value;
 }
 
 function update_spread() {

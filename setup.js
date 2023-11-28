@@ -1,3 +1,8 @@
+const windVariableBox = document.querySelector("#windVariableBox");
+windVariableBox.addEventListener("change", function () {
+  update_wind();
+});
+
 const windDir = document.querySelector("#windDirPicker");
 windDir.addEventListener("input", (event) => {
   update_wind();
@@ -16,6 +21,7 @@ windGust.addEventListener("input", (event) => {
 const visibility = document.querySelector("#visibilityPicker");
 visibility.addEventListener("input", (event) => {
   update_visibility();
+  update_visibility2();
 });
 
 const tempText = document.querySelector("#tempText");
