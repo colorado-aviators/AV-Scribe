@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html>
 <style>
-    input {
-        width: 100%
+
+    input[type=range] {
+        width: 100%;
+    }
+    label {
+      position: relative;
+      height: 60px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    label>span,
+    label>slider {
+      position: absolute;
+    }
+
+    label>span {
+      color: white;
+      text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+      font-family: sans-serif;
+    }
+    label.switch {
+      position: relative;
+      height: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      text-align: left;
     }
 </style>
     <head>
         <title>test</title>
+        <script type = "text/javascript" src="functions.js"></script>
     </head>
     <body onload="script()">
         <!-- Rounded switch -->
@@ -15,115 +46,59 @@
             <input type="checkbox" value="False">
             <span class="slider round"></span>
         </label>
-        <select name ="letter" id="letter">
-            <option value="a">A</option>
-            <option value="b">B</option>
-            <option value="c">C</option>
-            <option value="d">D</option>
-        </select>
-        <form>
-            <label for="123">Current Date:</label>
-            <input type="datetime-local" id="123" name="date" onload="blah()">
-        </form>
-        <script type="text/javascript" defer>
-            function blah(){
-            // Get the current date
-            var today = new Date();
-            // Format the date as YYYY-MM-DD
-            var yyyy = today.getFullYear();
-            var mm = today.getMonth() + 3;
-            var dd = today.getDate();
-            if (mm < 10) {
-            mm = '0' + mm;
-            }
-            if (dd < 10) {
-            dd = '0' + dd;
-            }
-            var formattedDate = yyyy + '-' + mm + '-' + dd;
-            // Set the input element value to the formatted date
-            document.getElementById('123').value = formattedDate;
-            alert(formattedDate);
-            return formattedDate + "T09:22";
-            };
-        </script>
+        <label class="switch">
+            Information:
+            <select name="letter" id="information"></select>
+        </label>
+        <label class="switch" for="123">
+            Current Date:
+            <input type="datetime-local" id="123" name="date">
+        </label>
+        <p id="windLine">Wind: <output id="windText"></output></p>
+        <p id="visibilityLine">Visibility: <output id="visibilityText"></output> SM</p>
+        <p id="tempLine">Temperature / Dew point: <output id="tempText"></output> / <output id="dewText"></output></p>
+        <p id="spreadLine">Spread: <output id="spreadText"></output></p>
+        <p id="altimeterLine">Altimeter setting: <output id="altimeterText"></output></p>
+        <button id="downloadButton"> Save File </button>
         <div class="slidecontainer">
-            <input type="range" min="0" max="359" value="180" step="10" class="slider" id="windDirPicker">
-            <input type="range" min="0" max="30" value="0" step="1" class="slider" id="windVelPicker">
-            <p>Wind: <output id="windDirText"></output> @ <output id="windVelText"></output></p>
-            <input type="range" value="0" step="1" class="slider" id="tempPicker">
-            <!-- max dew point from https://en.wikipedia.org/wiki/Dew_point -->
-            <input type="range" value="0" step="1" class="slider" id="dewPicker">
-            <p>Temperature / Dew point: <output id="tempText"></output> / <output id="dewText"></output></p>
-            <p>Spread: <output id="spreadText"></output></p>
-            <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
-            <p>Altimeter setting: <output id="altimeterText"></output></p>
+            <label>
+                <input type="range" min="0" max="359" value="0" step="10" class="slider" id="windDirPicker">
+                <span>Wind Direction</span>
+            </label>
+
+            <label>
+                <input type="range" min="0" max="30" value="1" step="1" class="slider" id="windVelPicker">
+                <span>Wind Velocity</span>
+            </label>
+
+            <label>
+                <input type="range" min="0" max="30" value="0" step="1" class="slider" id="windGustPicker">
+                <span>Wind Gust</span>
+            </label>
+
+
+            <label>
+                <input type="range" min="0" max="10" value="0" step="1" class="slider" id="visibilityPicker">
+                <span>Visibility</span>
+            </label>
+
+            <label>
+                <input type="range" value="0" step="1" class="slider" id="tempPicker">
+                <span>Temperature (C)</span>
+            </label>
+
+            <label>
+                <input type="range" value="0" step="1" class="slider" id="dewPicker">
+                <span>Dew Point (C)</span>
+            </label>
+
+
+            <label>
+                <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
+                <span>Altimeter Setting</span>
+            </label>
+
         </div>
-        <script>
-            const windDirText = document.querySelector("#windDirText");
-            const windDir = document.querySelector("#windDirPicker");
-            windDirText.textContent = windDir.value;
-            windDir.addEventListener("input", (event) => {
-              windDirText.textContent = event.target.value;
-            });
-
-            const windVelText = document.querySelector("#windVelText");
-            const windVel = document.querySelector("#windVelPicker");
-            windVelText.textContent = windVel.value;
-            windVel.addEventListener("input", (event) => {
-              windVelText.textContent = event.target.value;
-            });
-
-            const tempText = document.querySelector("#tempText");
-            const temp = document.querySelector("#tempPicker");
-            tempText.textContent = temp.value;
-            temp.addEventListener("input", (event) => {
-              tempText.textContent = event.target.value;
-            });
-
-            const dewText = document.querySelector("#dewText");
-            const dew = document.querySelector("#dewPicker");
-            dewText.textContent = dew.value;
-            dew.addEventListener("input", (event) => {
-              dewText.textContent = event.target.value;
-              dew.color = "#F55050";
-            });
-
-            const altimeterText = document.querySelector("#altimeterText");
-            const altimeter = document.querySelector("#altimeterPicker");
-            altimeterText.textContent = altimeter.value;
-            altimeter.addEventListener("input", (event) => {
-              altimeterText.textContent = event.target.value;
-            });
-
-            function update_ranges (useUSRecords) {
-                if (useUSRecords) {
-                    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
-                    // record excludes tropical storms
-                    altimeter.min = 27.31;
-                    altimeter.max = 31.85;
-                    // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
-                    temp.min = -62;
-                    temp.max = 57;
-                    https://homework.study.com/explanation/what-is-the-highest-dew-point-recorded-in-the-u-s.html
-                    dew.max = 32;
-                } else {
-                    altimeter.min = 25.69;
-                    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-anticyclonic-high-barometric-pressure-records.html
-                    altimeter.max = 32.01;
-                    temp.min = -83;
-                    temp.max = 57;
-                    https://www.noaa.gov/jetstream/synoptic/heat-index
-                    dew.max = 35;
-                }
-                // i think this is how it works...
-                dew.min = temp.min
-            }
-
-            var checkbox = document.querySelector('input[type="checkbox"]');
-            checkbox.addEventListener('change', function () {
-                update_ranges(checkbox.checked);
-            });
-            update_ranges(false);
-        </script>
+        <script src="setup.js"></script>
     </body>
 </html>
