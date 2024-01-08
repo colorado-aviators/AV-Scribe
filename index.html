@@ -20,11 +20,6 @@
             Current Date:
             <input type="datetime-local" id="123" name="date">
         </label>
-        <p id="windLine">Wind: <output id="windText"></output></p>
-        <p id="visibilityLine">Visibility: <output id="visibilityText"></output> SM</p>
-        <p id="tempLine">Temperature / Dew point: <output id="tempText"></output> / <output id="dewText"></output></p>
-        <p id="spreadLine">Spread: <output id="spreadText"></output></p>
-        <p id="altimeterLine">Altimeter setting: <output id="altimeterText"></output></p>
         <button id="downloadButton"> Save File </button>
         <div class="slidecontainer">
             <label class="switch">
@@ -33,40 +28,38 @@
                 <span class="slider round"></span>
             </label>
             <label id="windDirPickerLabel">
-                <input type="range" min="0" max="359" value="0" step="10" class="slider" id="windDirPicker">
-                <span>Wind Direction</span>
+                <input type="range" min="0" max="350" value="0" step="10" class="slider" id="windDirPicker">
+                <span id="windDirPickerSpan"></span>
             </label>
 
             <label id="windVelPickerLabel">
                 <input type="range" min="0" max="30" value="1" step="1" class="slider" id="windVelPicker">
-                <span>Wind Velocity</span>
+                <span id="windVelPickerSpan"></span>
             </label>
 
             <label id="windGustPickerLabel">
                 <input type="range" min="0" max="30" value="0" step="1" class="slider" id="windGustPicker">
-                <span>Wind Gust</span>
+                <span id="windGustPickerSpan"></span>
             </label>
 
-
-            <label>
+            <label id="visibilityPickerLabel">
                 <input type="range" min="0" max="10" value="0" step="1" class="slider" id="visibilityPicker">
-                <span>Visibility <output id="visibilityText2"></output> SM</span>
+                <span id="visibilityPickerSpan"></span>
             </label>
 
-            <label>
+            <label id="tempPickerLabel">
                 <input type="range" value="0" step="1" class="slider" id="tempPicker">
-                <span>Temperature (C)</span>
+                <span id="tempPickerSpan"></span>
             </label>
 
-            <label>
-                <input type="range" value="0" step="1" class="slider" id="dewPicker">
-                <span>Dew Point (C)</span>
+            <label id="dewpointPickerLabel">
+                <input type="range" value="0" step="1" class="slider" id="dewpointPicker">
+                <span id="dewpointPickerSpan"></span>
             </label>
-
 
             <label>
                 <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
-                <span>Altimeter Setting</span>
+                <span>Altimeter Setting: <output id="altimeterText"></output></span>
             </label>
 
         </div>

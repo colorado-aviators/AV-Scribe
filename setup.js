@@ -21,22 +21,15 @@ windGust.addEventListener("input", (event) => {
 const visibility = document.querySelector("#visibilityPicker");
 visibility.addEventListener("input", (event) => {
   update_visibility();
-  update_visibility2();
 });
 
-const tempText = document.querySelector("#tempText");
 const temp = document.querySelector("#tempPicker");
-tempText.textContent = temp.value;
 temp.addEventListener("input", (event) => {
-    tempText.textContent = event.target.value;
     update_spread();
 });
 
-const dewText = document.querySelector("#dewText");
-const dew = document.querySelector("#dewPicker");
-dewText.textContent = dew.value;
+const dew = document.querySelector("#dewpointPicker");
 dew.addEventListener("input", (event) => {
-    dewText.textContent = event.target.value;
     update_spread();
 });
 
@@ -48,7 +41,9 @@ altimeter.addEventListener("input", (event) => {
 });
 
 set_information_alphabet();
-
+update_wind();
+update_visibility();
+update_spread();
 
 var checkbox = document.querySelector('input[type="checkbox"]');
 checkbox.addEventListener('change', function () {

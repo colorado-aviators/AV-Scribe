@@ -8,51 +8,114 @@ function set_information_alphabet() {
 }
 
 function update_wind() {
-    const windText = document.querySelector("#windText");
     if (windVel.value == 0) {
         document.querySelector("#windDirPickerLabel").style.display = "none";
         document.querySelector("#windGustPickerLabel").style.display = "none";
-        windText.textContent = 'Calm';
     } else {
-        windDirText = windDir.value
         if (windVariableBox.checked) {
             document.querySelector("#windDirPickerLabel").style.display = "none";
-            windDirText = "VRB";
         } else {
             display = document.querySelector("#windVelPickerLabel").style.display;
             document.querySelector("#windDirPickerLabel").style.display = display;
         }
-        display = document.querySelector("#windVelPickerLabel").style.display
+        display = document.querySelector("#windVelPickerLabel").style.display;
         document.querySelector("#windGustPickerLabel").style.display = display;
-        windText.textContent = `${windDirText} @ ${windVel.value} KT`
-        if (windGust.value > 0) {
-            windText.textContent = windText.textContent + ` G ${windGust.value} KT`
-        }
     }
     windVel.style.accentColor = get_caution_color(windVel.value, 15, 25);
     windGust.style.accentColor = get_caution_color(windGust.value, 5, 15);
+    document.querySelector("#windVelPickerSpan").innerText = get_wind_vel_text();
+    document.querySelector("#windDirPickerSpan").innerText = get_wind_dir_text();
+    document.querySelector("#windGustPickerSpan").innerText = get_wind_gust_text();
 }
 
 function update_visibility() {
-    const visibilityText = document.querySelector("#visibilityText");
-    visibilityText.textContent = visibility.value;
+    document.querySelector("#visibilityPickerSpan").innerText = get_visibility_text();
     color = get_caution_color(visibility.value, 5, 3);
     visibility.style.accentColor = color;
-    visibilityText.style.color = color;
-}
-
-function update_visibility2() {
-    const visibilityText = document.querySelector("#visibilityText2");
-    visibilityText.textContent = visibility.value;
 }
 
 function update_spread() {
+    document.querySelector("#tempPickerSpan").innerText = get_temperature_text();
+    document.querySelector("#dewpointPickerSpan").innerText = get_dewpoint_text();
     spread = temp.value - dew.value;
-    const spreadText = document.querySelector("#spreadText");
-    spreadText.textContent = spread;
     color = get_caution_color(spread, 5, 0);
     dew.style.accentColor = color;
-    spreadText.style.color = color;
+}
+
+function get_information_text() {
+    const informationPicker = document.querySelector("#information");
+    return `Information: ${informationPicker.value}`
+}
+
+function get_wind_dir_text() {
+    var windDirText = 'Wind Direction: ';
+    if (windVel.value == 0) {
+        windDirText += 'Calm';
+    }
+    else if (windVariableBox.checked) {
+        windDirText += 'VRB';
+    }
+    else {
+        windDirText += windDir.value.toString().padStart(3, '0') + '\u00B0'
+    }
+    return windDirText;
+}
+
+function get_wind_vel_text() {
+    var windVelText = 'Wind Velocity: ';
+    if (windVel.value == 0) {
+        windVelText += 'Calm';
+    }
+    else {
+        windVelText += `${windVel.value} KT`;
+    }
+    return windVelText;
+}
+
+function get_wind_gust_text() {
+    var windGustText = 'Wind Gust: ';
+    if (windGust.value == 0) {
+        windGustText += 'None';
+    }
+    else {
+        windGustText += `${windGust.value} KT`;
+    }
+    return windGustText;
+}
+
+function get_wind_text() {
+    var windText = 'Wind: ';
+    if (windVel.value == 0) {
+        windText += 'Calm';
+        return windText;
+    }
+    if (windVariableBox.checked) {
+        windText += 'VRB';
+    }
+    else {
+        windText += windDir.value.toString().padStart(3, '0') + '\u00B0'
+    }
+    windText += ` @ ${windVel.value} KT`;
+    if (windGust.value > 0) {
+        windText += ` G ${windGust.value} KT`;
+    }
+    return windText;
+}
+
+function get_visibility_text() {
+    return `Visibility: ${visibility.value} SM`;
+}
+
+function get_temperature_text() {
+    return `Temperature: ${temp.value}\u00B0C`;
+}
+
+function get_dewpoint_text() {
+    return `Dew Point: ${dew.value}\u00B0C`;
+}
+
+function get_spread_text() {
+    return `Spread: ${temp.value - dew.value}\u00B0C`
 }
 
 function get_caution_color(value, low, high) {
@@ -102,15 +165,15 @@ function download_transcript () {
     // Create element with <a> tag
     const link = document.createElement("a");
 
-    const informationPicker = document.querySelector("#information");
     // Create a blog object with the file content which you want to add to the file
+
     var content = [
-        `Information: ${informationPicker.value}`,
-        document.querySelector("#windLine").innerText,
-        document.querySelector("#visibilityLine").innerText,
-        document.querySelector("#tempLine").innerText,
-        document.querySelector("#spreadLine").innerText,
-        document.querySelector("#altimeterLine").innerText,
+        get_information_text(),
+        get_wind_text(),
+        get_visibility_text(),
+        get_temperature_text(),
+        get_dewpoint_text(),
+        get_spread_text(),
     ]
     const file = new Blob([content.join("\r\n")], { type: 'text/plain'});
 
@@ -118,7 +181,8 @@ function download_transcript () {
     link.href = URL.createObjectURL(file);
 
     // Add file name
-    link.download = "information_a.txt";
+    const informationPicker = document.querySelector("#information");
+    link.download = `information_${informationPicker.value}.txt`;
 
     // Add click event to tag to save file.
     link.click();
