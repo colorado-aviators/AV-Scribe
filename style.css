@@ -2,6 +2,10 @@ div.slidecontainer {
     background-color: grey;
 }
 
+input {
+    margin: 40px;
+}
+
 input[type=range] {
     width: 100%;
 }
@@ -14,6 +18,7 @@ label {
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-size: 28px;
 }
 
 label>span,
@@ -36,4 +41,26 @@ label.switch {
     align-items: left;
     justify-content: left;
     text-align: left;
+    font-size: 28px;
+}
+
+select {
+    font-size: 28px;
+}
+
+p {
+    font-size: 28px;
+}
+
+button {
+    font-size: 28px;
+}
+
+input[type=checkbox] {
+    width: 28px;
+    height: 28px;
+}
+
+select {
+    margin: 40px;
 }
