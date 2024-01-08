@@ -1,36 +1,39 @@
 div.slidecontainer {
     background-color: grey;
 }
+
 input[type=range] {
     width: 100%;
 }
+
 label {
-  position: relative;
-  height: 60px;
-  margin-bottom: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+    position: relative;
+    height: 60px;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 label>span,
 label>slider {
-  position: absolute;
+    position: absolute;
 }
 
 label>span {
-  color: white;
-  font-family: sans-serif;
-  font-size: 28px;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: white;
+    font-family: sans-serif;
+    font-size: 28px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
+
 label.switch {
-  position: relative;
-  height: 20px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: left;
-  justify-content: left;
-  text-align: left;
+    position: relative;
+    height: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    text-align: left;
 }
