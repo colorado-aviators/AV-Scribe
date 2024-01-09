@@ -254,8 +254,12 @@ function download_transcript () {
     link.href = URL.createObjectURL(file);
 
     // Add file name
-    const informationPicker = document.querySelector("#information");
-    link.download = `information_${informationPicker.value}.txt`;
+    tags = [
+        document.querySelector("#information").value,
+        document.querySelector("#airport").value,
+        document.querySelector("#timePicker").value.replaceAll(' ','') + 'z',
+    ]
+    link.download = `information-${tags.join('-')}.txt`.toLowerCase();
 
     // Add click event to tag to save file.
     link.click();
