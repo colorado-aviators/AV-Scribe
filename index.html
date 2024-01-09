@@ -13,6 +13,10 @@
             <span class="slider round"></span>
         </label>
         <label class="switch">
+            Airport:
+            <input type="text" minlength="4" maxlength="4" id="airport" size="10%"/>
+        </label>
+        <label class="switch">
             Information:
             <select name="letter" id="information"></select>
         </label>
@@ -58,10 +62,11 @@
 
             <label>
                 <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
-                <span>Altimeter Setting: <output id="altimeterText"></output></span>
+                <span id="altimeterPickerSpan"></span>
             </label>
 
         </div>
+        <p id="atisText"></p>
         <button id="downloadButton"> Save File </button>
         <script src="setup.js"></script>
     </body>

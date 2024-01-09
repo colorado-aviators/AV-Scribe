@@ -60,6 +60,11 @@ input[type=checkbox] {
     height: 28px;
 }
 
+input[type=text] {
+    font-size: 28px;
+    margin: 40px;
+}
+
 select {
     margin: 40px;
 }

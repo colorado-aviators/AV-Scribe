@@ -9,18 +9,27 @@ function set_information_alphabet() {
 
 function set_time_selector() {
     var now = new Date();
-    hour = now.getUTCHours();
-    minute = now.getUTCMinutes();
     const timePicker = document.querySelector("#timePicker");
-    var time = new Date(now);
     for (m = 0; m < 60; m++) {
         var option = document.createElement("option");
-        time.setUTCMinutes(now.getUTCMinutes() - m);
+        time = new Date(now - 1000 * 60 * m);
         dd = time.getUTCDate().toString().padStart(2, '0');
         hh = time.getUTCHours().toString().padStart(2, '0');
         mm = time.getUTCMinutes().toString().padStart(2, '0');
         option.text = `${dd} ${hh} ${mm}`;
         timePicker.add(option);
+    }
+}
+
+function validate_airport() {
+    airportText = document.querySelector("#airport");
+    airportText.value = airportText.value.toUpperCase();
+    const regex = /^[A-Z0-9]+$/;
+    if (airportText.value == "") {
+        return
+    }
+    if (!regex.test(airportText.value)) {
+        alert("Airport code invalid");
     }
 }
 
@@ -57,6 +66,20 @@ function update_spread() {
     spread = temp.value - dew.value;
     color = get_caution_color(spread, 5, 0);
     dew.style.accentColor = color;
+}
+
+function update_altimeter() {
+    document.querySelector("#altimeterPickerSpan").innerText = get_altimeter_text();
+}
+
+function update_atis_text() {
+    const atisText = document.querySelector("#atisText");
+    atisText.innerText = get_atis_text();
+}
+
+function get_airport_text() {
+    const airportText = document.querySelector("#airport");
+    return `Airport: ${airportText.value}`;
 }
 
 function get_information_text() {
@@ -140,6 +163,22 @@ function get_spread_text() {
     return `Spread: ${temp.value - dew.value}\u00B0C`
 }
 
+function get_altimeter_text() {
+    return `Altimeter Setting: ${altimeter.valueAsNumber.toFixed(2)}`;
+}
+
+function get_atis_text() {
+    const chunks = [
+        airport.value,
+        timePicker.value.replaceAll(/\s/g, '') + 'Z',
+        windDir.value.toString().padStart(3, '0') + windVel.value.toString().padStart(2, '0') + 'KT',
+        visibility.value.toString() + 'SM',
+        `${temp.value}/${dew.value}`.replaceAll('-', 'M'),
+        'A' + parseFloat(altimeter.value).toFixed(2).replace('.', ''),
+    ];
+    return chunks.join(' ');
+}
+
 function get_caution_color(value, low, high) {
     // high|low values are associated with red|blue, high|low caution level
     // value = 10
@@ -190,6 +229,9 @@ function download_transcript () {
     // Create a blog object with the file content which you want to add to the file
 
     var content = [
+        get_atis_text(),
+        '',
+        get_airport_text(),
         get_information_text(),
         get_time_text(),
         get_wind_text(),
@@ -197,6 +239,7 @@ function download_transcript () {
         get_temperature_text(),
         get_dewpoint_text(),
         get_spread_text(),
+        get_altimeter_text(),
     ]
     const file = new Blob([content.join("\r\n")], { type: 'text/plain'});
 
