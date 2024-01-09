@@ -158,10 +158,13 @@ function get_altimeter_text() {
 }
 
 function get_atis_text() {
-    windChunk = windDir.value.toString().padStart(3, '0');
-    windChunk += windVel.value.toString().padStart(2, '0');
-    if (windGust.value != 0) {
-        windChunk += `G${windGust.value}`;
+    windChunk = '00000';
+    if (windVel.value > 0) {
+        windChunk = windVariableBox.checked ? 'VRB' : windDir.value.toString().padStart(3, '0');
+        windChunk += windVel.value.toString().padStart(2, '0');
+        if (windGust.value != 0) {
+            windChunk += `G${windGust.value}`;
+        }
     }
     windChunk += 'KT';
 
