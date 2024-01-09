@@ -9,22 +9,21 @@
         <!-- Rounded switch -->
         <label class="switch">
             Limit ranges to US lower 48 records
-            <input type="checkbox" value="False">
+            <input type="checkbox" checked>
             <span class="slider round"></span>
         </label>
         <label class="switch">
             Information:
             <select name="letter" id="information"></select>
         </label>
-        <label class="switch" for="123">
-            Current Date:
-            <input type="datetime-local" id="123" name="date">
+        <label class="switch">
+            ATIS Time:
+            <select name="minute" id="timePicker"></select>
         </label>
-        <button id="downloadButton"> Save File </button>
         <div class="slidecontainer">
             <label class="switch">
                 Wind variable?
-                <input type="checkbox" value="False" id="windVariableBox">
+                <input type="checkbox" id="windVariableBox">
                 <span class="slider round"></span>
             </label>
             <label id="windDirPickerLabel">
@@ -63,6 +62,7 @@
             </label>
 
         </div>
+        <button id="downloadButton"> Save File </button>
         <script src="setup.js"></script>
     </body>
 </html>

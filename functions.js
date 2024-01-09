@@ -7,6 +7,23 @@ function set_information_alphabet() {
     }
 }
 
+function set_time_selector() {
+    var now = new Date();
+    hour = now.getUTCHours();
+    minute = now.getUTCMinutes();
+    const timePicker = document.querySelector("#timePicker");
+    var time = new Date(now);
+    for (m = 0; m < 60; m++) {
+        var option = document.createElement("option");
+        time.setUTCMinutes(now.getUTCMinutes() - m);
+        dd = time.getUTCDate().toString().padStart(2, '0');
+        hh = time.getUTCHours().toString().padStart(2, '0');
+        mm = time.getUTCMinutes().toString().padStart(2, '0');
+        option.text = `${dd} ${hh} ${mm}`;
+        timePicker.add(option);
+    }
+}
+
 function update_wind() {
     if (windVel.value == 0) {
         document.querySelector("#windDirPickerLabel").style.display = "none";
@@ -45,6 +62,11 @@ function update_spread() {
 function get_information_text() {
     const informationPicker = document.querySelector("#information");
     return `Information: ${informationPicker.value}`
+}
+
+function get_time_text() {
+    const timePicker = document.querySelector("#timePicker");
+    return `Time: ${timePicker.value} Z`;
 }
 
 function get_wind_dir_text() {
@@ -169,6 +191,7 @@ function download_transcript () {
 
     var content = [
         get_information_text(),
+        get_time_text(),
         get_wind_text(),
         get_visibility_text(),
         get_temperature_text(),

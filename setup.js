@@ -41,6 +41,7 @@ altimeter.addEventListener("input", (event) => {
 });
 
 set_information_alphabet();
+set_time_selector();
 update_wind();
 update_visibility();
 update_spread();
