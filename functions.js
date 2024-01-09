@@ -108,23 +108,13 @@ function get_wind_dir_text() {
 
 function get_wind_vel_text() {
     var windVelText = 'Wind Velocity: ';
-    if (windVel.value == 0) {
-        windVelText += 'Calm';
-    }
-    else {
-        windVelText += `${windVel.value} KT`;
-    }
+    windVelText += windVel.value == 0 ? 'Calm' : `${windVel.value} KT`;
     return windVelText;
 }
 
 function get_wind_gust_text() {
     var windGustText = 'Wind Gust: ';
-    if (windGust.value == 0) {
-        windGustText += 'None';
-    }
-    else {
-        windGustText += `${windGust.value} KT`;
-    }
+    windGustText += windGust.value == 0 ? 'None' : `${windGust.value} KT`;
     return windGustText;
 }
 
@@ -168,12 +158,29 @@ function get_altimeter_text() {
 }
 
 function get_atis_text() {
+    windChunk = windDir.value.toString().padStart(3, '0');
+    windChunk += windVel.value.toString().padStart(2, '0');
+    if (windGust.value != 0) {
+        windChunk += `G${windGust.value}`;
+    }
+    windChunk += 'KT';
+
+    function format_temp(temp) {
+        const negative = temp.value.startsWith('-');
+        var formatted = temp.value.replace('-','').padStart(2, '0');
+        if (negative) {
+            formatted = 'M' + formatted;
+        }
+        return formatted
+    }
+
     const chunks = [
         airport.value,
+        `INFO ${information.value}`,
         timePicker.value.replaceAll(/\s/g, '') + 'Z',
-        windDir.value.toString().padStart(3, '0') + windVel.value.toString().padStart(2, '0') + 'KT',
+        windChunk,
         visibility.value.toString() + 'SM',
-        `${temp.value}/${dew.value}`.replaceAll('-', 'M'),
+        `${format_temp(temp)}/${format_temp(dew)}`,
         'A' + parseFloat(altimeter.value).toFixed(2).replace('.', ''),
     ];
     return chunks.join(' ');
