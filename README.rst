@@ -45,7 +45,7 @@ References
 
 * This video from `Free Pilot Training <https://www.youtube.com/watch?v=0JRVTlLJ7hk>`_ is a good description of ATIS for
   student pilots
-* The `METAR article on Wikipedia <https://www.weather.gov/media/wrh/mesowest/metar_decode_key.pdf>`_ provides a
+* The `METAR article on Wikipedia <https://en.wikipedia.org/wiki/METAR>`_ provides a
   comprehensive list of abbreviations common to various aviation weather sources
 * The `ATIS article on Wikipedia <https://en.wikipedia.org/wiki/Automatic_terminal_information_service>`_ provides a
   brief description of the service along with multiple useful examples
