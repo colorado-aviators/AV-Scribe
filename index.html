@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AVWX Scribe</title>
+        <script type = "text/javascript" src="functions.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body onload="script()">
+        <h1 align="center">AVWX Scribe</h1>
+        <h2 style="color:red" align="center">DISCLAIMER:</h2>
+        <p style="color:red;font-size:100%" align="center">
+            This web app is provided "as is", free of charge, and without any guarantee as to the
+            utility, accuracy, or sufficiency of the functionality afforded by its use.
+            <a href="https://github.com/mcgsjoyner/AVWX-Scribe/blob/main/README.rst#disclaimer">
+                <strong>Read full disclaimer here.</strong>
+            </a>
+        </p>
+        <label class="switch">
+            Limit ranges to US lower 48 records
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+        </label>
+        <label class="switch">
+            Airport:
+            <input type="text" minlength="4" maxlength="4" id="airport" size="10%"/>
+        </label>
+        <label class="switch">
+            Information:
+            <select name="letter" id="information"></select>
+        </label>
+        <label class="switch">
+            ATIS Time:
+            <select name="minute" id="timePicker"></select>
+        </label>
+        <div class="slidecontainer">
+            <label class="switch">
+                Wind variable?
+                <input type="checkbox" id="windVariableBox">
+                <span class="slider round"></span>
+            </label>
+            <label id="windDirPickerLabel">
+                <input type="range" min="0" max="350" value="0" step="10" class="slider" id="windDirPicker">
+                <span id="windDirPickerSpan"></span>
+            </label>
+
+            <label id="windVelPickerLabel">
+                <input type="range" min="0" max="30" value="1" step="1" class="slider" id="windVelPicker">
+                <span id="windVelPickerSpan"></span>
+            </label>
+
+            <label id="windGustPickerLabel">
+                <input type="range" min="0" max="30" value="0" step="1" class="slider" id="windGustPicker">
+                <span id="windGustPickerSpan"></span>
+            </label>
+
+            <label id="visibilityPickerLabel">
+                <input type="range" min="0" max="10" value="0" step="1" class="slider" id="visibilityPicker">
+                <span id="visibilityPickerSpan"></span>
+            </label>
+
+            <label id="tempPickerLabel">
+                <input type="range" value="0" step="1" class="slider" id="tempPicker">
+                <span id="tempPickerSpan"></span>
+            </label>
+
+            <label id="dewpointPickerLabel">
+                <input type="range" value="0" step="1" class="slider" id="dewpointPicker">
+                <span id="dewpointPickerSpan"></span>
+            </label>
+
+            <label>
+                <input type="range" value="30" step=".01" class="slider" id="altimeterPicker">
+                <span id="altimeterPickerSpan"></span>
+            </label>
+
+        </div>
+        <p id="atisText"></p>
+        <button id="downloadButton"> Download Transcript </button>
+        <script src="setup.js"></script>
+    </body>
+</html>
