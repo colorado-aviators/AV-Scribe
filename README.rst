@@ -53,3 +53,5 @@ References
   on logistics and phraseology for air traffic controllers responsible for recording and deploying ATIS
 * `AviationWeather.gov <https://aviationweather.gov/>`_ provides a digital digest of METAR data for US airports
   (such as `DIA <https://aviationweather.gov/data/metar/?id=KDEN&hours=48>`_)
+* `Another good reference on surface weather reporting from the FAA
+  <https://www.faa.gov/documentLibrary/media/Order/JO_7900.5E_with_Change_1.pdf>`_
