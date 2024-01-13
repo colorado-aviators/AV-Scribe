@@ -22,20 +22,42 @@ function set_time_selector() {
 }
 
 function validate_airport() {
-    airportText = document.querySelector("#airport");
-    airportText.value = airportText.value.toUpperCase();
+    airport = document.querySelector("#airport");
+    val = airport.value.toUpperCase();
     const regex = /^[A-Z0-9]+$/;
-    if (airportText.value == "") {
+    if (val == "") {
         return
     }
-    if (!regex.test(airportText.value)) {
+    if (!regex.test(val)) {
         alert("Airport code invalid");
     }
+    // overwrite the value with the uppercase version!
+    airport.value = val;
+}
+
+function get_airport_val() {
+    return document.querySelector("#airport").value;
+}
+
+function get_information_val() {
+    return document.querySelector("#information").value;
+}
+
+function get_time_val() {
+    return document.querySelector("#timePicker").value;
+}
+
+function get_wind_variable() {
+    return document.querySelector("#windVariableBox").checked;
+}
+
+function get_wind_dir_val() {
+    return document.querySelector("#windDirPicker").value;
 }
 
 function get_wind_vel_val() {
     // copying records from the wind gust section...
-    x = windVel.value;
+    x = document.querySelector("#windVelPicker").value;
     const high = 201;
     const low = 0;
     const optimum = 5;
@@ -50,7 +72,7 @@ function get_wind_gust_val() {
     at the Mount Washington (New Hampshire) Observatory 1,917 m (6,288 ft) above sea level in the US on 12 April 1934
     Source: https://en.wikipedia.org/wiki/Wind_speed
     */
-    x = windGust.value;
+    x = document.querySelector("#windGustPicker").value;
     const high = 201;
     const low = 0;
     const optimum = 5;
@@ -59,8 +81,12 @@ function get_wind_gust_val() {
     return Math.round(val);
 }
 
+function get_visibility_val() {
+    return document.querySelector("#visibilityPicker").value;
+}
+
 function get_altimeter_val(){
-    x = altimeter.valueAsNumber;
+    x = document.querySelector("#altimeterPicker").valueAsNumber;
     // https://www.wunderground.com/blog/weatherhistorian/world-and-us-anticyclonic-high-barometric-pressure-records.html
     const high = 32.01;  // Agata, Russia (in Siberia) registered on December 31, 1968
     // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
@@ -75,7 +101,7 @@ function get_altimeter_val(){
 }
 
 function get_temperature_val(){
-    x = temp.valueAsNumber;
+    x = document.querySelector("#tempPicker").valueAsNumber;
     const high = 57;
     const low = -83;
     const optimum = 0;  // standard temperature
@@ -85,7 +111,7 @@ function get_temperature_val(){
 }
 
 function get_dewpoint_val() {
-    x = dew.valueAsNumber;
+    x = document.querySelector("#dewpointPicker").valueAsNumber;
     const high = 35;  // https://www.noaa.gov/jetstream/synoptic/heat-index
     // const low = -62;  // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
     const low = -83;  // same as temperature low... i think this is how it works
@@ -138,21 +164,29 @@ function map_slider_to_weighted_range(
 function update_wind() {
     wind_vel_val = get_wind_vel_val();
     wind_gust_val = get_wind_gust_val();
+    wind_variable = get_wind_variable();
+
+    windVelPickerLabel = document.querySelector("#windVelPickerLabel");
+    windDirPickerLabel = document.querySelector("#windDirPickerLabel");
+    windGustPickerLabel = document.querySelector("#windGustPickerLabel");
+
     if (wind_vel_val == 0) {
-        document.querySelector("#windDirPickerLabel").style.display = "none";
-        document.querySelector("#windGustPickerLabel").style.display = "none";
+        windDirPickerLabel.style.display = "none";
+        windGustPickerLabel.style.display = "none";
     } else {
-        if (windVariableBox.checked) {
-            document.querySelector("#windDirPickerLabel").style.display = "none";
+        display = windVelPickerLabel.style.display;
+        if (wind_variable) {
+            windDirPickerLabel.style.display = "none";
         } else {
-            display = document.querySelector("#windVelPickerLabel").style.display;
-            document.querySelector("#windDirPickerLabel").style.display = display;
+            windDirPickerLabel.style.display = display;
         }
-        display = document.querySelector("#windVelPickerLabel").style.display;
-        document.querySelector("#windGustPickerLabel").style.display = display;
+        windGustPickerLabel.style.display = display;
+
     }
-    windVel.style.accentColor = get_caution_color(wind_vel_val, 15, 25);
-    windGust.style.accentColor = get_caution_color(wind_gust_val, 5, 15);
+
+    document.querySelector("#windVelPicker").style.accentColor = get_caution_color(wind_vel_val, 15, 25);
+    document.querySelector("#windGustPicker").style.accentColor = get_caution_color(wind_gust_val, 5, 15);
+
     document.querySelector("#windVelPickerSpan").innerText = get_wind_vel_text();
     document.querySelector("#windDirPickerSpan").innerText = get_wind_dir_text();
     document.querySelector("#windGustPickerSpan").innerText = get_wind_gust_text();
@@ -160,16 +194,20 @@ function update_wind() {
 
 function update_visibility() {
     document.querySelector("#visibilityPickerSpan").innerText = get_visibility_text();
-    color = get_caution_color(visibility.value, 5, 3);
-    visibility.style.accentColor = color;
+    color = get_caution_color(get_visibility_val(), 5, 3);
+    document.querySelector("#visibilityPicker").style.accentColor = color;
 }
 
 function update_spread() {
-    document.querySelector("#tempPickerSpan").innerText = get_temperature_text();
-    document.querySelector("#dewpointPickerSpan").innerText = get_dewpoint_text();
+    temp = document.querySelector("#tempPickerSpan");
+    dew = document.querySelector("#dewpointPickerSpan")
+
+    temp.innerText = get_temperature_text();
+    dew.innerText = get_dewpoint_text();
+
     spread = get_temperature_val() - get_dewpoint_val();
     color = get_caution_color(spread, 5, 0);
-    dew.style.accentColor = color;
+    document.querySelector("#dewpointPicker").style.accentColor = color;
 }
 
 function update_altimeter() {
@@ -177,35 +215,33 @@ function update_altimeter() {
 }
 
 function update_atis_text() {
-    const atisText = document.querySelector("#atisText");
-    atisText.innerText = get_atis_text();
+    document.querySelector("#atisText").innerText = get_atis_text();
 }
 
 function get_airport_text() {
-    const airportText = document.querySelector("#airport");
-    return `Airport: ${airportText.value}`;
+    return `Airport: ${get_airport_val()}`;
 }
 
 function get_information_text() {
-    const informationPicker = document.querySelector("#information");
-    return `Information: ${informationPicker.value}`
+    return `Information: ${get_information_val()}`
 }
 
 function get_time_text() {
-    const timePicker = document.querySelector("#timePicker");
-    return `Time: ${timePicker.value} Z`;
+    return `Time: ${get_time_val()} Z`;
 }
 
 function get_wind_dir_text() {
     var windDirText = 'Wind Direction: ';
+    wind_dir_val = get_wind_dir_val();
+    wind_variable = get_wind_variable();
     if (get_wind_vel_val() == 0) {
         windDirText += 'Calm';
     }
-    else if (windVariableBox.checked) {
+    else if (wind_variable) {
         windDirText += 'VRB';
     }
     else {
-        windDirText += windDir.value.toString().padStart(3, '0') + '\u00B0'
+        windDirText += wind_dir_val.toString().padStart(3, '0') + '\u00B0'
     }
     return windDirText;
 }
@@ -228,15 +264,17 @@ function get_wind_text() {
     var windText = 'Wind: ';
     wind_vel_val = get_wind_vel_val();
     wind_gust_val = get_wind_gust_val();
+    wind_variable = get_wind_variable();
     if (wind_vel_val == 0) {
         windText += 'Calm';
         return windText;
     }
-    if (windVariableBox.checked) {
+    if (wind_variable) {
         windText += 'VRB';
     }
     else {
-        windText += windDir.value.toString().padStart(3, '0') + '\u00B0'
+        wind_dir_val = get_wind_dir_val();
+        windText += wind_dir_val.toString().padStart(3, '0') + '\u00B0'
     }
     windText += ` @ ${wind_vel_val} KT`;
     if (wind_gust_val > 0) {
@@ -246,7 +284,7 @@ function get_wind_text() {
 }
 
 function get_visibility_text() {
-    return `Visibility: ${visibility.value} SM`;
+    return `Visibility: ${get_visibility_val()} SM`;
 }
 
 function get_temperature_text() {
@@ -269,8 +307,10 @@ function get_atis_text() {
     windChunk = '00000';
     wind_vel_val = get_wind_vel_val();
     wind_gust_val = get_wind_gust_val();
+    const wind_variable = get_wind_variable();
     if (wind_vel_val > 0) {
-        windChunk = windVariableBox.checked ? 'VRB' : windDir.value.toString().padStart(3, '0');
+        wind_dir_val = get_wind_dir_val();
+        windChunk = wind_variable ? 'VRB' : wind_dir_val.toString().padStart(3, '0');
         windChunk += wind_vel_val.toString().padStart(2, '0');
         if (wind_gust_val != 0) {
             windChunk += `G${wind_gust_val}`;
@@ -288,11 +328,11 @@ function get_atis_text() {
     }
 
     const chunks = [
-        airport.value,
-        `INFO ${information.value}`,
-        timePicker.value.replaceAll(/\s/g, '') + 'Z',
+        get_airport_val(),
+        `INFO ${get_information_val()}`,
+        get_time_val().replaceAll(/\s/g, '') + 'Z',
         windChunk,
-        visibility.value.toString() + 'SM',
+        get_visibility_val().toString() + 'SM',
         `${format_temp(get_temperature_val())}/${format_temp(get_dewpoint_val())}`,
         'A' + get_altimeter_val().replace('.', ''),
     ];
@@ -344,9 +384,9 @@ function download_transcript () {
 
     // Add file name
     tags = [
-        document.querySelector("#information").value,
-        document.querySelector("#airport").value,
-        document.querySelector("#timePicker").value.replaceAll(' ','') + 'z',
+        get_information_val(),
+        get_airport_val(),
+        get_time_val().replaceAll(' ','') + 'z',
     ]
     link.download = `information-${tags.join('-')}.txt`.toLowerCase();
 
