@@ -33,8 +33,112 @@ function validate_airport() {
     }
 }
 
+function get_wind_vel_val() {
+    // copying records from the wind gust section...
+    x = windVel.value;
+    const high = 201;
+    const low = 0;
+    const optimum = 5;
+    const gradient = .1;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return Math.round(val);
+}
+
+function get_wind_gust_val() {
+    /*
+    // Excluding inside cyclones, the highest surface wind speed ever officially recorded is 200.733 kn
+    at the Mount Washington (New Hampshire) Observatory 1,917 m (6,288 ft) above sea level in the US on 12 April 1934
+    Source: https://en.wikipedia.org/wiki/Wind_speed
+    */
+    x = windGust.value;
+    const high = 201;
+    const low = 0;
+    const optimum = 5;
+    const gradient = .1;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return Math.round(val);
+}
+
+function get_altimeter_val(){
+    x = altimeter.valueAsNumber;
+    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-anticyclonic-high-barometric-pressure-records.html
+    const high = 32.01;  // Agata, Russia (in Siberia) registered on December 31, 1968
+    // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
+    // record excludes tropical storms
+    // const low = 25.69;  // Guam, Super Typhoon "Tip" 10/12/1979
+    const low = 27.31;  // Dutch Harbor, AK, on 10/25/1977
+    // standard pressure at sea level
+    const optimum = 29.92;
+    const gradient = .9;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return val.toFixed(2);
+}
+
+function get_temperature_val(){
+    x = temp.valueAsNumber;
+    const high = 57;
+    const low = -83;
+    const optimum = 0;  // standard temperature
+    const gradient = .9;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return Math.round(val);
+}
+
+function get_dewpoint_val() {
+    x = dew.valueAsNumber;
+    const high = 35;  // https://www.noaa.gov/jetstream/synoptic/heat-index
+    // const low = -62;  // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
+    const low = -83;  // same as temperature low... i think this is how it works
+    const optimum = 0;  // not sure where to put this...
+    const gradient = .9;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return Math.round(val);
+}
+
+function map_slider_to_weighted_range(
+        slider_position,
+        high,
+        low,
+        optimum,
+        gradient,
+    ) {
+    /* The goal here is to create a weighting function to map slider position onto the entire range of possible values.
+
+    We'll implement a tangent curve with the following characteristics:
+    - Translated and scaled along y dimension to convert slider input range to possible data range.
+    - Translated along x dimension to optimize for tuning about the most common slider position.
+    - Applies a parameterizable weighting function via the tangent curve.
+    - Slider range is expected to be from -1 to 1
+    */
+
+    /* use this value to control the steepness of the slider's compression on each extreme.
+    Gradient MUST be a float value in the unit interval (0 to 1).
+    As gradient approaches 0, weighting function goes linear.
+    As gradient approaches 1, weighting function has very steep compression on each extreme.
+    */
+    if (gradient <= 0 || gradient >= 1) {
+        throw new Error('Gradient parameter must be in unit interval (0-1)!');
+    }
+
+    // convert gradient to a percentage of the tangent function's vertical asymptote
+    c = gradient * Math.PI / 2;
+
+    // the bias shifts the tangent function along the x axis
+    scale_up = high - optimum;
+    scale_down = optimum - low;
+    bias = (1 - Math.atan(scale_up/scale_down * Math.tan(c))/c) / 2;
+    weighted_x = slider_position * (1 - bias) - bias;
+    tangent = Math.tan(weighted_x * c) / Math.tan(c);
+
+    // apply y-axis scaling and translation
+    val = scale_down * tangent + optimum;
+    return val;
+}
+
 function update_wind() {
-    if (windVel.value == 0) {
+    wind_vel_val = get_wind_vel_val();
+    wind_gust_val = get_wind_gust_val();
+    if (wind_vel_val == 0) {
         document.querySelector("#windDirPickerLabel").style.display = "none";
         document.querySelector("#windGustPickerLabel").style.display = "none";
     } else {
@@ -47,8 +151,8 @@ function update_wind() {
         display = document.querySelector("#windVelPickerLabel").style.display;
         document.querySelector("#windGustPickerLabel").style.display = display;
     }
-    windVel.style.accentColor = get_caution_color(windVel.value, 15, 25);
-    windGust.style.accentColor = get_caution_color(windGust.value, 5, 15);
+    windVel.style.accentColor = get_caution_color(wind_vel_val, 15, 25);
+    windGust.style.accentColor = get_caution_color(wind_gust_val, 5, 15);
     document.querySelector("#windVelPickerSpan").innerText = get_wind_vel_text();
     document.querySelector("#windDirPickerSpan").innerText = get_wind_dir_text();
     document.querySelector("#windGustPickerSpan").innerText = get_wind_gust_text();
@@ -63,7 +167,7 @@ function update_visibility() {
 function update_spread() {
     document.querySelector("#tempPickerSpan").innerText = get_temperature_text();
     document.querySelector("#dewpointPickerSpan").innerText = get_dewpoint_text();
-    spread = temp.value - dew.value;
+    spread = get_temperature_val() - get_dewpoint_val();
     color = get_caution_color(spread, 5, 0);
     dew.style.accentColor = color;
 }
@@ -94,7 +198,7 @@ function get_time_text() {
 
 function get_wind_dir_text() {
     var windDirText = 'Wind Direction: ';
-    if (windVel.value == 0) {
+    if (get_wind_vel_val() == 0) {
         windDirText += 'Calm';
     }
     else if (windVariableBox.checked) {
@@ -108,19 +212,23 @@ function get_wind_dir_text() {
 
 function get_wind_vel_text() {
     var windVelText = 'Wind Velocity: ';
-    windVelText += windVel.value == 0 ? 'Calm' : `${windVel.value} KT`;
+    wind_vel_val = get_wind_vel_val();
+    windVelText += wind_vel_val == 0 ? 'Calm' : `${wind_vel_val} KT`;
     return windVelText;
 }
 
 function get_wind_gust_text() {
     var windGustText = 'Wind Gust: ';
-    windGustText += windGust.value == 0 ? 'None' : `${windGust.value} KT`;
+    wind_gust_val = get_wind_gust_val();
+    windGustText += wind_gust_val == 0 ? 'None' : `${wind_gust_val} KT`;
     return windGustText;
 }
 
 function get_wind_text() {
     var windText = 'Wind: ';
-    if (windVel.value == 0) {
+    wind_vel_val = get_wind_vel_val();
+    wind_gust_val = get_wind_gust_val();
+    if (wind_vel_val == 0) {
         windText += 'Calm';
         return windText;
     }
@@ -130,9 +238,9 @@ function get_wind_text() {
     else {
         windText += windDir.value.toString().padStart(3, '0') + '\u00B0'
     }
-    windText += ` @ ${windVel.value} KT`;
-    if (windGust.value > 0) {
-        windText += ` G ${windGust.value} KT`;
+    windText += ` @ ${wind_vel_val} KT`;
+    if (wind_gust_val > 0) {
+        windText += ` G ${wind_gust_val} KT`;
     }
     return windText;
 }
@@ -142,35 +250,37 @@ function get_visibility_text() {
 }
 
 function get_temperature_text() {
-    return `Temperature: ${temp.value}\u00B0C`;
+    return `Temperature: ${get_temperature_val()}\u00B0C`;
 }
 
 function get_dewpoint_text() {
-    return `Dew Point: ${dew.value}\u00B0C`;
+    return `Dew Point: ${get_dewpoint_val()}\u00B0C`;
 }
 
 function get_spread_text() {
-    return `Spread: ${temp.value - dew.value}\u00B0C`
+    return `Spread: ${get_temperature_val() - get_dewpoint_val()}\u00B0C`
 }
 
 function get_altimeter_text() {
-    return `Altimeter Setting: ${altimeter.valueAsNumber.toFixed(2)}`;
+    return `Altimeter Setting: ${get_altimeter_val()}`;
 }
 
 function get_atis_text() {
     windChunk = '00000';
-    if (windVel.value > 0) {
+    wind_vel_val = get_wind_vel_val();
+    wind_gust_val = get_wind_gust_val();
+    if (wind_vel_val > 0) {
         windChunk = windVariableBox.checked ? 'VRB' : windDir.value.toString().padStart(3, '0');
-        windChunk += windVel.value.toString().padStart(2, '0');
-        if (windGust.value != 0) {
-            windChunk += `G${windGust.value}`;
+        windChunk += wind_vel_val.toString().padStart(2, '0');
+        if (wind_gust_val != 0) {
+            windChunk += `G${wind_gust_val}`;
         }
     }
     windChunk += 'KT';
 
-    function format_temp(temp) {
-        const negative = temp.value.startsWith('-');
-        var formatted = temp.value.replace('-','').padStart(2, '0');
+    function format_temp(val) {
+        const negative = val.toString().startsWith('-');
+        var formatted = val.toString().replace('-','').padStart(2, '0');
         if (negative) {
             formatted = 'M' + formatted;
         }
@@ -183,8 +293,8 @@ function get_atis_text() {
         timePicker.value.replaceAll(/\s/g, '') + 'Z',
         windChunk,
         visibility.value.toString() + 'SM',
-        `${format_temp(temp)}/${format_temp(dew)}`,
-        'A' + parseFloat(altimeter.value).toFixed(2).replace('.', ''),
+        `${format_temp(get_temperature_val())}/${format_temp(get_dewpoint_val())}`,
+        'A' + get_altimeter_val().replace('.', ''),
     ];
     return chunks.join(' ');
 }
@@ -208,35 +318,11 @@ function get_caution_color(value, low, high) {
     return `rgba(${red**.5 * 255.0}, 0, ${blue**.5 * 255.0})`;
 }
 
-function update_ranges (useUSRecords) {
-    if (useUSRecords) {
-        // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
-        // record excludes tropical storms
-        altimeter.min = 27.31;
-        altimeter.max = 31.85;
-        // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
-        temp.min = -62;
-        temp.max = 57;
-        https://homework.study.com/explanation/what-is-the-highest-dew-point-recorded-in-the-u-s.html
-        dew.max = 32;
-    } else {
-        altimeter.min = 25.69;
-        // https://www.wunderground.com/blog/weatherhistorian/world-and-us-anticyclonic-high-barometric-pressure-records.html
-        altimeter.max = 32.01;
-        temp.min = -83;
-        temp.max = 57;
-        // https://www.noaa.gov/jetstream/synoptic/heat-index
-        dew.max = 35;
-    }
-    // i think this is how it works...
-    dew.min = temp.min
-}
-
 function download_transcript () {
     // Create element with <a> tag
     const link = document.createElement("a");
 
-    // Create a blog object with the file content which you want to add to the file
+    // Create a blob object with the file content which you want to add to the file
 
     var content = [
         get_atis_text(),

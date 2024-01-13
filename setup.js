@@ -60,13 +60,6 @@ update_spread();
 update_atis_text();
 update_altimeter();
 
-var checkbox = document.querySelector('input[type="checkbox"]');
-checkbox.addEventListener('change', function () {
-    update_ranges(checkbox.checked);
-    update_atis_text();
-});
-update_ranges(false);
-
 const downloadButton = document.querySelector("#downloadButton");
 downloadButton.addEventListener("click", (event) => {
     download_transcript();
