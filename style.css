@@ -6,11 +6,12 @@ div.slidecontainer {
 input[type=range] {
     width: 100%;
     accent-color: blue;
+    transform: scale(1, 5);
 }
 
 label {
     position: relative;
-    height: 60px;
+    height: 120px;
     margin-bottom: 0px;
     display: flex;
     align-items: center;
