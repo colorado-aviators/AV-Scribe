@@ -100,6 +100,29 @@ function get_altimeter_val(){
     return val.toFixed(2);
 }
 
+function get_elevation_val(){
+    x = document.querySelector("#elevationPicker").valueAsNumber;
+    // https://en.wikipedia.org/wiki/List_of_highest_airports
+    const high = 14472;  // Daocheng Yading Airport
+    const low = -1266;  // Bar Yehuda Airfield
+    // standard pressure at sea level
+    const optimum = 3000;
+    const gradient = .4;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    return val.toFixed(0);
+}
+
+function get_ceiling_val(){
+    x = document.querySelector("#ceilingPicker").valueAsNumber;
+    const high = 40000;
+    const low = -1000;
+    const optimum = 5000;
+    const gradient = .4;
+    val = map_slider_to_weighted_range(x, high, low, optimum, gradient);
+    val = Math.round(val / 1000.0, 3) * 1000;
+    return val.toFixed(0);
+}
+
 function get_temperature_val(){
     x = document.querySelector("#tempPicker").valueAsNumber;
     const high = 57;
@@ -214,8 +237,20 @@ function update_altimeter() {
     document.querySelector("#altimeterPickerSpan").innerText = get_altimeter_text();
 }
 
+function update_elevation() {
+    document.querySelector("#elevationPickerSpan").innerText = get_elevation_text();
+}
+
+function update_ceiling() {
+    document.querySelector("#ceilingPickerSpan").innerText = get_ceiling_text();
+}
+
 function update_atis_text() {
     document.querySelector("#atisText").innerText = get_atis_text();
+}
+
+function update_density_altitude_text() {
+    document.querySelector("#densityAltitudeText").innerText = get_density_altitude_text();
 }
 
 function get_airport_text() {
@@ -303,6 +338,16 @@ function get_altimeter_text() {
     return `Altimeter Setting: ${get_altimeter_val()}`;
 }
 
+function get_elevation_text() {
+    return `Field elevation: ${get_elevation_val()}`;
+}
+
+function get_ceiling_text() {
+    var tmp = get_ceiling_val() / 100;
+    var tmp = tmp.toString().padStart(3, '0')
+    return `Ceiling: ${tmp}`;
+}
+
 function get_atis_text() {
     windChunk = '00000';
     wind_vel_val = get_wind_vel_val();
@@ -327,6 +372,10 @@ function get_atis_text() {
         return formatted
     }
 
+
+    var tmp = get_ceiling_val() / 100;
+    var tmp = tmp.toString().padStart(3, '0');
+
     const chunks = [
         get_airport_val(),
         `INFO ${get_information_val()}`,
@@ -335,8 +384,35 @@ function get_atis_text() {
         get_visibility_val().toString() + 'SM',
         `${format_temp(get_temperature_val())}/${format_temp(get_dewpoint_val())}`,
         'A' + get_altimeter_val().replace('.', ''),
+        'CLG' + tmp,
     ];
     return chunks.join(' ');
+}
+
+function get_pressure_altitude_feet() {
+    var pa = Number.parseFloat(get_elevation_val());
+    var alt = Number.parseFloat(get_altimeter_val());
+    pa += 145442.2 * (1 - (alt / 29.92126) ** .190261);
+    return pa;
+}
+
+function get_temperature_isa() {
+    const standard_temp = 15.0;
+    var temperature_isa = standard_temp - 2.0 * get_elevation_val() / 1000.0;
+    return temperature_isa;
+}
+
+function get_density_altitude() {
+    // Density Altitude in Feet = Pressure Altitude in Feet + (120 x (OAT°C – ISA Temperature °C))
+    var da = get_pressure_altitude_feet();
+    temperature = get_temperature_val();
+    var tmp = 120.0 * temperature - get_temperature_isa();
+    da += tmp;
+    return da;
+}
+
+function get_density_altitude_text() {
+    return `Density alt.: ${Math.round(get_density_altitude())}`
 }
 
 function get_caution_color(value, low, high) {
