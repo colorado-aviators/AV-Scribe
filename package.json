@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "homepage": "https://github.com/mcgsjoyner/AVWX-Scribe",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "test": "jest --verbose ./tests"
   },
@@ -17,5 +18,8 @@
   },
   "dependencies": {
     "mathjs": "13.0.3"
+  },
+  "directories": {
+    "lib": "src/lib"
   }
 }
