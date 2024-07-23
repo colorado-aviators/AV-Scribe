@@ -1,4 +1,4 @@
-div.slidecontainer {
+.slidecontainer {
     background-color: grey;
     padding: 30px;
 }
@@ -6,12 +6,12 @@ div.slidecontainer {
 input[type=range] {
     width: 100%;
     accent-color: blue;
+    margin: 60px;
+    transform: scale(1, 5);
 }
 
 label {
     position: relative;
-    height: 60px;
-    margin-bottom: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
