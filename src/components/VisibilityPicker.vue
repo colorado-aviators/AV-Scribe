@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import {ref, watch} from "vue"
     import { onUpdate } from '../lib/functions.js'
 

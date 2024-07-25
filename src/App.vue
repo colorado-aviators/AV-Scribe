@@ -1,4 +1,4 @@
-<script setup language="ts">
+<script setup lang="ts">
     import {ref} from "vue"
 
     import Disclaimer from './components/Disclaimer.vue'
@@ -39,17 +39,17 @@
   </header>
 
   <main>
-    <AirportPicker @emit-airport="(payload) => {airport = payload}"/>
-    <InformationPicker @emit-information="(payload) => {information = payload}"/>
-    <TimePicker @emit-time="(payload) => {time = payload}"/>
-    <WindVariable @windVariable="(payload) => {windVariable = payload}"/>
-    <WindVelPicker @emit-windVel="(payload) => {windVel = payload}"/>
-    <WindDirPicker @emit-windDir="(payload) => {windDir = payload}" v-if="!windVariable&windVel>0.0"/>
-    <WindGustPicker @emit-windGust="(payload) => {windGust = payload}" v-if="windVariable|windVel>0.0"/>
-    <VisibilityPicker @emit-visibility="(payload) => {visibility = payload}"/>
-    <TemperaturePicker @emit-temperature="(payload) => {temperature = payload}"/>
-    <DewpointPicker :temp="temperature" @emit-dewpoint="(payload) => {dewpoint = payload}"/>
-    <AltimeterPicker @emit-altimeter="(payload) => {altimeter = payload}"/>
+    <AirportPicker @emit-airport="(payload: string) => {airport = payload}"/>
+    <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
+    <TimePicker @emit-time="(payload: string) => {time = payload}"/>
+    <WindVariable @windVariable="(payload: boolean) => {windVariable = payload}"/>
+    <WindVelPicker @emit-windVel="(payload: number) => {windVel = payload}"/>
+    <WindDirPicker @emit-windDir="(payload: number) => {windDir = payload}" v-if="!windVariable&&windVel>0.0"/>
+    <WindGustPicker @emit-windGust="(payload: number) => {windGust = payload}" v-if="windVariable||windVel>0.0"/>
+    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
+    <TemperaturePicker @emit-temperature="(payload: number) => {temperature = payload}"/>
+    <DewpointPicker :temp="temperature" @emit-dewpoint="(payload: number) => {dewpoint = payload}"/>
+    <AltimeterPicker @emit-altimeter="(payload: number) => {altimeter = payload}"/>
     <Transcript
         :information="information"
         :altimeter="altimeter"

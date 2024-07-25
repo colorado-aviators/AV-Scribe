@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import {ref, watch} from "vue"
     var sliderText = ref("");
     var sliderValue = ref(360);

@@ -1,4 +1,4 @@
-<script setup language="js">
+<script setup lang="ts">
     import {ref} from "vue"
     const airport = ref('');
 

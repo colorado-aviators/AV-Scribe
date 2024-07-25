@@ -1,10 +1,10 @@
-<script setup>
-    import {ref, watch, defineProps} from "vue"
+<script setup lang="ts">
+    import {ref, watch} from "vue"
 
     const props = defineProps({
         airport: String,
         information: String,
-        time: String,
+        time: string,
         windVariable: Boolean,
         windVel: Number,
         windDir: Number,

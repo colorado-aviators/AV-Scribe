@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
     import {ref} from "vue"
-    var now = new Date();
-    function get_time_string(now, time_elapsed) {
+    function get_time_string(time_elapsed) {
+        var now = new Date();
         var time = new Date(now - 1000 * 60 * time_elapsed);
         var dd = time.getUTCDate().toString().padStart(2, '0');
         var hh = time.getUTCHours().toString().padStart(2, '0');
@@ -9,7 +9,7 @@
         var timeString = `${dd} ${hh} ${mm}`;
         return timeString;
     };
-    const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(now, index));
+    const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
     const selected = ref(myOptionsArray[0]);
 </script>
 

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import {ref} from "vue"
     const information = ref();
     const myOptionsArray = Array.from(new Array(26),(val,index)=> String.fromCharCode(65 + index) );

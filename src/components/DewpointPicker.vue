@@ -1,5 +1,5 @@
-<script setup>
-    import {ref, watch, defineProps} from "vue"
+<script setup lang="ts">
+    import {ref, watch} from "vue"
     import * as functions from "../lib/functions"
 
     const props = defineProps({
