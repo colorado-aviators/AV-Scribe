@@ -31,14 +31,13 @@
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
     <div>
       <h1 align="center">AVWX Scribe</h1>
       <Disclaimer/>
     </div>
   </header>
 
-  <main>
+  <main align="center">
     <AirportPicker @emit-airport="(payload: string) => {airport = payload}"/>
     <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
     <TimePicker @emit-time="(payload: string) => {time = payload}"/>

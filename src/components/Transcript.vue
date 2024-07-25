@@ -166,6 +166,12 @@
 </script>
 
 <template>
-    <p id="atisText">{{atisText}}</p>
+    <p id="atisText" font-size="12">{{atisText}}</p>
     <button @click="download_transcript" id="downloadButton"> Download Transcript </button>
 </template>
+
+<style scoped>
+    p {
+        font-size: 12px;
+    }
+</style>
