@@ -1,0 +1,158 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0 2rem;
+  }
+}
+
+.slidecontainer {
+    background-color: grey;
+    padding: 30px;
+}
+
+label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 36px;
+}
+
+label>span,
+label>slider {
+    position: absolute;
+}
+
+label>span {
+    color: white;
+    font-family: sans-serif;
+    font-size: 36px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    pointer-events: none;
+}
+
+label.switch {
+    position: relative;
+    height: 20px;
+    margin-top: 75px;
+    margin-bottom: 75px;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    text-align: left;
+    font-size: 36px;
+}
+
+select {
+    font-size: 36px;
+}
+
+p {
+    font-size: 36px;
+}
+
+button {
+    font-size: 36px;
+}
+
+input[type=checkbox] {
+    width: 36px;
+    height: 36px;
+}
+
+select {
+    font-size: 36px;
+}
+
+input[type=text] {
+    font-size: 36px;
+}
+
+select, input {
+    margin: 50px;
+}
+
+/* style the input element with type "range" */
+.custom-slider {
+  -webkit-appearance: none;
+  --trackHeight: 60px;
+  --thumbRadius: 85px;
+  width: 100%;
+  margin: 60px;
+  position: relative;
+  /* pointer-events: none; */
+  border-radius: 999px;
+  z-index: 0;
+}
+
+/* ::before element to replace the slider track */
+.custom-slider input[type="range"]::before {
+  -webkit-appearance: none;
+  content: "";
+  position: absolute;
+  width: var(--ProgressPercent, 100%);
+  height: 100%;
+  background: rgba(0.0, 0.0, 255.0);
+  /* z-index: -1; */
+  pointer-events: none;
+  border-radius: 999px;
+}
+
+/* `::-webkit-slider-runnable-track` targets the track (background) of a range slider in chrome and safari browsers. */
+.custom-slider::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: var(--trackHeight);
+  border-radius: 999px;
+}
+
+/* `::-moz-range-track` targets the track (background) of a range slider in Mozilla Firefox. */
+.custom-slider input[type="range"]::-moz-range-track {
+  -webkit-appearance: none;
+  background: #005a3c;
+  height: var(--trackHeight);
+  border-radius: 999px;
+}
+
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: var(--thumbRadius);
+  height: var(--thumbRadius);
+  /* margin-top: calc((var(--trackHeight) - var(--thumbRadius)) / 2); */
+  background: white;
+  border-radius: 999px;
+  pointer-events: all;
+  z-index: 1;
+}

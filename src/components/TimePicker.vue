@@ -1,0 +1,24 @@
+<script setup>
+    import {ref} from "vue"
+    var now = new Date();
+    function get_time_string(now, time_elapsed) {
+        var time = new Date(now - 1000 * 60 * time_elapsed);
+        var dd = time.getUTCDate().toString().padStart(2, '0');
+        var hh = time.getUTCHours().toString().padStart(2, '0');
+        var mm = time.getUTCMinutes().toString().padStart(2, '0');
+        var timeString = `${dd} ${hh} ${mm}`;
+        return timeString;
+    };
+    const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(now, index));
+    const selected = ref(myOptionsArray[0]);
+</script>
+
+<template>
+    <label class="switch">ATIS Time:
+        <select @change="$emit('emitTime', selected)"  v-model="selected">
+          <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
+            {{item}}
+          </option>
+        </select>
+    </label>
+</template>
