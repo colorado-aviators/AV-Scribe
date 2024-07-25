@@ -4,7 +4,7 @@
     const props = defineProps({
         airport: String,
         information: String,
-        time: string,
+        time: String,
         windVariable: Boolean,
         windVel: Number,
         windDir: Number,
