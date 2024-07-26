@@ -12,10 +12,10 @@
         visibility: {type: Number, required: true},
         temperature: {type: Number, required: true},
         dewpoint: {type: Number, required: true},
-        altimeter:  {type: Number, required: true}
-    }
-    );
+        altimeter:  {type: Number, required: true},
+    });
 
+    const ADDRESS = "https://mcgsjoyner.github.io/AVWX-Scribe/";
     var atisText = ref("");
     watch(() =>
     [
@@ -97,7 +97,7 @@
             windText += 'VRB';
         }
         else {
-            windText += props.windDir.toString().padStart(3, '0') + '\u00B0'
+            windText += props.windDir.toString().padStart(3, '0') + '&deg;'
         }
         windText += ` @ ${props.windVel.toFixed(0)} KT`;
         if (props.windGust > 0) {
@@ -111,16 +111,16 @@
     }
 
     function get_temperature_text() {
-        return `Temperature: ${props.temperature.toFixed(0)}\u00B0C`;
+        return `Temperature: ${props.temperature.toFixed(0)}&deg;C`;
     }
 
     function get_dewpoint_text() {
-        return `Dew Point: ${props.dewpoint.toFixed(0)}\u00B0C`;
+        return `Dew Point: ${props.dewpoint.toFixed(0)}&deg;C`;
     }
 
     function get_spread_text() {
         var spread = props.temperature - props.dewpoint;
-        return `Spread: ${spread.toFixed(0)}\u00B0C`
+        return `Spread: ${spread.toFixed(0)}&deg;C`
     }
 
     function get_altimeter_text() {
@@ -131,6 +131,15 @@
     function download_transcript() {
         // Create element with <a> tag
         const link = document.createElement("a");
+
+        // Add file name
+        var tags = [
+            props.airport,
+            props.information,
+            props.time.replace(/\s/g, "") + 'Z',
+        ]
+        const filename = `information-${tags.join('-')}.html`.toLowerCase()
+        link.download = filename;
 
         // Create a blob object with the file content which you want to add to the file
         var content = [
@@ -145,19 +154,23 @@
             get_dewpoint_text(),
             get_spread_text(),
             get_altimeter_text(),
+            '',
+            `Generated using <a href=${ADDRESS}>AVWX Scribe</a>`
         ]
-        const file = new Blob([content.join("\r\n")], { type: 'text/plain'});
+        const title = `Information ${tags.join(" ")}`;
+        const html_code = `
+        <body style="background-color:black;color:white">
+        <title>${title}</title>
+        <h1>${title}</h1>
+        <div>
+        ${content.join("<br>")}
+        </div>
+        </body>
+        `
+        const file = new Blob([html_code], { type: 'html'});
 
         // Add file content in the object URL
         link.href = URL.createObjectURL(file);
-
-        // Add file name
-        var tags = [
-            props.information,
-            props.airport,
-            props.time.replace(' ','') + 'z',
-        ]
-        link.download = `information-${tags.join('-')}.txt`.toLowerCase();
 
         // Add click event to tag to save file.
         link.click();
@@ -173,5 +186,10 @@
 <style scoped>
     p {
         font-size: 12px;
+    }
+    button {
+        margin-bottom: 30px;
+        margin-top: 30px;
+        padding: 10px;
     }
 </style>
