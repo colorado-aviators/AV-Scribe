@@ -22,12 +22,30 @@
         sliderText.value = get_slider_text(newVal);
     })
     sliderText.value = get_slider_text(realValue.value);
+
+    const emit = defineEmits<{
+        (e: 'emitTemperature', realValue: number): void
+    }>()
+    const onChange = () => {
+        emit('emitTemperature', realValue.value);
+    }
+
+    onChange();
 </script>
 
 <template>
     <label id="temperaturePickerLabel">
-        <input @change="$emit('emitTemperature', realValue)" class="custom-slider custom-slider-temperature" v-model="sliderValue" type="range" min="-1" max="1" step=".001" id="temperaturePicker" />
-    <span id="temperaturePickerSpan" v-text="sliderText"></span>
+        <input
+            id="temperaturePicker"
+            type="range"
+            v-model.number="sliderValue"
+            @change="onChange"
+            class="custom-slider custom-slider-temperature"
+            min=-1
+            max=1
+            step=.001
+        >
+        <span id="temperaturePickerSpan" v-text="sliderText"></span>
     </label>
 </template>
 

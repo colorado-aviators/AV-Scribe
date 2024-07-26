@@ -10,12 +10,29 @@
         sliderText.value = get_slider_text(newVal);
     })
     sliderText.value = get_slider_text(sliderValue.value);
+
+    const emit = defineEmits<{
+        (e: 'emitWindDir', sliderValue: number): void
+    }>()
+    const onChange = () => {
+        emit('emitWindDir', sliderValue.value);
+    }
+    onChange();
 </script>
 
 <template>
     <label id="windDirPickerLabel">
-        <input @change="$emit('emitWindDir', sliderValue)" class="custom-slider custom-slider-wind-dir" v-model="sliderValue" type="range" min="10" max="360" step="10" id="windDirPicker" />
-    <span id="windDirPickerSpan" v-text="sliderText"></span>
+        <input
+            id="windDirPicker"
+            type="range"
+            v-model.number="sliderValue"
+            @change="onChange"
+            class="custom-slider custom-slider-wind-dir"
+            min=10
+            max=360
+            step=10
+        >
+        <span id="windDirPickerSpan" v-text="sliderText"></span>
     </label>
 </template>
 

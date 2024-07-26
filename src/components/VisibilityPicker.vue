@@ -21,12 +21,29 @@
         sliderText.value = get_slider_text(newVal);
     })
     sliderText.value = get_slider_text(realValue.value);
+
+    const emit = defineEmits<{
+        (e: 'emitVisibility', realValue: number): void
+    }>()
+    const onChange = () => {
+        emit('emitVisibility', realValue.value);
+    }
+    onChange();
 </script>
 
 <template>
     <label id="visibilityPickerLabel">
-        <input @change="$emit('emitVisibility', realValue)" class="custom-slider custom-slider-visibility" v-model="sliderValue" type="range" min="-1" max="1" step=".001" id="visibilityPicker" />
-    <span id="visibilityPickerSpan" v-text="sliderText"></span>
+        <input
+            id="visibilityPicker"
+            type="range"
+            v-model.number="sliderValue"
+            @change="onChange"
+            class="custom-slider custom-slider-visibility"
+            min=-1
+            max=1
+            step=.001
+        >
+        <span id="visibilityPickerSpan" v-text="sliderText"></span>
     </label>
 </template>
 

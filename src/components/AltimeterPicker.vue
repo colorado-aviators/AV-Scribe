@@ -27,12 +27,30 @@
         sliderText.value = get_slider_text(newVal);
     })
     sliderText.value = get_slider_text(realValue.value);
+
+    const emit = defineEmits<{
+        (e: 'emitAltimeter', realValue: number): void
+    }>()
+    const onChange = () => {
+        emit('emitAltimeter', realValue.value);
+    }
+
+    onChange();
 </script>
 
 <template>
     <label id="altimeterPickerLabel">
-        <input @change="$emit('emitAltimeter', realValue)" class="custom-slider custom-slider-altimeter" v-model="sliderValue" type="range" min="-1" max="1" step=".001" id="altimeterPicker" />
-    <span id="altimeterPickerSpan" v-text="sliderText"></span>
+        <input
+            id="altimeterPicker"
+            type="range"
+            v-model.number="sliderValue"
+            @change="onChange"
+            class="custom-slider custom-slider-altimeter"
+            min=-1
+            max=1
+            step=.001
+        >
+        <span id="altimeterPickerSpan" v-text="sliderText"></span>
     </label>
 </template>
 

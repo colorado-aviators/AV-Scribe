@@ -2,8 +2,8 @@
     import {ref} from "vue"
     const airport = ref('');
 
-    function validate_airport() {
-        var val = airport.value.toUpperCase();
+    function format_airport(orig: string) {
+        var val = orig.toUpperCase();
         const regex = /^[A-Z0-9]+$/;
         if (val == "") {
             return
@@ -11,20 +11,37 @@
         if (!regex.test(val)) {
             alert("Airport code invalid");
         }
+        return val;
+    }
+
+    const emit = defineEmits<{
+        (e: 'emitAirport', airport: string): void
+    }>()
+    const onChange = () => {
         // overwrite the value with the uppercase version!
-        airport.value = val;
+        var formatted = format_airport(airport.value);
+        airport.value = formatted;
+        emit('emitAirport', formatted);
     }
 </script>
 
 <template>
     <label class="switch">
         Airport:
-        <input class="blah" type="text" v-model="airport" @change="validate_airport();$emit('emitAirport', airport)" minlength="4" maxlength="4">
+        <input
+            id="airportPicker"
+            type="text"
+            v-model.string="airport"
+            @change="onChange"
+            class="airportInput"
+            minlength=4
+            maxlength=4
+        >
     </label>
 </template>
 
 <style>
-    .blah {
+    .airportInput {
         width: 100px;
     }
 </style>
