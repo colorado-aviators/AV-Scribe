@@ -20,16 +20,16 @@
     var {sliderValue, realValue, cautionColor} = functions.onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
     var sliderText = ref("");
-    function get_slider_text(val) {
-        var rounded = Math.round(val, 1);
+    function get_slider_text(val: number) {
+        var rounded = Math.round(val);
         return `Dewpoint: ${rounded}\u00B0C`;
     };
     watch(realValue, async (newVal) => {
         sliderText.value = get_slider_text(newVal);
-        var spread = props.temp - newVal;
+        var spread = (props.temp as number) - newVal;
         cautionColor.value = functions.get_caution_color(spread, 5, 0);
     })
-    watch(() => props.temp, (newVal) => {
+    watch(() => props.temp as number, (newVal) => {
         sliderText.value = get_slider_text(realValue.value);
         var spread = newVal - realValue.value;
         cautionColor.value = functions.get_caution_color(spread, 5, 0);

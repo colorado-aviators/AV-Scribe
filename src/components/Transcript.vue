@@ -2,21 +2,21 @@
     import {ref, watch} from "vue"
 
     const props = defineProps({
-        airport: String,
-        information: String,
-        time: String,
-        windVariable: Boolean,
-        windVel: Number,
-        windDir: Number,
-        windGust: Number,
-        visibility: Number,
-        temperature: Number,
-        dewpoint: Number,
-        altimeter: Number
-    });
+        airport: {type: String, required: true},
+        information: {type: String, required: true},
+        time:  {type: String, required: true},
+        windVariable: {type: Boolean, required: true},
+        windVel: {type: Number, required: true},
+        windDir: {type: Number, required: true},
+        windGust: {type: Number, required: true},
+        visibility: {type: Number, required: true},
+        temperature: {type: Number, required: true},
+        dewpoint: {type: Number, required: true},
+        altimeter:  {type: Number, required: true}
+    }
+    );
 
     var atisText = ref("");
-
     watch(() =>
     [
         props.visibility,
@@ -30,7 +30,7 @@
         props.windDir,
         props.temperature,
         props.dewpoint,
-    ],
+    ] as const,
     ([
         visibilityVal,
         airportVal,
@@ -54,7 +54,7 @@
             }
         }
         windChunk += 'KT';
-        function format_temp(val) {
+        function format_temp(val: number) {
             const negative = val.toFixed(0).startsWith('-');
             var formatted = val.toFixed(0).replace('-','').padStart(2, '0');
             if (negative) {
@@ -66,11 +66,11 @@
         const chunks = [
             airportVal,
             `INFO ${informationVal}`,
-            timeVal.replaceAll(/\s/g, '') + 'Z',
+            timeVal.replace(/\s/g, '') + 'Z',
             windChunk,
-            visibilityVal.toFixed(0) + 'SM',
+            (visibilityVal).toFixed(0) + 'SM',
             `${format_temp(temperatureVal)}/${format_temp(dewpointVal)}`,
-            'A' + altimeterVal.toFixed(2).replace('.', ''),
+            'A' + (altimeterVal).toFixed(2).replace('.', ''),
         ];
         atisText.value = chunks.join(' ');
     });
@@ -155,7 +155,7 @@
         var tags = [
             props.information,
             props.airport,
-            props.time.replaceAll(' ','') + 'z',
+            props.time.replace(' ','') + 'z',
         ]
         link.download = `information-${tags.join('-')}.txt`.toLowerCase();
 
