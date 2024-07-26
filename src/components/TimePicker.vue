@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import {ref, defineEmits} from "vue"
     function get_time_string(time_elapsed: number) {
         var now = new Date();
         var time = new Date(now.getTime() - 1000 * 60 * time_elapsed);
@@ -11,6 +11,9 @@
     };
     const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
     const selected = ref(myOptionsArray[0]);
+
+    const emit = defineEmits();
+    emit('emitTime', selected);
 </script>
 
 <template>
