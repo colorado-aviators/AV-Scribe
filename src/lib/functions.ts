@@ -1,11 +1,11 @@
 import {ref, watch} from "vue"
 
 export function map_slider_to_weighted_range(
-        slider_position,
-        high,
-        low,
-        optimum,
-        gradient,
+        slider_position: number,
+        high: number,
+        low: number,
+        optimum: number,
+        gradient: number,
     ) {
     /* The goal here is to create a weighting function to map slider position onto the entire range of possible values.
 
@@ -40,7 +40,7 @@ export function map_slider_to_weighted_range(
     return val;
 }
 
-export function get_caution_color(value, low, high) {
+export function get_caution_color(value: number, low: number, high: number) {
     // high|low values are associated with red|blue, high|low caution level
     // value = 10
     // low = 15
@@ -59,7 +59,15 @@ export function get_caution_color(value, low, high) {
     return `rgba(${red**.5 * 255.0}, 0, ${blue**.5 * 255.0})`;
 }
 
-export function onUpdate(start, high, low, optimum, gradient, sketchy, bad) {
+export function onUpdate(
+    start: number,
+    high: number,
+    low: number,
+    optimum: number,
+    gradient: number,
+    sketchy: number,
+    bad: number
+) {
     var sliderValue = ref(start);
 
     var realValue = ref(map_slider_to_weighted_range(start, high, low, optimum, gradient));

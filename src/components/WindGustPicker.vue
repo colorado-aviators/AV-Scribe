@@ -13,8 +13,8 @@
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
     var sliderText = ref("");
-    function get_slider_text(val) {
-        var rounded = Math.round(val, 1);
+    function get_slider_text(val: number) {
+        var rounded = Math.round(val);
         return 'Wind Gust: ' + (rounded == 0.0 ? 'None' : `${rounded} KT`);
     };
     watch(realValue, async (newVal, oldVal) => {

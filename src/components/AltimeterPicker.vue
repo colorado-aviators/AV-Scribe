@@ -19,7 +19,7 @@
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
     var sliderText = ref("");
-    function get_slider_text(val) {
+    function get_slider_text(val: Number) {
         var rounded = val.toFixed(2);
         return `Altimeter Setting: ${rounded}`;
     };

@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import {ref} from "vue"
-    function get_time_string(time_elapsed) {
+    function get_time_string(time_elapsed: number) {
         var now = new Date();
-        var time = new Date(now - 1000 * 60 * time_elapsed);
+        var time = new Date(now.getTime() - 1000 * 60 * time_elapsed);
         var dd = time.getUTCDate().toString().padStart(2, '0');
         var hh = time.getUTCHours().toString().padStart(2, '0');
         var mm = time.getUTCMinutes().toString().padStart(2, '0');

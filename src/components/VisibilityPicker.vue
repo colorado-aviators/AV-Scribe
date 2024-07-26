@@ -13,8 +13,8 @@
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
     var sliderText = ref("");
-    function get_slider_text(val) {
-        var rounded = Math.round(val, 1);
+    function get_slider_text(val: number) {
+        var rounded = Math.round(val);
         return `Visibility: ${rounded} SM`;
     };
     watch(realValue, async (newVal, oldVal) => {

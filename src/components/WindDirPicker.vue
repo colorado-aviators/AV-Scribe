@@ -3,7 +3,7 @@
     var sliderText = ref("");
     var sliderValue = ref(360);
 
-    function get_slider_text(val) {
+    function get_slider_text(val: number) {
         return 'Wind Dir: ' + (val.toString().padStart(3, '0') + '\u00B0');
     };
     watch(sliderValue, async (newVal, oldVal) => {
