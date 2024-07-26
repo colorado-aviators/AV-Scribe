@@ -35,12 +35,30 @@
         cautionColor.value = functions.get_caution_color(spread, 5, 0);
     })
     sliderText.value = get_slider_text(realValue.value);
+
+    const emit = defineEmits<{
+        (e: 'emitDewpoint', realValue: number): void
+    }>()
+    const onChange = () => {
+        emit('emitDewpoint', realValue.value);
+    }
+
+    onChange();
 </script>
 
 <template>
     <label id="dewpointPickerLabel">
-        <input @change="$emit('emitDewpoint', realValue)" class="custom-slider custom-slider-dewpoint" v-model="sliderValue" type="range" min="-1" max="1" step=".001" id="dewpointPicker" />
-    <span id="dewpointPickerSpan" v-text="sliderText"></span>
+        <input
+            id="dewpointPicker"
+            type="range"
+            v-model.number="sliderValue"
+            @change="onChange"
+            class="custom-slider custom-slider-dewpoint"
+            min=-1
+            max=1
+            step=.001
+        >
+        <span id="dewpointPickerSpan" v-text="sliderText"></span>
     </label>
 </template>
 

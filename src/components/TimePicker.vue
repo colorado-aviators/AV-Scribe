@@ -12,13 +12,18 @@
     const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
     const selected = ref(myOptionsArray[0]);
 
-    const emit = defineEmits();
-    emit('emitTime', selected);
+    const emit = defineEmits<{
+        (e: 'emitTime', selected: string): void
+    }>()
+    const onChange = (selected: string) => {
+        emit('emitTime', selected);
+    }
+    onChange(selected);
 </script>
 
 <template>
     <label class="switch">ATIS Time:
-        <select @change="$emit('emitTime', selected)"  v-model="selected">
+        <select id="timePicker" v-model="selected">
           <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
             {{item}}
           </option>

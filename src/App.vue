@@ -41,10 +41,10 @@
     <AirportPicker @emit-airport="(payload: string) => {airport = payload}"/>
     <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
     <TimePicker @emit-time="(payload: string) => {time = payload}"/>
-    <WindVariable @windVariable="(payload: boolean) => {windVariable = payload}"/>
-    <WindVelPicker @emit-windVel="(payload: number) => {windVel = payload}"/>
-    <WindDirPicker @emit-windDir="(payload: number) => {windDir = payload}" v-if="!windVariable&&windVel>0.0"/>
-    <WindGustPicker @emit-windGust="(payload: number) => {windGust = payload}" v-if="windVariable||windVel>0.0"/>
+    <WindVariable @emit-wind-variable="(payload: boolean) => {windVariable = payload}"/>
+    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
+    <WindDirPicker @emit-wind-dir="(payload: number) => {windDir = payload}" v-if="!windVariable&&windVel>0.0"/>
+    <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" v-if="windVariable||windVel>0.0"/>
     <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
     <TemperaturePicker @emit-temperature="(payload: number) => {temperature = payload}"/>
     <DewpointPicker :temp="temperature" @emit-dewpoint="(payload: number) => {dewpoint = payload}"/>

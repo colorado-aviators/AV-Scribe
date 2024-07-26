@@ -2,11 +2,18 @@
     import {ref} from "vue"
     const information = ref();
     const myOptionsArray = Array.from(new Array(26),(val,index)=> String.fromCharCode(65 + index) );
+
+    const emit = defineEmits<{
+        (e: 'emitInformation', information: string): void
+    }>()
+    const onChange = () => {
+        emit('emitInformation', information.value);
+    }
 </script>
 
 <template>
     <label class="switch">Information:
-        <select @change="$emit('emitInformation', information)" v-model="information">
+        <select v-model.string="information" @change="onChange">
           <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
             {{item}}
           </option>
