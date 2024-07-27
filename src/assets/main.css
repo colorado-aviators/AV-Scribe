@@ -131,6 +131,10 @@ select, input {
   border-radius: 999px;
 }
 
+custom-slider:disabled input[type="range"]::before {
+  accent-color: #cccccc;
+}
+
 /* `::-webkit-slider-runnable-track` targets the track (background) of a range slider in chrome and safari browsers. */
 .custom-slider::-webkit-slider-runnable-track {
   -webkit-appearance: none;
