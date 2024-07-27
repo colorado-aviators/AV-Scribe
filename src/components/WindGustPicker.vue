@@ -13,7 +13,7 @@
     const gradient = 0.1;
     const sketchy = 15;
     const bad = 25;
-    const disabledColor = "rgba(255.0,255.0,255.0,.1)";
+    const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
 
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
@@ -24,10 +24,10 @@
     };
     watch(realValue, async (newVal, oldVal) => {
         sliderText.value = get_slider_text(newVal);
-        styleObject.background = props.disabled ? disabledColor : cautionColor.value;
+        styleObject.background = props.disabled ? disabledSliderColor : cautionColor.value;
     })
     watch(() => props.disabled, async (newVal, oldVal) => {
-        styleObject.background = newVal ? disabledColor : cautionColor.value;
+        styleObject.background = newVal ? disabledSliderColor : cautionColor.value;
         realValue.value = 0.0;
         sliderValue.value = -1.0;
     })
@@ -40,8 +40,8 @@
         emit('emitWindGust', realValue.value);
     }
     const styleObject = reactive({
-        background: disabledColor,
-        accentColor: disabledColor,
+        background: disabledSliderColor,
+        accentColor: disabledSliderColor,
     })
     onChange();
 </script>

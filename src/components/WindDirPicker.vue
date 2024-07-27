@@ -2,6 +2,8 @@
     import {ref, watch, reactive} from "vue"
     var sliderText = ref("");
     var sliderValue = ref(360);
+    const defaultSliderColor = "rgba(0.0, 0.0, 255.0)";
+    const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
 
     const props = defineProps({
       disabled: Boolean,
@@ -15,10 +17,10 @@
     };
     watch(sliderValue, async (newVal, oldVal) => {
         sliderText.value = get_slider_text(newVal);
-        styleObject.background = props.disabled ? "#cccccc" : "rgba(0.0, 0.0, 255.0)";
+        styleObject.background = props.disabled ? disabledSliderColor : defaultSliderColor;
     })
     watch(() => props.disabled, async (newVal, oldVal) => {
-        styleObject.background = newVal ? "#cccccc" : "rgba(0.0, 0.0, 255.0)";
+        styleObject.background = newVal ? disabledSliderColor : defaultSliderColor;
         sliderText.value = get_slider_text(sliderValue.value);
     })
 
@@ -29,8 +31,8 @@
         emit('emitWindDir', sliderValue.value);
     }
     const styleObject = reactive({
-        background: "#cccccc",
-        accentColor: "#cccccc",
+        background: defaultSliderColor,
+        accentColor: defaultSliderColor,
     })
     sliderText.value = get_slider_text(sliderValue.value);
     onChange();
