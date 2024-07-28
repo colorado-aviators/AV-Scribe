@@ -16,6 +16,7 @@
 
     function get_slider_text() {
         return `Temperature: ${realValue.value}\u00B0C`;
+    }
 
     const emit = defineEmits<{
         (e: 'emitTemperature', realValue: number): void
@@ -27,7 +28,7 @@
     }
     const styleObject = reactive({
         background: cautionColor,
-        accentColor: cautionColor,
+        accentColor: cautionColor
     })
 
     onInput();

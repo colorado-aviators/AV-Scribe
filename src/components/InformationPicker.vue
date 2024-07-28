@@ -4,10 +4,10 @@
     const myOptionsArray = Array.from(new Array(26),(val,index)=> String.fromCharCode(65 + index) );
 
     const emit = defineEmits<{
-        (e: 'emitInformation', information: string): void
+        (e: 'emitDensityAltitude', information: string): void
     }>()
     const onChange = () => {
-        emit('emitInformation', information.value);
+        emit('emitDensityAltitude', information.value);
     }
 </script>
 

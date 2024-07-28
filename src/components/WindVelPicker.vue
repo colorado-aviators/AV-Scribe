@@ -14,6 +14,7 @@
 
     function get_slider_text() {
         return 'Wind Velocity: ' + (realValue.value == 0.0 ? 'Calm' : `${realValue.value} KT`);
+    }
 
     const emit = defineEmits<{
         (e: 'emitWindVel', realValue: number): void

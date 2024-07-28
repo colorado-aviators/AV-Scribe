@@ -3,14 +3,16 @@
     import {getDensityAltitude} from "../lib/physics"
     import {unit} from "mathjs"
 
+    const densityAltitudeText = ref("");
     const props = defineProps({
         elevation: {type: Number, required: true},
         temperature: {type: Number, required: true},
         dewpoint: {type: Number, required: true},
         altimeter:  {type: Number, required: true},
     });
-
-    var densityAltitudeText = ref("");
+    const emit = defineEmits<{
+        (e: 'emitDensityAltitude', information: string): void
+    }>()
     watch(() =>
     [
         props.elevation,
@@ -32,6 +34,7 @@
             unit(elevationVal, "feet")
         )
         densityAltitudeText.value = `Density altitude (estimated): ${densityAltitude.toNumeric("feet").toFixed(0)}`;
+        emit('emitDensityAltitude', densityAltitude.toNumeric("feet").toFixed(0));
     });
 </script>
 

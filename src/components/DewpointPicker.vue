@@ -6,7 +6,7 @@
       temp: Number,
     });
 
-    const start = 0;
+    const start = -.2;
     const high = 35;  // https://www.noaa.gov/jetstream/synoptic/heat-index
     // const low = -62;  // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
     const low = -83;  // same as temperature low... i think this is how it works
@@ -22,9 +22,13 @@
         return `Dewpoint: ${realValue.value}\u00B0C`;
     };
 
-    watch(() => props.temp as number, (newVal) => {
-        var spread = newVal - realValue.value;
+    function updateCautionColor(temp) {
+        var spread = temp - realValue.value;
         cautionColor.value = functions.get_caution_color(spread, 5, 0);
+    }
+
+    watch(() => props.temp as number, (newVal) => {
+        updateCautionColor(newVal);
     })
     const emit = defineEmits<{
         (e: 'emitDewpoint', realValue: number): void
@@ -32,6 +36,7 @@
     const onInput = () => {
         realValue.value = Math.round(realValue.value);
         sliderText.value = get_slider_text();
+        updateCautionColor(props.temp);
         emit('emitDewpoint', realValue.value);
     }
     const styleObject = reactive({
