@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import {ref, watch, reactive} from "vue"
-    import { onUpdate } from '../lib/functions.js'
+    import { onUpdate } from '../lib/slider-utils.js'
 
     const props = defineProps({
       disabled: Boolean,
@@ -14,17 +14,14 @@
     const sketchy = 15;
     const bad = 25;
     const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
+    const sliderText = ref("");
 
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
-    var sliderText = ref("");
-    function get_slider_text(val: number) {
-        var rounded = Math.round(val);
-        return 'Wind Gust: ' + (rounded == 0.0 ? 'None' : `${rounded} KT`);
+    function get_slider_text() {
+        return 'Wind Gust: ' + (realValue.value == 0.0 ? 'None' : `${realValue.value} KT`);
     };
     watch(realValue, async (newVal, oldVal) => {
-        sliderText.value = get_slider_text(newVal);
-        styleObject.background = props.disabled ? disabledSliderColor : cautionColor.value;
     })
     watch(() => props.disabled, async (newVal, oldVal) => {
         styleObject.background = newVal ? disabledSliderColor : cautionColor.value;
@@ -36,14 +33,17 @@
     const emit = defineEmits<{
         (e: 'emitWindGust', realValue: number): void
     }>()
-    const onChange = () => {
+    const onInput = () => {
+        realValue.value = Math.round(realValue.value);
+        sliderText.value = get_slider_text();
+        styleObject.background = props.disabled ? disabledSliderColor : cautionColor.value;
         emit('emitWindGust', realValue.value);
     }
     const styleObject = reactive({
         background: disabledSliderColor,
         accentColor: disabledSliderColor,
     })
-    onChange();
+    onInput();
 </script>
 
 <template>
@@ -52,7 +52,7 @@
             id="windVelPicker"
             type="range"
             v-model="sliderValue"
-            @change="onChange"
+            @input="onInput"
             class="custom-slider"
             :style="styleObject"
             min=-1

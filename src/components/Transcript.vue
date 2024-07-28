@@ -13,6 +13,7 @@
         temperature: {type: Number, required: true},
         dewpoint: {type: Number, required: true},
         altimeter:  {type: Number, required: true},
+        densityAltitude:  {type: Number, required: true},
     });
 
     const ADDRESS = "https://mcgsjoyner.github.io/AVWX-Scribe/";
@@ -127,6 +128,9 @@
         return `Altimeter Setting: ${props.altimeter.toFixed(2)}`;
     }
 
+    function get_density_altitude_text() {
+        return `Density Altitude: ${props.densityAltitude}`;
+    }
 
     function download_transcript() {
         // Create element with <a> tag
@@ -154,6 +158,7 @@
             get_dewpoint_text(),
             get_spread_text(),
             get_altimeter_text(),
+            get_density_altitude_text(),
             '',
             `Generated using <a href=${ADDRESS}>AVWX Scribe</a>`
         ]
@@ -179,7 +184,7 @@
 </script>
 
 <template>
-    <p id="atisText" font-size="12">{{atisText}}</p>
+    <p id="atisText">{{atisText}}</p>
     <button @click="download_transcript" id="downloadButton"> Download Transcript </button>
 </template>
 

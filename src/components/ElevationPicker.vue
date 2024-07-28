@@ -2,42 +2,44 @@
     import {ref, watch, reactive} from "vue"
     import { onUpdate } from '../lib/slider-utils.js'
 
-    const sketchy = 100;
-    const bad = 100;
+    const sketchy = 100000;
+    const bad = 100000;
 
+    // https://en.wikipedia.org/wiki/List_of_highest_airports
+    const high = 14472;  // Daocheng Yading Airport
+    const low = -1266;  // Bar Yehuda Airfield
+    // standard pressure at sea level
+    const optimum = 3000;
+    const gradient = .4;
     const start = 0;
-    const high = 57;
-    const low = -83;
-    const optimum = 0;  // standard temperature
-    const gradient = .9;
     const sliderText = ref("");
 
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
     function get_slider_text() {
-        return `Temperature: ${realValue.value}\u00B0C`;
-    }
+        return `Field Elevation: ${realValue.value.toFixed(0)}`;
+    };
 
     const emit = defineEmits<{
-        (e: 'emitTemperature', realValue: number): void
+        (e: 'emitElevation', realValue: number): void
     }>()
     const onInput = () => {
-        realValue.value = Math.round(realValue.value);
+        realValue.value = Math.round(realValue.value)
         sliderText.value = get_slider_text();
-        emit('emitTemperature', realValue.value);
+        emit('emitElevation', realValue.value);
     }
     const styleObject = reactive({
         background: cautionColor,
-        accentColor: cautionColor
+        accentColor: cautionColor,
     })
 
     onInput();
 </script>
 
 <template>
-    <label id="temperaturePickerLabel">
+    <label id="elevationPickerLabel">
         <input
-            id="temperaturePicker"
+            id="elevationPicker"
             type="range"
             v-model.number="sliderValue"
             @input="onInput"
@@ -47,6 +49,6 @@
             max=1
             step=.001
         >
-        <span id="temperaturePickerSpan" v-text="sliderText"></span>
+        <span id="elevationPickerSpan" v-text="sliderText"></span>
     </label>
 </template>

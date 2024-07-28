@@ -1,49 +1,50 @@
 <script setup lang="ts">
-    import {ref, watch} from "vue"
-    import * as functions from "../lib/functions"
+    import {ref, watch, reactive} from "vue"
+    import * as functions from "../lib/slider-utils.ts"
 
     const props = defineProps({
       temp: Number,
     });
 
-    var sketchy = 100;
-    var bad = 100;
-
-    const start = 0;
-
+    const start = -.2;
     const high = 35;  // https://www.noaa.gov/jetstream/synoptic/heat-index
     // const low = -62;  // https://en.wikipedia.org/wiki/U.S._state_and_territory_temperature_extremes
     const low = -83;  // same as temperature low... i think this is how it works
     const optimum = 0;  // not sure where to put this...
     const gradient = .9;
+    const sketchy = 100;
+    const bad = 100;
+    const sliderText = ref("");
 
-    var {sliderValue, realValue, cautionColor} = functions.onUpdate(start, high, low, optimum, gradient, sketchy, bad);
+    const {sliderValue, realValue, cautionColor} = functions.onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
-    var sliderText = ref("");
-    function get_slider_text(val: number) {
-        var rounded = Math.round(val);
-        return `Dewpoint: ${rounded}\u00B0C`;
+    function get_slider_text() {
+        return `Dewpoint: ${realValue.value}\u00B0C`;
     };
-    watch(realValue, async (newVal) => {
-        sliderText.value = get_slider_text(newVal);
-        var spread = (props.temp as number) - newVal;
-        cautionColor.value = functions.get_caution_color(spread, 5, 0);
-    })
-    watch(() => props.temp as number, (newVal) => {
-        sliderText.value = get_slider_text(realValue.value);
-        var spread = newVal - realValue.value;
-        cautionColor.value = functions.get_caution_color(spread, 5, 0);
-    })
-    sliderText.value = get_slider_text(realValue.value);
 
+    function updateCautionColor(temp) {
+        var spread = temp - realValue.value;
+        cautionColor.value = functions.get_caution_color(spread, 5, 0);
+    }
+
+    watch(() => props.temp as number, (newVal) => {
+        updateCautionColor(newVal);
+    })
     const emit = defineEmits<{
         (e: 'emitDewpoint', realValue: number): void
     }>()
-    const onChange = () => {
+    const onInput = () => {
+        realValue.value = Math.round(realValue.value);
+        sliderText.value = get_slider_text();
+        updateCautionColor(props.temp);
         emit('emitDewpoint', realValue.value);
     }
+    const styleObject = reactive({
+        background: cautionColor,
+        accentColor: cautionColor,
+    })
 
-    onChange();
+    onInput();
 </script>
 
 <template>
@@ -52,8 +53,9 @@
             id="dewpointPicker"
             type="range"
             v-model.number="sliderValue"
-            @change="onChange"
-            class="custom-slider custom-slider-dewpoint"
+            @input="onInput"
+            class="custom-slider"
+            :style="styleObject"
             min=-1
             max=1
             step=.001
@@ -61,10 +63,3 @@
         <span id="dewpointPickerSpan" v-text="sliderText"></span>
     </label>
 </template>
-
-<style>
-    .custom-slider-dewpoint {
-      accent-color: v-bind("cautionColor");
-      background: v-bind("cautionColor");
-    }
-</style>
