@@ -41,7 +41,7 @@
             type="range"
             v-model.number="sliderValue"
             @input="onInput"
-            class="custom-slider custom-slider-wind-vel"
+            class="custom-slider"
             :style="styleObject"
             min=-1
             max=1

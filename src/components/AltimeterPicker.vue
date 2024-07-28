@@ -46,7 +46,7 @@
             type="range"
             v-model.number="sliderValue"
             @input="onInput"
-            class="custom-slider custom-slider-altimeter"
+            class="custom-slider"
             :style="styleObject"
             min=-1
             max=1

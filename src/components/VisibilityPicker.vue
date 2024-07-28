@@ -40,7 +40,7 @@
             type="range"
             v-model.number="sliderValue"
             @input="onInput"
-            class="custom-slider custom-slider-visibility"
+            class="custom-slider"
             min=-1
             max=1
             step=.001

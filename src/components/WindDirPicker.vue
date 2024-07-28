@@ -46,7 +46,7 @@
             type="range"
             v-model.number="sliderValue"
             @input="onInput"
-            class="custom-slider custom-slider-wind-dir"
+            class="custom-slider"
             :style="styleObject"
             :disabled="disabled"
             min=10
