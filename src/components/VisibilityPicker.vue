@@ -1,6 +1,10 @@
 <script setup lang="ts">
     import {ref, watch} from "vue"
+<<<<<<< HEAD
     import { onUpdate } from '../lib/slider-utils.js'
+=======
+    import { onUpdate } from '../lib/functions.js'
+>>>>>>> main
 
     const start = 1.0;
     const high = 10.0

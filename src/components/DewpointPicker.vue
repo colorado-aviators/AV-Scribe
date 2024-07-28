@@ -26,7 +26,6 @@
         var spread = newVal - realValue.value;
         cautionColor.value = functions.get_caution_color(spread, 5, 0);
     })
-
     const emit = defineEmits<{
         (e: 'emitDewpoint', realValue: number): void
     }>()

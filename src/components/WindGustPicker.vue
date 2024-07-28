@@ -1,6 +1,10 @@
 <script setup lang="ts">
     import {ref, watch, reactive} from "vue"
+<<<<<<< HEAD
     import { onUpdate } from '../lib/slider-utils.js'
+=======
+    import { onUpdate } from '../lib/functions.js'
+>>>>>>> main
 
     const props = defineProps({
       disabled: Boolean,
@@ -43,7 +47,6 @@
         background: disabledSliderColor,
         accentColor: disabledSliderColor,
     })
-
     onInput();
 </script>
 
