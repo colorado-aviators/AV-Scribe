@@ -1,6 +1,9 @@
 <script setup lang="ts">
-    import {ref, watch, reactive} from "vue"
-    import { onUpdate } from '../lib/slider-utils.js'
+    import {ref} from "vue"
+    import CustomRange from './CustomRange.vue'
+
+    const numDigits = 2;
+    const resolution = 10 ** numDigits;
 
     const sketchy = 100;
     const bad = 100;
@@ -15,43 +18,35 @@
     const optimum = 29.92;
     const gradient = .9;
     const start = 0;
-    const sliderText = ref("");
-
-    const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
+    const realValue = ref(29.92);
 
     function get_slider_text() {
-        return `Altimeter Setting: ${realValue.value.toFixed(2)}`;
+        return `Altimeter Setting: ${realValue.value.toFixed(numDigits)}`;
     };
+
     const emit = defineEmits<{
         (e: 'emitAltimeter', realValue: number): void
     }>()
     const onInput = () => {
-        realValue.value = Math.round(realValue.value*100)/100;
-        sliderText.value = get_slider_text();
+        realValue.value = Math.round(realValue.value*resolution)/resolution;
         emit('emitAltimeter', realValue.value);
     }
-    const styleObject = reactive({
-        background: cautionColor,
-        accentColor: cautionColor,
-    })
 
-    realValue.value = 29.92;
     onInput();
 </script>
 
 <template>
-    <label id="altimeterPickerLabel">
-        <input
-            id="altimeterPicker"
-            type="range"
-            v-model.number="sliderValue"
-            @input="onInput"
-            class="custom-slider"
-            :style="styleObject"
-            min=-1
-            max=1
-            step=.001
-        >
-        <span id="altimeterPickerSpan" v-text="sliderText"></span>
-    </label>
+    <CustomRange
+        :start = "start"
+        :high = "high"
+        :low = "low"
+        :optimum = "optimum"
+        :gradient = "gradient"
+        :sketchy = "sketchy"
+        :bad = "bad"
+        :numDigits = 2
+        @input = "onInput"
+        @emit-value="(payload: number) => {realValue = payload; onInput();}"
+        :sliderText = "get_slider_text()"
+    />
 </template>

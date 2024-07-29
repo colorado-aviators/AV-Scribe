@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref, defineEmits} from "vue"
+    import {ref} from "vue"
     function get_time_string(time_elapsed: number) {
         var now = new Date();
         var time = new Date(now.getTime() - 1000 * 60 * time_elapsed);
