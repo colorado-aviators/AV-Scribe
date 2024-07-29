@@ -3,7 +3,7 @@
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   font-weight: normal;
 }
 
@@ -32,11 +32,6 @@ a,
     grid-template-columns: 1fr;
     padding: 0 2rem;
   }
-}
-
-.slidecontainer {
-    background-color: grey;
-    padding: 30px;
 }
 
 label {
@@ -99,7 +94,7 @@ input[type=text] {
 }
 
 select, input {
-    margin: 50px;
+    margin-left: 50px;
 }
 
 /* style the input element with type "range" */
