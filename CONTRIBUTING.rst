@@ -62,19 +62,23 @@ Engineering procedures
 Release Process
 ~~~~~~~~~~~~~~~
 
-1. Check out a release branch from ``main``::
+1.  Elect a version name for the next release according to `Semver <https://semver.org>`_.
+    Let's pretend we're staging a minor release from ``v0.1.0`` to ``v0.2.0``...
+2.  Check out a release branch from ``main``::
 
-    $ git checkout main
+    $ git checkout main && git pull
     $ git checkout -b release/v0.2.0
 
-2. Bump the version of the repo::
+3.  Bump the version of the repo::
 
     $ npm version minor
 
-3. Update the HISTORY file.
-4. Open a pull request from your branch onto main::
+4.  Update the HISTORY file based on the issues closed since the last release.
+5.  Commit your changes::
 
-    $ git request-pull main
+    $ git commit -am "update release docs" && git push
+
+5.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
 
 Get Started!
 ------------
