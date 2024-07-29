@@ -23,3 +23,9 @@ jobs:
 
       - name: Run tests
         run: npm run test:unit run
+
+      - name: Check types
+        run: npm run type-check
+
+      - name: Try to build
+        run: npm run build-only
