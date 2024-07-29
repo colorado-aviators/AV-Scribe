@@ -66,59 +66,59 @@ Release Process
     Let's pretend we're staging a minor release from ``v0.1.0`` to ``v0.2.0``...
 2.  Check out a release branch from ``main``::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    git checkout main && git pull
-    git checkout -b release/v0.2.0
+        git checkout main && git pull
+        git checkout -b release/v0.2.0
 
 3.  Bump the version of the repo::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    npm version minor
+        npm version minor
 
 4.  Update the HISTORY file based on the issues closed since the last release.
 5.  Commit your changes::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    git commit -am "update release docs" && git push
+        git commit -am "update release docs" && git push
 
-5.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
+6.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
 
 Get Started!
 ------------
 
 Ready to contribute? Here's how to set up |plug| for local development.
 
-1. Fork the |plug| repo on GitHub.
-2. Clone your fork locally::
+1.  Fork the |plug| repo on GitHub.
+2.  Clone your fork locally::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    git clone git@github.com:your_name_here/avwx-scribe.git
+        git clone git@github.com:your_name_here/avwx-scribe.git
 
-3. Install your local copy::
+3.  Install your local copy::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    cd avwx-scribe/
-    make install-dev
+        cd avwx-scribe/
+        npm install
 
-4. Create a branch for local development::
+4.  Create a branch for local development::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    git checkout -b name-of-your-bugfix-or-feature
+        git checkout -b name-of-your-bugfix-or-feature
 
-   Now you can make your changes locally.
+    Now you can make your changes locally.
 
-5. Commit your changes and push your branch to GitHub::
+5.  Commit your changes and push your branch to GitHub::
 
-.. code-block:: shell
+    .. code-block:: shell
 
-    git add .
-    git commit -m "Your detailed description of your changes."
-    git push origin name-of-your-bugfix-or-feature
+        git add .
+        git commit -m "Your detailed description of your changes."
+        git push origin name-of-your-bugfix-or-feature
 
 6. Submit a pull request through the GitHub website.
