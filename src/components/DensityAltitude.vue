@@ -34,7 +34,7 @@
             unit(elevationVal, "feet")
         )
         densityAltitudeText.value = `Density altitude (estimated): ${densityAltitude.toNumeric("feet").toFixed(0)}`;
-        emit('emitDensityAltitude', densityAltitude.toNumeric("feet").toFixed(0));
+        emit('emitDensityAltitude', densityAltitude.toNumeric("feet"));
     });
 </script>
 

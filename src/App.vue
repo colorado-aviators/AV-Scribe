@@ -10,6 +10,8 @@
     import WindDirPicker from './components/WindDirPicker.vue'
     import WindGustPicker from './components/WindGustPicker.vue'
     import VisibilityPicker from './components/VisibilityPicker.vue'
+    import CloudCoveragePicker from './components/CloudCoveragePicker.vue'
+    import CeilingPicker from './components/CeilingPicker.vue'
     import TemperaturePicker from './components/TemperaturePicker.vue'
     import DewpointPicker from './components/DewpointPicker.vue'
     import AltimeterPicker from './components/AltimeterPicker.vue'
@@ -25,6 +27,8 @@
     var windDir = ref(0.0);
     var windGust = ref(0.0);
     var visibility = ref(10.0);
+    var cloudCoverage = ref("");
+    var ceiling = ref(0);
     var temperature = ref(0.0);
     var dewpoint = ref(0.0);
     var altimeter = ref(29.92);
@@ -50,6 +54,8 @@
     <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
     <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="!windVariable&&windVel==0.0"/>
     <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
+    <CloudCoveragePicker @emit-cloud-coverage="(payload: number) => {cloudCoverage = payload}"/>
+    <CeilingPicker :cloud-coverage="cloudCoverage" @emit-ceiling="(payload: number) => {ceiling = payload}"/>
     <TemperaturePicker @emit-temperature="(payload: number) => {temperature = payload}"/>
     <DewpointPicker :temp="temperature" @emit-dewpoint="(payload: number) => {dewpoint = payload}"/>
     <AltimeterPicker @emit-altimeter="(payload: number) => {altimeter = payload}"/>
@@ -66,6 +72,8 @@
         :altimeter="altimeter"
         :airport="airport"
         :visibility="visibility"
+        :cloudCoverage="cloudCoverage"
+        :ceiling="ceiling"
         :time="time"
         :windDir="windDir"
         :windGust="windGust"
