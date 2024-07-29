@@ -78,14 +78,15 @@ Release Process
         npm version minor
 
 4.  Update the HISTORY file based on the issues closed since the last release.
-5.  Commit your changes:
+5.  Update the version tag in the footer of App.vue.
+6.  Commit your changes:
 
     .. code-block:: shell
 
         git commit -am "update release docs" && git push
 
-6.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
-7.  `Make a Release tag <https://github.com/mcgsjoyner/AVWX-Scribe/releases/new>`_ like "v0.2.0"
+7.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
+8.  `Make a Release tag <https://github.com/mcgsjoyner/AVWX-Scribe/releases/new>`_ like "v0.2.0"
     with the title "Release v0.2.0"
 
 Get Started!
