@@ -56,31 +56,69 @@ If you are proposing a feature:
 * Remember that this is a volunteer-driven project, and that contributions
   are welcome :)
 
+Engineering procedures
+----------------------
+
+Release Process
+~~~~~~~~~~~~~~~
+
+1.  Elect a version name for the next release according to `Semver <https://semver.org>`_.
+    Let's pretend we're staging a minor release from ``v0.1.0`` to ``v0.2.0``...
+2.  Check out a release branch from ``main``:
+
+    .. code-block:: shell
+
+        git checkout main && git pull
+        git checkout -b release/v0.2.0
+
+3.  Bump the version of the repo:
+
+    .. code-block:: shell
+
+        npm version minor
+
+4.  Update the HISTORY file based on the issues closed since the last release.
+5.  Commit your changes:
+
+    .. code-block:: shell
+
+        git commit -am "update release docs" && git push
+
+6.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
+
 Get Started!
 ------------
 
 Ready to contribute? Here's how to set up |plug| for local development.
 
-1. Fork the |plug| repo on GitHub.
-2. Clone your fork locally::
+1.  Fork the |plug| repo on GitHub.
+2.  Clone your fork locally:
 
-    $ git clone git@github.com:your_name_here/avwx-scribe.git
+    .. code-block:: shell
 
-3. Install your local copy::
+        git clone git@github.com:your_name_here/avwx-scribe.git
 
-    $ cd avwx-scribe/
-    $ make install-dev
+3.  Install your local copy:
 
-4. Create a branch for local development::
+    .. code-block:: shell
 
-    $ git checkout -b name-of-your-bugfix-or-feature
+        cd avwx-scribe/
+        npm install
 
-   Now you can make your changes locally.
+4.  Create a branch for local development:
 
-5. Commit your changes and push your branch to GitHub::
+    .. code-block:: shell
 
-    $ git add .
-    $ git commit -m "Your detailed description of your changes."
-    $ git push origin name-of-your-bugfix-or-feature
+        git checkout -b name-of-your-bugfix-or-feature
+
+    Now you can make your changes locally.
+
+5.  Commit your changes and push your branch to GitHub:
+
+    .. code-block:: shell
+
+        git add .
+        git commit -m "Your detailed description of your changes."
+        git push origin name-of-your-bugfix-or-feature
 
 6. Submit a pull request through the GitHub website.
