@@ -56,6 +56,26 @@ If you are proposing a feature:
 * Remember that this is a volunteer-driven project, and that contributions
   are welcome :)
 
+Engineering procedures
+----------------------
+
+Release Process
+~~~~~~~~~~~~~~~
+
+1. Check out a release branch from ``main``::
+
+    $ git checkout main
+    $ git checkout -b release/v0.2.0
+
+2. Bump the version of the repo::
+
+    $ npm version minor
+
+3. Update the HISTORY file.
+4. Open a pull request from your branch onto main::
+
+    $ git request-pull main
+
 Get Started!
 ------------
 
