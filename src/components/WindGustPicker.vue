@@ -14,36 +14,44 @@
     const sketchy = 15;
     const bad = 25;
     const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
+    const sliderColor = ref(disabledSliderColor);
     const sliderText = ref("");
 
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);
 
-    function get_slider_text() {
-        return 'Wind Gust: ' + (realValue.value == 0.0 ? 'None' : `${realValue.value} KT`);
+    function set_slider_text() {
+        sliderText.value = 'Wind Gust: ' + (realValue.value == 0.0 ? 'None' : `${realValue.value} KT`);
     };
-    watch(realValue, async (newVal, oldVal) => {
+    function set_slider_color() {
+        sliderColor.value = props.disabled ? disabledSliderColor : cautionColor.value;
+    }
+
+    function update_slider() {
+        set_slider_text();
+        set_slider_color();
+    }
+
+    watch(() => props.disabled, async (newVal) => {
+        sliderValue.value = start;
+        realValue.value = low;
+        update_slider();
     })
-    watch(() => props.disabled, async (newVal, oldVal) => {
-        styleObject.background = newVal ? disabledSliderColor : cautionColor.value;
-        realValue.value = 0.0;
-        sliderValue.value = -1.0;
-    })
-    sliderText.value = get_slider_text(realValue.value);
 
     const emit = defineEmits<{
         (e: 'emitWindGust', realValue: number): void
     }>()
     const onInput = () => {
         realValue.value = Math.round(realValue.value);
-        sliderText.value = get_slider_text();
-        styleObject.background = props.disabled ? disabledSliderColor : cautionColor.value;
+        set_slider_text();
+        set_slider_color();
         emit('emitWindGust', realValue.value);
     }
     const styleObject = reactive({
-        background: disabledSliderColor,
-        accentColor: disabledSliderColor,
+        background: sliderColor,
+        accentColor: sliderColor,
     })
     onInput();
+    update_slider();
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import {ref, watch, reactive} from "vue"
-    var sliderText = ref("");
-    var sliderValue = ref(360);
+    const sliderText = ref("");
+    const sliderValue = ref(360);
     const defaultSliderColor = "rgba(0.0, 0.0, 255.0)";
     const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
 
@@ -16,9 +16,13 @@
         return `Wind Dir: ${formattedDirection}`;
     };
 
+    function set_slider_appearance() {
+        styleObject.background = props.disabled ? disabledSliderColor : defaultSliderColor;
+        sliderText.value = get_slider_text();
+    }
+
     watch(() => props.disabled, async (newVal) => {
-        styleObject.background = newVal ? disabledSliderColor : defaultSliderColor;
-        sliderText.value = get_slider_text(sliderValue.value);
+        set_slider_appearance();
     })
 
     const emit = defineEmits<{
@@ -26,8 +30,7 @@
     }>()
 
     const onInput = () => {
-        sliderText.value = get_slider_text();
-        styleObject.background = props.disabled ? disabledSliderColor : defaultSliderColor;
+        set_slider_appearance();
         emit('emitWindDir', sliderValue.value);
     }
 

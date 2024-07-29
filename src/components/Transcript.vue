@@ -10,17 +10,22 @@
         windDir: {type: Number, required: true},
         windGust: {type: Number, required: true},
         visibility: {type: Number, required: true},
+        cloudCoverage: {type: String, required: true},
+        ceiling: {type: Number, required: true},
         temperature: {type: Number, required: true},
         dewpoint: {type: Number, required: true},
         altimeter:  {type: Number, required: true},
         densityAltitude:  {type: Number, required: true},
     });
+    const disablingCoverages = ["SKC", "NCD", "CLR", "VV"];
 
     const ADDRESS = "https://mcgsjoyner.github.io/AVWX-Scribe/";
     var atisText = ref("");
     watch(() =>
     [
         props.visibility,
+        props.cloudCoverage,
+        props.ceiling,
         props.airport,
         props.information,
         props.time,
@@ -34,6 +39,8 @@
     ] as const,
     ([
         visibilityVal,
+        cloudCoverageVal,
+        ceilingVal,
         airportVal,
         informationVal,
         timeVal,
@@ -64,12 +71,18 @@
             return formatted;
         }
 
+        var cloudChunk = cloudCoverageVal;
+        if (!disablingCoverages.includes(cloudCoverageVal)) {
+            cloudChunk += Math.round(ceilingVal / 100).toFixed(0).padStart(3, '0');
+        }
+
         const chunks = [
             airportVal,
             `INFO ${informationVal}`,
             timeVal.replace(/\s/g, '') + 'Z',
             windChunk,
             (visibilityVal).toFixed(0) + 'SM',
+            cloudChunk,
             `${format_temp(temperatureVal)}/${format_temp(dewpointVal)}`,
             'A' + (altimeterVal).toFixed(2).replace('.', ''),
         ];
@@ -100,36 +113,53 @@
         else {
             windText += props.windDir.toString().padStart(3, '0') + '&deg;'
         }
-        windText += ` @ ${props.windVel.toFixed(0)} KT`;
+        let val = props.windVel.toFixed(0);
+        windText += ` @ ${val} KT`;
         if (props.windGust > 0) {
-            windText += ` G ${props.windGust.toFixed(0)} KT`;
+            val = props.windGust.toFixed(0);
+            windText += ` G ${val} KT`;
         }
         return windText;
     }
 
     function get_visibility_text() {
-        return `Visibility: ${props.visibility.toFixed(0)} SM`;
+        let val = props.visibility.toFixed(0);
+        return `Visibility: ${val} SM`;
+    }
+
+    function get_cloud_text() {
+        let cloudChunk = props.cloudCoverage;
+        if (!disablingCoverages.includes(props.cloudCoverage)) {
+            let val = Math.round(props.ceiling);
+            cloudChunk += `@ ${val} ft AGL`;
+        }
+        return `Cloud Coverage: ${cloudChunk}`;
     }
 
     function get_temperature_text() {
-        return `Temperature: ${props.temperature.toFixed(0)}&deg;C`;
+        let val = props.temperature.toFixed(0);
+        return `Temperature: ${val}&deg;C`;
     }
 
     function get_dewpoint_text() {
-        return `Dew Point: ${props.dewpoint.toFixed(0)}&deg;C`;
+        let val = props.dewpoint.toFixed(0);
+        return `Dew Point: ${val}&deg;C`;
     }
 
     function get_spread_text() {
-        var spread = props.temperature - props.dewpoint;
-        return `Spread: ${spread.toFixed(0)}&deg;C`
+        let spread = props.temperature - props.dewpoint;
+        let val = spread.toFixed(0);
+        return `Spread: ${val}&deg;C`
     }
 
     function get_altimeter_text() {
-        return `Altimeter Setting: ${props.altimeter.toFixed(2)}`;
+        let val = props.altimeter.toFixed(2);
+        return `Altimeter Setting: ${val} inHg`;
     }
 
     function get_density_altitude_text() {
-        return `Density Altitude: ${props.densityAltitude}`;
+        let val = props.densityAltitude.toFixed(0);
+        return `Density Altitude (est.): ${val} ft`;
     }
 
     function download_transcript() {
@@ -154,6 +184,7 @@
             get_time_text(),
             get_wind_text(),
             get_visibility_text(),
+            get_cloud_text(),
             get_temperature_text(),
             get_dewpoint_text(),
             get_spread_text(),
