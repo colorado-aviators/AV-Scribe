@@ -11,7 +11,7 @@
         altimeter:  {type: Number, required: true},
     });
     const emit = defineEmits<{
-        (e: 'emitDensityAltitude', information: string): void
+        (e: 'emitDensityAltitude', densityAltitude: number): void
     }>()
     watch(() =>
     [
@@ -33,8 +33,9 @@
             unit(altimeterVal, "inHg"),
             unit(elevationVal, "feet")
         )
-        densityAltitudeText.value = `Density altitude (estimated): ${densityAltitude.toNumeric("feet").toFixed(0)}`;
-        emit('emitDensityAltitude', densityAltitude.toNumeric("feet"));
+        let val = densityAltitude.toNumeric("feet") as number
+        densityAltitudeText.value = `Density altitude (estimated): ${val.toFixed(0)}`;
+        emit('emitDensityAltitude', Math.round(val));
     });
 </script>
 

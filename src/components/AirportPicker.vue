@@ -5,9 +5,6 @@
     function format_airport(orig: string) {
         var val = orig.toUpperCase();
         const regex = /^[A-Z0-9]+$/;
-        if (val == "") {
-            return
-        }
         if (!regex.test(val)) {
             alert("Airport code invalid");
         }
@@ -19,9 +16,8 @@
     }>()
     const onChange = () => {
         // overwrite the value with the uppercase version!
-        var formatted = format_airport(airport.value);
-        airport.value = formatted;
-        emit('emitAirport', formatted);
+        airport.value = format_airport(airport.value);
+        emit('emitAirport', airport.value);
     }
 </script>
 

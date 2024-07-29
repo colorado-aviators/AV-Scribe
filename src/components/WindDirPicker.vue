@@ -38,7 +38,7 @@
         background: defaultSliderColor,
         accentColor: defaultSliderColor,
     })
-    sliderText.value = get_slider_text(sliderValue.value);
+    sliderText.value = get_slider_text();
     onInput();
 </script>
 

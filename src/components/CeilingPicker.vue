@@ -16,7 +16,11 @@
     const disablingCoverages = ["SKC", "NCD", "CLR", "VV"];
 
     const props = defineProps({
-        cloudCoverage: String,
+        cloudCoverage: {
+            type: String,
+            default: "SKC",
+            required: true,
+        }
     });
 
     const {sliderValue, realValue, cautionColor} = onUpdate(start, high, low, optimum, gradient, sketchy, bad);

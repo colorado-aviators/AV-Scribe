@@ -1,9 +1,13 @@
 <script setup lang="ts">
     import {ref, watch, reactive} from "vue"
-    import * as functions from "../lib/slider-utils.ts"
+    import * as functions from "../lib/slider-utils"
 
     const props = defineProps({
-      temp: Number,
+        temp: {
+            type: Number,
+            default: 0.0,
+            required: true,
+        },
     });
 
     const start = -.2;
@@ -22,8 +26,8 @@
         return `Dewpoint: ${realValue.value}\u00B0C`;
     };
 
-    function updateCautionColor(temp) {
-        var spread = temp - realValue.value;
+    function updateCautionColor(temp: Number) {
+        var spread = props.temp - realValue.value;
         cautionColor.value = functions.get_caution_color(spread, 5, 0);
     }
 
