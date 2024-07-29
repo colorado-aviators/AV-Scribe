@@ -84,6 +84,10 @@
         :densityAltitude="densityAltitude"
     />
   </main>
+  <footer>
+    <p>Version: 0.3.1</p>
+    <p>Author: McGregor Joyner</p>
+  </footer>
 </template>
 
 <style scoped>
@@ -92,7 +96,7 @@
     }
 
     header {
-      line-height: 1.5;
+        line-height: 1.5;
     }
 
     .logo {
@@ -116,5 +120,12 @@
         place-items: flex-start;
         flex-wrap: wrap;
       }
+    }
+    footer {
+        text-align: right;
+        margin-bottom: 12px;
+    }
+    footer>p {
+        font-size: 12px;
     }
 </style>
