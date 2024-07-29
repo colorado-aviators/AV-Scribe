@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref, watch, reactive} from "vue"
+    import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
 
     const realValue = ref(0);

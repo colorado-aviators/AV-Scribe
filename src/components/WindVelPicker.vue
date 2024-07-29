@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref } from "vue"
+    import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
 
     const start = -1.0;
