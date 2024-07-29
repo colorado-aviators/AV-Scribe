@@ -13,8 +13,8 @@ export function getDensityAltitude(
     References
     https://www.weather.gov/media/epz/wxcalc/stationPressure.pdf
     */
-    let tmp = (288 - .0065 * (elevation.toNumeric("m") as number)) / 288;
-    let val = altimeterSetting.toNumeric("inHg") as number * tmp ** 5.2561;
+    let tmp = (288 - .0065 * (elevation.toNumber("m"))) / 288;
+    let val = altimeterSetting.toNumber("inHg") * tmp ** 5.2561;
     var stationPressure = math.unit(val, "inHg");
     return estimateDensityAltitude(temperature, stationPressure, dewpoint);
 }
@@ -40,8 +40,8 @@ export function estimateDensityAltitude(
     https://www.weather.gov/media/epz/wxcalc/tempConvert.pdf
     */
     var virtualTemperature = getVirtualTemperature(temperature, stationPressure, dewpoint);
-    var rankine = virtualTemperature.toNumeric("degR") as number;
-    var tmp = Math.pow(17.326 * (stationPressure.toNumeric("inHg") as number) / rankine, 0.235);
+    var rankine = virtualTemperature.toNumber("degR");
+    var tmp = Math.pow(17.326 * stationPressure.toNumber("inHg") / rankine, 0.235);
     var densityAltitude = 145366 * (1 - tmp);
     return math.unit(densityAltitude, "feet");
 }
@@ -52,7 +52,7 @@ export function getVaporPressure(dewpoint: math.Unit) {
     https://www.weather.gov/media/epz/wxcalc/vaporPressure.pdf
     https://en.wikipedia.org/wiki/Tetens_equation
     */
-    var tmp = 7.5 * (dewpoint.toNumeric("degC") as number) / (dewpoint.toNumeric("degC") as number + 237.7);
+    var tmp = 7.5 * dewpoint.toNumber("degC") / (dewpoint.toNumber("degC") + 237.7);
     return math.unit(6.11 * (10 ** tmp), "mbar");
 }
 
@@ -62,7 +62,7 @@ export function getVirtualTemperature(
     dewpoint: math.Unit
 ) {
     var vaporPressure = getVaporPressure(dewpoint);
-    let tmp = math.divide(vaporPressure, stationPressure.to("mbar")) as number;
+    let tmp = vaporPressure.toNumber("mbar") / stationPressure.toNumber("mbar");
     tmp = 1.0 - tmp * (1 - 0.622);
     return math.divide(temperature.to("K"), tmp);
 }
