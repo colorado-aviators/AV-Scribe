@@ -10,6 +10,10 @@
 History
 =======
 
+0.3.1 (2024-07-28)
+------------------
+Fixes TypeScript errors and adds type-checking to CI (whoops).
+
 0.3.0 (2024-07-28)
 ------------------
 Implements new input fields, improves the general UI and the transcript,
