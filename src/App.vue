@@ -54,7 +54,7 @@
     <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
     <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="!windVariable&&windVel==0.0"/>
     <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
-    <CloudCoveragePicker @emit-cloud-coverage="(payload: number) => {cloudCoverage = payload}"/>
+    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}"/>
     <CeilingPicker :cloud-coverage="cloudCoverage" @emit-ceiling="(payload: number) => {ceiling = payload}"/>
     <TemperaturePicker @emit-temperature="(payload: number) => {temperature = payload}"/>
     <DewpointPicker :temp="temperature" @emit-dewpoint="(payload: number) => {dewpoint = payload}"/>

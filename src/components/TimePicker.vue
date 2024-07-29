@@ -15,10 +15,10 @@
     const emit = defineEmits<{
         (e: 'emitTime', selected: string): void
     }>()
-    const onChange = (selected: string) => {
-        emit('emitTime', selected);
+    const onChange = () => {
+        emit('emitTime', selected.value);
     }
-    onChange(selected);
+    onChange();
 </script>
 
 <template>
