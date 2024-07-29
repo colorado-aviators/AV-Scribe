@@ -85,6 +85,8 @@ Release Process
         git commit -am "update release docs" && git push
 
 6.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
+7.  `Make a Release tag <https://github.com/mcgsjoyner/AVWX-Scribe/releases/new>`_ like "v0.2.0"
+    with the title "Release v0.2.0"
 
 Get Started!
 ------------
