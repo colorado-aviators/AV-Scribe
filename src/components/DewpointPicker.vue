@@ -33,16 +33,17 @@
         bad.value = props.temp;
     }
 
-    watch(() => props.temp as number, (newVal) => {
-        updateCautionColor();
+    watch(() => props.temp as number, (newVal, oldVal) => {
+        // avoids changing color on initialization
+        if (oldVal !== Infinity) {
+            updateCautionColor();
+        }
     })
-
-    updateCautionColor();
 </script>
 
 <template>
     <CustomRange
-        :start = -.2
+        :start = 0
         :high = 35
         :low = -83
         :optimum = 0

@@ -29,7 +29,7 @@
     var visibility = ref(10.0);
     var cloudCoverage = ref("");
     var ceiling = ref(0);
-    var temperature = ref(0.0);
+    var temperature = ref(Infinity);
     var dewpoint = ref(0.0);
     var altimeter = ref(29.92);
     var elevation = ref(0);
