@@ -57,9 +57,11 @@
 
     const resolution = 10 ** -props.numDigits;
     const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
-    const sliderColor = ref('rgba(0, 0, 255.0)');
+    const initialSliderColor = 'rgba(0, 0, 255.0, .2)';
+    const sliderColor = ref();
     const sliderValue = ref(props.start);
     const realValue = ref();
+    var updated = false;
 
     function map_slider_to_weighted_range(
         slider_position: number,
@@ -155,8 +157,9 @@
     }
 
     function set_slider_color() {
-        let cautionColor = get_caution_color(realValue.value);
-        sliderColor.value = props.disabled ? disabledSliderColor : cautionColor;
+        if (props.disabled) {sliderColor.value = disabledSliderColor}
+        else if (!updated) {sliderColor.value = initialSliderColor}
+        else {sliderColor.value = get_caution_color(realValue.value)}
     }
 
     function fine_tune(increment: number) {
@@ -168,7 +171,8 @@
             props.optimum,
             props.gradient,
         );
-        onInput();
+        updated = true;
+        updateSlider();
     };
 
     watch(() => props.disabled as Boolean, () => {
@@ -176,19 +180,25 @@
     })
 
     watch(() => (props.sketchy as number, props.bad as number), () => {
-        onInput();
+        updateSlider();
     })
 
     const emit = defineEmits<{
         (e: 'emitValue', realValue: number): void
     }>()
 
-    const onInput = () => {
+    function updateSlider() {
         realValue.value = map_slider_to_weighted_range(sliderValue.value, props.high, props.low, props.optimum, props.gradient);
         realValue.value = Math.round(realValue.value / resolution) * resolution;
         set_slider_color();
         emit('emitValue', realValue.value);
     }
+
+    function onInput () {
+        updated = true;
+        updateSlider();
+    }
+
     const styleObject = reactive({
         background: sliderColor,
         accentColor: sliderColor,
@@ -196,7 +206,7 @@
         marginRight: "10px",
     })
 
-    onInput();
+    updateSlider();
 </script>
 
 <template>
@@ -217,3 +227,67 @@
         <button @click="fine_tune(resolution)" :disabled="disabled || realValue >= high"> + </button>
     </label>
 </template>
+
+<style>
+    /* style the input element with type "range" */
+    .custom-slider {
+        -webkit-appearance: none;
+        --trackHeight: 30px;
+        --thumbRadius: 45px;
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        position: relative;
+        /* pointer-events: none; */
+        border-radius: 999px;
+        z-index: 0;
+    }
+
+    /* ::before element to replace the slider track */
+    .custom-slider input[type="range"]::before {
+        -webkit-appearance: none;
+        content: "";
+        position: absolute;
+        width: var(--ProgressPercent, 100%);
+        height: 100%;
+        background: rgba(0.0, 0.0, 255.0);
+        /* z-index: -1; */
+        pointer-events: none;
+        border-radius: 999px;
+    }
+
+    custom-slider:disabled input[type="range"]::before {
+        accent-color: #cccccc;
+    }
+
+    /* `::-webkit-slider-runnable-track` targets the track (background) of a range slider in chrome and safari browsers. */
+    .custom-slider::-webkit-slider-runnable-track {
+        -webkit-appearance: none;
+        height: var(--trackHeight);
+        border-radius: 999px;
+    }
+
+    /* `::-moz-range-track` targets the track (background) of a range slider in Mozilla Firefox. */
+    .custom-slider input[type="range"]::-moz-range-track {
+        -webkit-appearance: none;
+        background: #005a3c;
+        height: var(--trackHeight);
+        border-radius: 999px;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        position: relative;
+        top: 50%;
+        transform: translate(0, -50%);
+        width: var(--thumbRadius);
+        height: var(--thumbRadius);
+        /* margin-top: calc((var(--trackHeight) - var(--thumbRadius)) / 2); */
+        background: white;
+        border-radius: 999px;
+        pointer-events: all;
+        z-index: 1;
+    }
+</style>
