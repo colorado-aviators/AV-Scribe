@@ -10,6 +10,21 @@
 History
 =======
 
+0.4.0 (2024-07-29)
+------------------
+Makes a few UI improvements.
+
+|ui|
+* Add increment buttons to slider
+* Use dark blue to indicate untouched values
+* Add version number to the app
+
+|refactor|
+* Refactor all sliders to inherit from a common component
+
+|test|
+* Use latest GitHub Action versions in CI and CD
+
 0.3.1 (2024-07-28)
 ------------------
 Fixes TypeScript errors and adds type-checking to CI (whoops).
