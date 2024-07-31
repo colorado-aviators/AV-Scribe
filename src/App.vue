@@ -35,6 +35,14 @@
     var elevation = ref(0);
     var densityAltitude = ref(0);
     var transcript = ref("");
+
+    function isWindVariable() {
+        return windCondition.value == "Variable";
+    }
+
+    function isWindCalm() {
+        return windVel.value == 0.0;
+    }
 </script>
 
 <template>
@@ -50,9 +58,9 @@
     <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
     <TimePicker @emit-time="(payload: string) => {time = payload}"/>
     <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}"/>
-    <WindDirPicker @emit-wind-dir="(payload: number) => {windDir = payload}" :disabled="windCondition=='Variable'"/>
+    <WindDirPicker @emit-wind-dir="(payload: number) => {windDir = payload}" :disabled="isWindVariable()"/>
     <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
-    <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="!windCondition=='Variable'&&windVel==0.0"/>
+    <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="isWindCalm() && !isWindVariable()"/>
     <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
     <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}"/>
     <CeilingPicker :cloud-coverage="cloudCoverage" @emit-ceiling="(payload: number) => {ceiling = payload}"/>
