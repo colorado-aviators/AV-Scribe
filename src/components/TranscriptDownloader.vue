@@ -96,7 +96,7 @@
     }
 
     function download_transcript() {
-        let isNotNull = value => value != null;
+        let isNotNull = (value: any) => value != null;
 
         // Add file name
         let tags = [

@@ -91,7 +91,7 @@
             get_temperatures_chunk(),
             get_altimeter_chunk(),
         ];
-        let isNotNull = value => value != null;
+        let isNotNull = (value: any) => value != null;
         atisText.value = chunks.filter(isNotNull).join(' ');
     }
 
