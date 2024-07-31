@@ -2,8 +2,13 @@
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
 
-    const title = "Dewpoint"
-    const realValue = ref(0);
+    const title = "Dewpoint";
+    const start = ref(0);
+    const high = ref(35);
+    const low = ref(-83);
+    const optimum = ref(0);
+    const gradient = ref(.9);
+    const realValue = ref();
     const sketchy = ref();
     const bad = ref();
     const props = defineProps({
@@ -40,15 +45,16 @@
 <template>
     <CustomRange
         :title = "title"
-        :start = 0
-        :high = 35
-        :low = -83
-        :optimum = 0
-        :gradient = .9
+        :start = "start"
+        :high = "high"
+        :low = "low"
+        :optimum = "optimum"
+        :gradient = "gradient"
         :sketchy = "sketchy"
         :bad = "bad"
+        :numDigits = 0
         @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload}"
+        @emit-value="(payload: number) => {realValue = payload; onInput();}"
         :readOut = "get_read_out()"
     />
 </template>

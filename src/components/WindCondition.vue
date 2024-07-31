@@ -8,7 +8,6 @@
         (e: 'emitWindCondition', windCondition: string): void
     }>()
     const onChange = () => {
-        console.log(windCondition.value);
         emit('emitWindCondition', windCondition.value);
     }
     onChange();
