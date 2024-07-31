@@ -2,6 +2,7 @@
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
 
+    const title = "Wind Dir"
     const start = 1.0;
     const high = 360;
     const low = 10;
@@ -11,10 +12,10 @@
       disabled: Boolean,
     });
 
-    function get_slider_text() {
+    function get_read_out() {
         var text = 'Wind Dir: '
         var formattedDirection = realValue.value.toString().padStart(3, '0') + '\u00B0';
-        return `Wind Dir: ${props.disabled ? "VARIABLE" : formattedDirection}`;
+        return props.disabled ? "VARIABLE" : formattedDirection;
     };
 
     const emit = defineEmits<{
@@ -30,12 +31,13 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload; onInput();}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
         :disabled="disabled"
         :numDigits=-1
     />

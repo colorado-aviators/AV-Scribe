@@ -6,6 +6,7 @@
       disabled: Boolean,
     });
 
+    const title = "Wind Gust"
     const start = -1.0;
     const high = 201.0
     const low = 0.0;
@@ -15,8 +16,8 @@
     const bad = 25;
     const realValue = ref();
 
-    function get_slider_text() {
-        return 'Wind Gust: ' + (realValue.value == 0.0 ? 'None' : `${realValue.value} KT`);
+    function get_read_out() {
+        return realValue.value == 0.0 ? 'None' : `${realValue.value} KT`;
     };
 
     const emit = defineEmits<{
@@ -31,6 +32,7 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
@@ -40,7 +42,7 @@
         :bad = "bad"
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload; onInput();}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
         :disabled=props.disabled
     />
 </template>

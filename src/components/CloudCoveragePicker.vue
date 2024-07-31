@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import {ref} from "vue"
+    const title = "Cloud condition"
     const cloudCoverage = ref("SKC");
     // https://en.wikipedia.org/wiki/METAR#Cloud_reporting
     const myOptionsArray = ["SKC", "NCD", "CLR", "FEW", "SCT", "BKN", "OVC", "VV"];
@@ -14,13 +15,20 @@
 </script>
 
 <template>
-    <label class="switch">Clouds:
-        <select v-model.string="cloudCoverage" @change="onChange">
-          <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
-            {{item}}
-          </option>
-        </select>
-    </label>
+    <div class="inputContainer">
+        <label>
+            <span class="title">
+                {{ title }}:
+            </span>
+        </label>
+        <div class="inputArea">
+            <select v-model.string="cloudCoverage" @change="onChange">
+              <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
+                {{item}}
+              </option>
+            </select>
+        </div>
+    </div>
 </template>
 
 <style scoped>

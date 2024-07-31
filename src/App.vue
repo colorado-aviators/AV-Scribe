@@ -5,7 +5,7 @@
     import AirportPicker from './components/AirportPicker.vue'
     import InformationPicker from './components/InformationPicker.vue'
     import TimePicker from './components/TimePicker.vue'
-    import WindVariable from './components/WindVariable.vue'
+    import WindCondition from './components/WindCondition.vue'
     import WindVelPicker from './components/WindVelPicker.vue'
     import WindDirPicker from './components/WindDirPicker.vue'
     import WindGustPicker from './components/WindGustPicker.vue'
@@ -22,7 +22,7 @@
     var airport = ref("");
     var information = ref("");
     var time = ref("");
-    var windVariable = ref(false);
+    var windCondition = ref("");
     var windVel = ref(0.0);
     var windDir = ref(0.0);
     var windGust = ref(0.0);
@@ -49,10 +49,10 @@
     <AirportPicker @emit-airport="(payload: string) => {airport = payload}"/>
     <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
     <TimePicker @emit-time="(payload: string) => {time = payload}"/>
-    <WindVariable @emit-wind-variable="(payload: boolean) => {windVariable = payload}"/>
-    <WindDirPicker @emit-wind-dir="(payload: number) => {windDir = payload}" :disabled="windVariable"/>
+    <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}"/>
+    <WindDirPicker @emit-wind-dir="(payload: number) => {windDir = payload}" :disabled="windCondition=='Variable'"/>
     <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
-    <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="!windVariable&&windVel==0.0"/>
+    <WindGustPicker @emit-wind-gust="(payload: number) => {windGust = payload}" :disabled="!windCondition=='Variable'&&windVel==0.0"/>
     <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
     <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}"/>
     <CeilingPicker :cloud-coverage="cloudCoverage" @emit-ceiling="(payload: number) => {ceiling = payload}"/>
@@ -78,7 +78,7 @@
         :windDir="windDir"
         :windGust="windGust"
         :windVel="windVel"
-        :windVariable="windVariable"
+        :windCondition="windCondition"
         :dewpoint="dewpoint"
         :temperature="temperature"
         :densityAltitude="densityAltitude"
@@ -108,7 +108,7 @@
       header {
         display: flex;
         place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
+        //padding-right: calc(var(--section-gap) / 2);
       }
 
       .logo {

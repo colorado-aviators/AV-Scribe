@@ -2,9 +2,9 @@
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
 
+    const title = "Temperature"
     const sketchy = 100;
     const bad = 100;
-
     const start = 0;
     const high = 57;
     const low = -83;
@@ -12,8 +12,8 @@
     const gradient = .9;
     const realValue = ref();
 
-    function get_slider_text() {
-        return `Temperature: ${realValue.value}\u00B0C`;
+    function get_read_out() {
+        return realValue.value + "\u00B0C";
     }
 
     const emit = defineEmits<{
@@ -28,6 +28,7 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
@@ -38,6 +39,6 @@
         :numDigits = 0
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload; onInput();}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
     />
 </template>
