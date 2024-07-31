@@ -2,6 +2,7 @@
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
 
+    const title = "Visibility"
     const start = 1.0;
     const high = 10.0
     const low = 0.0;
@@ -11,8 +12,8 @@
     const bad = 3;
     const realValue = ref();
 
-    function get_slider_text() {
-        return `Visibility: ${realValue.value} SM`;
+    function get_read_out() {
+        return `${realValue.value} SM`;
     };
 
     const emit = defineEmits<{
@@ -28,6 +29,7 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
@@ -37,7 +39,7 @@
         :bad = "bad"
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload; onInput();}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
         :numDigits = 0
     />
 </template>

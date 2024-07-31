@@ -34,38 +34,23 @@ a,
   }
 }
 
-label {
-    position: relative;
+.inputContainer {
+    height:100px;
+    margin-top:50px;
+    margin-bottom:50px;
+    font-size:28px;
+}
+
+.inputArea {
+    text-wrap: nowrap;
+    width: 100%;
+    height: 60px;
+    font-size: 24px;
     display: flex;
+    position: relative;
+    text-align: center;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 24px;
-}
-
-label>span,
-label>slider {
-    position: absolute;
-}
-
-label>span {
-    color: white;
-    font-family: sans-serif;
-    font-size: 24px;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    pointer-events: none;
-}
-
-label.switch {
-    position: relative;
-    height: 20px;
-    margin-top: 75px;
-    margin-bottom: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 24px;
 }
 
 select {
@@ -89,10 +74,24 @@ select {
     font-size: 24px;
 }
 
-input[type=text] {
+
+select, input {
+    width: 100%;
+    text-align: center;
+    background-color: hsla(160, 100%, 37%, 1);
     font-size: 24px;
 }
 
-select, input {
-    margin-left: 50px;
+label {
+    align-items: left;
+    text-align: left;
+    display: inline;
+}
+
+span.title {
+    float: left;
+}
+
+span.readOut {
+    float: right;
 }

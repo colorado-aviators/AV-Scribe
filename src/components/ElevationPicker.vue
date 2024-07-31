@@ -2,6 +2,7 @@
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
 
+    const title = "Field Elevation"
     const sketchy = 100000;
     const bad = 100000;
     // https://en.wikipedia.org/wiki/List_of_highest_airports
@@ -13,8 +14,8 @@
     const start = 0;
     const realValue = ref();
 
-    function get_slider_text() {
-        return `Field Elevation: ${realValue.value.toFixed(0)}`;
+    function get_read_out() {
+        return realValue.value.toFixed(0);
     };
 
     const emit = defineEmits<{
@@ -30,6 +31,7 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
@@ -40,6 +42,6 @@
         :numDigits = 0
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload; onInput();}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
     />
 </template>

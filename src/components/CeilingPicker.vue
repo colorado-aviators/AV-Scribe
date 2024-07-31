@@ -2,8 +2,8 @@
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
 
+    const title = "Ceiling"
     const realValue = ref(0);
-
     const start = 1.0;
     const high = 20000;
     const low = 0;
@@ -22,9 +22,9 @@
         }
     });
 
-    function get_slider_text() {
+    function get_read_out() {
         let valid = `${Math.round(realValue.value / 100).toFixed(0).padStart(3, '0')} (x 100 ft)`;
-        return `Ceiling: ${disabled.value ? "NONE" : valid}`;
+        return disabled.value ? "NONE" : valid;
     };
 
     watch(() => props.cloudCoverage, (newVal) => {
@@ -43,6 +43,7 @@
 
 <template>
     <CustomRange
+        :title = "title"
         :start = "start"
         :high = "high"
         :low = "low"
@@ -52,7 +53,7 @@
         :bad = "bad"
         @input = "onInput"
         @emit-value="(payload: number) => {realValue = payload}"
-        :sliderText = "get_slider_text()"
+        :readOut = "get_read_out()"
         :disabled = "disabled"
         :numDigits = -2
     />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import {ref} from "vue"
+    const title = "Airport"
     const airport = ref('');
 
     function format_airport(orig: string) {
@@ -22,22 +23,21 @@
 </script>
 
 <template>
-    <label class="switch">
-        Airport:
-        <input
-            id="airportPicker"
-            type="text"
-            v-model.string="airport"
-            @change="onChange"
-            class="airportInput"
-            minlength=4
-            maxlength=4
-        >
-    </label>
+    <div class="inputContainer">
+        <label>
+            <span class="title">
+                {{ title }}:
+            </span>
+        </label>
+        <div class="inputArea">
+            <input
+                id="airportPicker"
+                type="text"
+                v-model.string="airport"
+                @change="onChange"
+                minlength=4
+                maxlength=4
+            >
+        </div>
+    </div>
 </template>
-
-<style>
-    .airportInput {
-        width: 100px;
-    }
-</style>

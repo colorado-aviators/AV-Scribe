@@ -5,7 +5,7 @@
         airport: {type: String, required: true},
         information: {type: String, required: true},
         time:  {type: String, required: true},
-        windVariable: {type: Boolean, required: true},
+        windCondition: {type: String, required: true},
         windVel: {type: Number, required: true},
         windDir: {type: Number, required: true},
         windGust: {type: Number, required: true},
@@ -31,7 +31,7 @@
         props.time,
         props.altimeter,
         props.windVel,
-        props.windVariable,
+        props.windCondition,
         props.windGust,
         props.windDir,
         props.temperature,
@@ -46,7 +46,7 @@
         timeVal,
         altimeterVal,
         windVelVal,
-        windVariableVal,
+        windConditionVal,
         windGustVal,
         windDirVal,
         temperatureVal,
@@ -55,7 +55,8 @@
     {
         var windChunk = '00000';
         if (windVelVal > 0) {
-            windChunk = windVariableVal ? 'VRB' : windDirVal.toString().padStart(3, '0');
+            console.log(windConditionVal)
+            windChunk = windConditionVal == "Variable" ? 'VRB' : windDirVal.toString().padStart(3, '0');
             windChunk += windVelVal.toFixed(0).padStart(2, '0');
             if (windGustVal != 0) {
                 windChunk += `G${windGustVal.toFixed(0)}`;
@@ -107,7 +108,7 @@
             windText += 'Calm';
             return windText;
         }
-        if (props.windVariable) {
+        if (props.windCondition) {
             windText += 'VRB';
         }
         else {

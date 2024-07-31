@@ -9,6 +9,7 @@
         var timeString = `${dd} ${hh} ${mm}`;
         return timeString;
     };
+    const title = "ATIS Time"
     const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
     const selected = ref(myOptionsArray[0]);
 
@@ -22,11 +23,18 @@
 </script>
 
 <template>
-    <label class="switch">ATIS Time:
-        <select id="timePicker" v-model="selected">
-          <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
-            {{item}}
-          </option>
-        </select>
-    </label>
+    <div class="inputContainer">
+        <label>
+            <span class="title">
+                {{ title }}:
+            </span>
+        </label>
+        <div class="inputArea">
+            <select id="timePicker" v-model="selected" @change="onChange">
+              <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
+                {{item}}
+              </option>
+            </select>
+        </div>
+    </div>
 </template>

@@ -2,7 +2,12 @@
     import {ref, watch, reactive} from "vue"
 
     const props = defineProps({
-        sliderText: {
+        title: {
+            type: String,
+            default: "",
+            required: true,
+        },
+        readOut: {
             type: String,
             default: "",
             required: true,
@@ -202,30 +207,37 @@
     const styleObject = reactive({
         background: sliderColor,
         accentColor: sliderColor,
-        marginLeft: "10px",
-        marginRight: "10px",
     })
 
     updateSlider();
 </script>
 
 <template>
-    <label>
-        <button @click="fine_tune(-resolution)" :disabled="disabled || realValue <= low"> - </button>
-        <input
-            type="range"
-            v-model.number="sliderValue"
-            @input="onInput"
-            class="custom-slider"
-            :style="styleObject"
-            min=-1
-            max=1
-            :step="step"
-            :disabled="disabled"
-        >
-        <span v-text="sliderText"></span>
-        <button @click="fine_tune(resolution)" :disabled="disabled || realValue >= high"> + </button>
-    </label>
+    <div class="inputContainer">
+        <label>
+            <span class="title">
+                {{ title }}
+            </span>
+            <span class="readOut">
+                {{ readOut }}
+            </span>
+        </label>
+        <div class="inputArea">
+            <button @click="fine_tune(-resolution)" :disabled="disabled || realValue <= low"> - </button>
+            <input
+                type="range"
+                v-model.number="sliderValue"
+                @input="onInput"
+                class="custom-slider"
+                :style="styleObject"
+                min=-1
+                max=1
+                :step="step"
+                :disabled="disabled"
+            >
+            <button @click="fine_tune(resolution)" :disabled="disabled || realValue >= high"> + </button>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -235,10 +247,10 @@
         --trackHeight: 30px;
         --thumbRadius: 45px;
         width: 100%;
-        margin-left: 0px;
-        margin-right: 0px;
-        margin-top: 30px;
-        margin-bottom: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 15px;
+        margin-bottom: 15px;
         position: relative;
         /* pointer-events: none; */
         border-radius: 999px;
