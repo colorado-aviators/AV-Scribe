@@ -55,6 +55,7 @@
 
   <main align="center">
     <AirportPicker @emit-airport="(payload: string) => {airport = payload}"/>
+    <ElevationPicker @emit-elevation="(payload: number) => {elevation = payload}"/>
     <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
     <TimePicker @emit-time="(payload: string) => {time = payload}"/>
     <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}"/>
@@ -67,7 +68,6 @@
     <TemperaturePicker @emit-temperature="(payload: number) => {temperature = payload}"/>
     <DewpointPicker :temp="temperature" @emit-dewpoint="(payload: number) => {dewpoint = payload}"/>
     <AltimeterPicker @emit-altimeter="(payload: number) => {altimeter = payload}"/>
-    <ElevationPicker @emit-elevation="(payload: number) => {elevation = payload}"/>
     <DensityAltitude
         @emit-density-altitude="(payload: number) => {densityAltitude = payload}"
         :elevation="elevation"
