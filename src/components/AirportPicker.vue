@@ -37,7 +37,6 @@
                 @change="onChange"
                 minlength=4
                 maxlength=4
-                inputmode="numeric"
             >
         </div>
     </div>

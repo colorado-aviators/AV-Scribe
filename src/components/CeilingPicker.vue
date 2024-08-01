@@ -8,7 +8,7 @@
     const high = 20000;
     const low = 0;
     const optimum = 5000;
-    const gradient = 0.8;
+    const gradient = 0.4;
     const sketchy = 3000;
     const bad = 1000;
     const disabled = ref(true);
