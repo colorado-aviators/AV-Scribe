@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import {ref, reactive} from "vue"
     function get_time_string(time_elapsed: number) {
         var now = new Date();
         var time = new Date(now.getTime() - 1000 * 60 * time_elapsed);
@@ -12,14 +12,24 @@
     const title = "ATIS Time"
     const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
     const selected = ref(myOptionsArray[0]);
+    const textColor = ref("var(--color-text-untouched)");
 
     const emit = defineEmits<{
         (e: 'emitTime', selected: string): void
     }>()
     const onChange = () => {
+        textColor.value = "var(--color-text-dark)"
         emit('emitTime', selected.value);
     }
-    onChange();
+    const styleObject = reactive({
+        color: textColor,
+    })
+
+    function initialize() {
+        emit('emitTime', selected.value);
+    }
+
+    initialize();
 </script>
 
 <template>
@@ -30,7 +40,7 @@
             </span>
         </label>
         <div class="inputArea">
-            <select id="timePicker" v-model="selected" @change="onChange">
+            <select id="timePicker" v-model="selected" @change="onChange" :style="styleObject">
               <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
                 {{item}}
               </option>

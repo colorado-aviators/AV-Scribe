@@ -78,7 +78,7 @@ select {
 select, input {
     width: 100%;
     text-align: center;
-    background-color: hsla(160, 100%, 37%, 1);
+    background-color: var(--color-background);
     font-size: 24px;
 }
 

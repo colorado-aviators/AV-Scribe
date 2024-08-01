@@ -34,10 +34,17 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  --color-text-light: var(--vt-c-text-light-2);
+  --color-text-dark: var(--vt-c-text-dark-2);
+  --color-text-untouched: var(--vt-c-text-light-2);
+  --color-slider-disabled: rgba(255, 255, 255, 0.1);
+  --color-slider-untouched: rgba(0, 0, 255, 0.2)
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);

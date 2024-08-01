@@ -89,14 +89,14 @@
 
     .modal-header {
         position: relative;
-        border-bottom: 2px solid var(--vt-c-text-dark-2);
-        color: var(--vt-c-text-light-2);
+        border-bottom: 2px solid var(--color-text-dark);
+        color: var(--color-text-light);
         font-size:20px;
         text-align: center;
     }
 
     .modal-footer {
-        border-top: 2px solid var(--vt-c-text-dark-2);
+        border-top: 2px solid var(--color-text-dark);
         flex-direction: column;
         justify-content: flex-end;
         text-align: center;
