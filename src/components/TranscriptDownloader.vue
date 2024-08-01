@@ -126,9 +126,14 @@
         ]
         let content = lines.filter(isNotNull).join("<br>");
 
-        const title = `Information ${tags.join(" ")}`;
-        const html_code = `
-            <body style="background-color:black;color:white">
+        let computedStyle = getComputedStyle(document.documentElement);
+        let transcriptStyle = `
+            background-color: ${computedStyle.getPropertyValue('--color-background')};
+            color: ${computedStyle.getPropertyValue('--color-text-dark')};
+        `
+        let title = `Information ${tags.join(" ")}`;
+        let html_code = `
+            <body style="${transcriptStyle}">
                 <title>${title}</title>
                 <h1>${title}</h1>
                 <div>
@@ -136,10 +141,11 @@
                 </div>
             </body>
         `
-        const file = new Blob([html_code], { type: 'html'});
+
+        let file = new Blob([html_code], { type: 'html' });
 
         // Create element with <a> tag
-        const link = document.createElement("a");
+        let link = document.createElement("a");
         link.download = `information-${tags.join('-')}.html`.toLowerCase();
 
         // Add file content in the object URL

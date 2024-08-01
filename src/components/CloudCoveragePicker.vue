@@ -1,17 +1,25 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import {ref, reactive} from "vue"
     const title = "Cloud condition"
     const cloudCoverage = ref("SKC");
     // https://en.wikipedia.org/wiki/METAR#Cloud_reporting
     const myOptionsArray = ["SKC", "NCD", "CLR", "FEW", "SCT", "BKN", "OVC", "VV"];
+    const textColor = ref("var(--color-text-untouched)");
 
     const emit = defineEmits<{
         (e: 'emitCloudCoverage', cloudCoverage: string): void
     }>()
     const onChange = () => {
+        textColor.value = "var(--color-text-dark)"
         emit('emitCloudCoverage', cloudCoverage.value);
     }
-    onChange();
+    function initialize() {
+        emit('emitCloudCoverage', cloudCoverage.value);
+    }
+    const styleObject = reactive({
+        color: textColor,
+    })
+    initialize();
 </script>
 
 <template>
@@ -22,7 +30,7 @@
             </span>
         </label>
         <div class="inputArea">
-            <select v-model.string="cloudCoverage" @change="onChange">
+            <select v-model.string="cloudCoverage" @change="onChange" :style="styleObject">
               <option v-for="(item , index) in myOptionsArray" v-bind:key="index">
                 {{item}}
               </option>
@@ -30,10 +38,3 @@
         </div>
     </div>
 </template>
-
-<style scoped>
-    .switch {
-        margin-top: 30px;
-        margin-bottom: 30px;
-    }
-</style>

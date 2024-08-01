@@ -1,7 +1,9 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import {ref, reactive} from "vue"
     const title = "Airport"
     const airport = ref('');
+
+    const textColor = ref("var(--color-text-untouched)");
 
     function format_airport(orig: string) {
         var val = orig.toUpperCase();
@@ -17,9 +19,13 @@
     }>()
     const onChange = () => {
         // overwrite the value with the uppercase version!
+        textColor.value = "var(--color-text-dark)";
         airport.value = format_airport(airport.value);
         emit('emitAirport', airport.value);
     }
+    const styleObject = reactive({
+        color: textColor,
+    })
 </script>
 
 <template>
@@ -37,6 +43,7 @@
                 @change="onChange"
                 minlength=4
                 maxlength=4
+                :style="styleObject"
             >
         </div>
     </div>

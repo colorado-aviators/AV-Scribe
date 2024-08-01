@@ -61,8 +61,8 @@
     });
 
     const resolution = 10 ** -props.numDigits;
-    const disabledSliderColor = "rgba(255.0,255.0,255.0,.1)";
-    const initialSliderColor = 'rgba(0, 0, 255.0, .2)';
+    const disabledSliderColor = "var(--color-slider-disabled)";
+    const initialSliderColor = "var(--color-slider-untouched)";
     const sliderColor = ref();
     const sliderValue = ref(props.start);
     const realValue = ref();
@@ -268,10 +268,6 @@
         /* z-index: -1; */
         pointer-events: none;
         border-radius: 999px;
-    }
-
-    custom-slider:disabled input[type="range"]::before {
-        accent-color: #cccccc;
     }
 
     /* `::-webkit-slider-runnable-track` targets the track (background) of a range slider in chrome and safari browsers. */
