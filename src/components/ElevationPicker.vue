@@ -35,8 +35,8 @@
             <input
                 id="elevationPicker"
                 type="number"
-                v-model.number="elevation"
-                @change="onChange"
+                v-model.number="realValue"
+                @input="onInput"
                 :max="high"
                 :min="low"
                 inputmode="numeric"
