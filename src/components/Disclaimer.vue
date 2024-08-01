@@ -3,15 +3,18 @@
 
     function setDisclaimerValid() {
         var date = new Date();
-        localStorage.setItem(disclaimerAcknowledgedDate, date.toGMTString());
+        localStorage.setItem(disclaimerAcknowledgedDate, date.toString());
     }
 
     function getDisclaimerValid() {
         let now = new Date();
         let val = localStorage.getItem(disclaimerAcknowledgedDate);
-        let age = now - Date.parse(val);
+        if (!val) {
+            return false;
+        }
+        let age = now.getTime() - Date.parse(val);
         let limit = disclaimerShelfLifeDays * 24 * 60 * 60 * 1000;
-        return age > limit;
+        return age < limit;
     }
 
     function acceptDisclaimer() {
@@ -21,7 +24,7 @@
 
     const disclaimerAcknowledgedDate = "avwx-scribe-disclaimer-acknowledged-date";
     const disclaimerShelfLifeDays = 30;
-    const showModal = ref(getDisclaimerValid());
+    const showModal = ref(!getDisclaimerValid());
 </script>
 
 <template>
