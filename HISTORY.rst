@@ -10,20 +10,36 @@
 History
 =======
 
+0.5.0 (2024-08-01)
+------------------
+Significant UI redesign for ease of use.
+
+|ui|
+* Standardize the input grid by making each entry field full-width and uniformly spaced.
+* Convert field elevation to a number entry input and wind condition to a dropdown.
+* Standardize coloring of text fields and ensure font color changes when first interacted with.
+* Migrate disclaimer to a modular and use a 30-day cookie to block its reappearance.
+
+|bug|
+* Exclude null values, and their keys, from the transcript.
+
+|refactor|
+* Use style classes to unify input components.
+
 0.4.0 (2024-07-29)
 ------------------
 Makes a few UI improvements.
 
 |ui|
-* Add increment buttons to slider
-* Use dark blue to indicate untouched values
-* Add version number to the app
+* Add increment buttons to slider.
+* Use dark blue to indicate untouched values.
+* Add version number to the app.
 
 |refactor|
-* Refactor all sliders to inherit from a common component
+* Refactor all sliders to inherit from a common component.
 
 |test|
-* Use latest GitHub Action versions in CI and CD
+* Use latest GitHub Action versions in CI and CD.
 
 0.3.1 (2024-07-28)
 ------------------
