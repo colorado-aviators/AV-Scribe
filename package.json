@@ -2,7 +2,7 @@
   "name": "avwx-scribe",
   "description": "A web app that makes it easier to transcribe aviation weather data accessed over the radio",
   "author": "McGregor Joyner",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "homepage": "https://github.com/mcgsjoyner/AVWX-Scribe",
   "license": "MIT",
   "type": "module",
