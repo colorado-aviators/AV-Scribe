@@ -93,7 +93,7 @@
     />
   </main>
   <footer>
-    <p>Version: 0.4.0</p>
+    <p>Version: 0.5.0</p>
     <p>Author: McGregor Joyner</p>
   </footer>
 </template>
