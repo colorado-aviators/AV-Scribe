@@ -48,6 +48,10 @@
         <mask id="spinner-mask">
             <circle r="5" fill="white"/>
         </mask>
+        <radialGradient cx="0" cy="-.4" r=".5" fx="0" fy="-.2" id="myGradient" gradientUnits="userSpaceOnUse">
+          <stop offset="20%" stop-color="rgba(0,0,0,0)" />
+          <stop offset="100%" stop-color="rgba(0,100,150,1)" />
+        </radialGradient>
         <linearGradient id="Gradient1" gradientTransform="rotate(90)">
             <stop class="stop1" offset="0%" />
             <stop class="stop2" offset="100%" />
@@ -56,9 +60,10 @@
             d="
             M -.40 0
             A .40 .40 0 0 1 0 -.40
-            A .40 .40 0 0 0 -.35 0
+            L 0 0
+            //A .40 .25 0 0 0 -.0 0
             "
-            stroke="transparent" fill="rgba(50,50,50)" stroke-width=".01" fill-opacity="1.0"
+            stroke="transparent" fill="url(#myGradient)" stroke-width=".01" fill-opacity="1.0"
         />
         <path id="propeller-blade"
             d="

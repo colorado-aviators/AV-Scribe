@@ -47,8 +47,8 @@
 
 <template>
   <header>
-    <div position="relative" width="100%" height="100%" style="height: 100vw">
-        <iframe src="../favicon.svg" width="100vw" frameBorder="0" style="width:100%; height:100%"></iframe>
+    <div position="relative" width="100%" style="width: 100%; height: 100vmin">
+        <iframe src="../favicon.svg" frameBorder="0" style="width:100%; height:100%"></iframe>
     </div>
     <Disclaimer/>
   </header>
