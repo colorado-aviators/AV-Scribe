@@ -47,8 +47,8 @@
 
 <template>
   <header>
-    <div style="width: 100%;">
-        <img src="../favicon.svg" style="width: 100%; object-fit: contain;">
+    <div position="relative" width="100%" height="100%" style="height: 100vw">
+        <iframe src="../favicon.svg" width="100vw" frameBorder="0" style="width:100%; height:100%"></iframe>
     </div>
     <Disclaimer/>
   </header>
@@ -110,6 +110,7 @@
     .logo {
       display: block;
       margin: 0 auto 2rem;
+      width: 100vh;
     }
 
     @media (min-width: 1024px) {
