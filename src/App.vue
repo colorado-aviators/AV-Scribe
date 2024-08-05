@@ -47,10 +47,10 @@
 
 <template>
   <header>
-    <div>
-      <h1 align="center">AVWX Scribe</h1>
-      <Disclaimer/>
+    <div style="width: 100%;">
+        <img src="../favicon.svg" style="width: 100%; object-fit: contain;">
     </div>
+    <Disclaimer/>
   </header>
 
   <main align="center">
