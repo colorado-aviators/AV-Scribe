@@ -72,7 +72,7 @@
     }
 
     .modal {
-        background: #FFFFFF;
+        background: var(--vt-c-white);
         box-shadow: 2px 2px 20px 1px;
         overflow-x: auto;
         display: flex;
@@ -110,7 +110,7 @@
     }
 
     .btn-green {
-        color: white;
+        color: var(--vt-c-white);
         background: hsla(160, 100%, 37%, 1);
         border: 1px solid #4AAE9B;
         border-radius: 2px;

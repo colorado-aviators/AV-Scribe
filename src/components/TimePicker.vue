@@ -18,7 +18,7 @@
         (e: 'emitTime', selected: string): void
     }>()
     const onChange = () => {
-        textColor.value = "var(--color-text-dark)"
+        textColor.value = "var(--color-text)"
         emit('emitTime', selected.value);
     }
     const styleObject = reactive({

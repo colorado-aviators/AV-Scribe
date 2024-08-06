@@ -9,7 +9,7 @@
         (e: 'emitInformation', information: string): void
     }>()
     const onChange = () => {
-        textColor.value = "var(--color-text-dark)"
+        textColor.value = "var(--color-text)"
         emit('emitInformation', information.value);
     }
     const styleObject = reactive({

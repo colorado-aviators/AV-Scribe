@@ -80,6 +80,7 @@ select, input {
     text-align: center;
     background-color: var(--color-background);
     font-size: 24px;
+    border: 1px solid var(--color-text);
 }
 
 label {

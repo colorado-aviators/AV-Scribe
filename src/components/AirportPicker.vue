@@ -19,7 +19,7 @@
     }>()
     const onChange = () => {
         // overwrite the value with the uppercase version!
-        textColor.value = "var(--color-text-dark)";
+        textColor.value = "var(--color-text)";
         airport.value = format_airport(airport.value);
         emit('emitAirport', airport.value);
     }
