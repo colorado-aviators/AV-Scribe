@@ -1,0 +1,11 @@
+{
+    "name": "AV Scribe",
+    "short_name": "AV Scribe",
+    "icons": [{
+        "src": "logo.png",
+        "sizes": "512x512"
+    }],
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "display": "fullscreen"
+}
