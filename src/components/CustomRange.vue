@@ -61,9 +61,10 @@
     });
 
     const resolution = 10 ** -props.numDigits;
-    const disabledSliderColor = "var(--color-slider-disabled)";
-    const initialSliderColor = "var(--color-slider-untouched)";
-    const sliderColor = ref();
+    let computedStyle = getComputedStyle(document.documentElement);
+    const disabledSliderColor = computedStyle.getPropertyValue('--color-slider-disabled');
+    const initialSliderColor = computedStyle.getPropertyValue("--color-slider-untouched");
+    const sliderColor = ref(initialSliderColor);
     const sliderValue = ref(props.start);
     const realValue = ref();
     var updated = false;
@@ -264,7 +265,6 @@
         position: absolute;
         width: var(--ProgressPercent, 100%);
         height: 100%;
-        background: rgba(0.0, 0.0, 255.0);
         /* z-index: -1; */
         pointer-events: none;
         border-radius: 999px;
@@ -293,7 +293,7 @@
         width: var(--thumbRadius);
         height: var(--thumbRadius);
         /* margin-top: calc((var(--trackHeight) - var(--thumbRadius)) / 2); */
-        background: white;
+        background: var(--color-slider-thumb);
         border-radius: 999px;
         pointer-events: all;
         z-index: 1;

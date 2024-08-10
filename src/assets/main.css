@@ -7,17 +7,16 @@
   font-weight: normal;
 }
 
-a,
-.green {
+a {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: rgba(0, 0, 255, 0.4);
   transition: 0.4s;
   padding: 3px;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: var(--color-light-blue);
   }
 }
 
@@ -39,6 +38,7 @@ a,
     margin-top:50px;
     margin-bottom:50px;
     font-size:28px;
+    border-radius: var(--base-radius);
 }
 
 .inputArea {
@@ -80,6 +80,8 @@ select, input {
     text-align: center;
     background-color: var(--color-background);
     font-size: 24px;
+    border: 1px solid var(--color-text);
+    border-radius: var(--base-radius);
 }
 
 label {

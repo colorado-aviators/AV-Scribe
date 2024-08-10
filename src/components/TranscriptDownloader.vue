@@ -129,7 +129,7 @@
         let computedStyle = getComputedStyle(document.documentElement);
         let transcriptStyle = `
             background-color: ${computedStyle.getPropertyValue('--color-background')};
-            color: ${computedStyle.getPropertyValue('--color-text-dark')};
+            color: ${computedStyle.getPropertyValue('--color-text')};
         `
         let title = `Information ${tags.join(" ")}`;
         let html_code = `
@@ -160,6 +160,7 @@
         marginBottom: "30px",
         marginTop: "30px",
         padding: "10px",
+        borderRadius: "4px",
     })
 </script>
 

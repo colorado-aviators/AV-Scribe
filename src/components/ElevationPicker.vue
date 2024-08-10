@@ -17,7 +17,7 @@
         (e: 'emitElevation', realValue: number): void
     }>()
     const onInput = () => {
-        textColor.value = "var(--color-text-dark)";
+        textColor.value = "var(--color-text)";
         realValue.value = Math.round(realValue.value)
         emit('emitElevation', realValue.value);
     }

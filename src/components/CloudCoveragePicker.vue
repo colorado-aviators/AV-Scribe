@@ -10,7 +10,7 @@
         (e: 'emitCloudCoverage', cloudCoverage: string): void
     }>()
     const onChange = () => {
-        textColor.value = "var(--color-text-dark)"
+        textColor.value = "var(--color-text)"
         emit('emitCloudCoverage', cloudCoverage.value);
     }
     function initialize() {
