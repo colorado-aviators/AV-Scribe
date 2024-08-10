@@ -18,9 +18,8 @@
         (e: 'emitAirport', airport: string): void
     }>()
     const onChange = () => {
-        // overwrite the value with the uppercase version!
-        textColor.value = "var(--color-text)";
         airport.value = format_airport(airport.value);
+        textColor.value = "var(--color-text)";
         emit('emitAirport', airport.value);
     }
     const styleObject = reactive({
