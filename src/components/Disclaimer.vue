@@ -49,7 +49,7 @@
                 <strong>Read full disclaimer here.</strong>
             </a>
         </slot>
-        <button type="button" class="btn-green" @click="acceptDisclaimer">
+        <button type="button" class="btn-blue" @click="acceptDisclaimer">
           I ACCEPT
         </button>
       </footer>
@@ -59,13 +59,13 @@
 
 <style>
     .modal-backdrop {
-        position: absolute;
+        position: fixed;
         z-index: 100;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: var(--color-background-modal);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -105,15 +105,16 @@
     .modal-body {
         position: relative;
         padding: 20px 10px;
+        margin: 10px 50px;
         color: red;
         text-align: center;
     }
 
-    .btn-green {
+    .btn-blue {
         color: var(--vt-c-white);
-        background: hsla(160, 100%, 37%, 1);
-        border: 1px solid #4AAE9B;
-        border-radius: 2px;
+        background: var(--color-light-blue);
+        border: 1px solid var(--color-light-blue);
+        border-radius: var(--base-radius);
         margin: 20px;
     }
 </style>

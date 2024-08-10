@@ -64,7 +64,7 @@
     let computedStyle = getComputedStyle(document.documentElement);
     const disabledSliderColor = computedStyle.getPropertyValue('--color-slider-disabled');
     const initialSliderColor = computedStyle.getPropertyValue("--color-slider-untouched");
-    const sliderColor = ref();
+    const sliderColor = ref(initialSliderColor);
     const sliderValue = ref(props.start);
     const realValue = ref();
     var updated = false;
