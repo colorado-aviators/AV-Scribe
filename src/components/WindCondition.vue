@@ -9,7 +9,7 @@
         (e: 'emitWindCondition', windCondition: string): void
     }>()
     const onChange = () => {
-        textColor.value = "var(--color-text-dark)"
+        textColor.value = "var(--color-text)"
         emit('emitWindCondition', windCondition.value);
     }
     const styleObject = reactive({

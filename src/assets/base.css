@@ -19,6 +19,7 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --color-untouched: rgba(0, 0, 80, 0.2);
 }
 
 /* semantic color variables for this project */
@@ -39,7 +40,11 @@
   --color-text-dark: var(--vt-c-text-dark-2);
   --color-text-untouched: var(--vt-c-text-light-2);
   --color-slider-disabled: rgba(255, 255, 255, 0.1);
-  --color-slider-untouched: rgba(0, 0, 255, 0.2)
+  --color-slider-untouched: rgba(0, 0, 255, 0.2);
+  --color-text-untouched: var(--color-untouched);
+  --color-slider-untouched: var(--color-untouched);
+  --color-slider-thumb:  rgba(150, 150, 150, 1.0);
+  --color-slider-disabled: var(--vt-c-text-light-2);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,6 +59,12 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+    --color-slider-thumb: white;
+    --color-slider-disabled: rgba(255, 255, 255, 0.1);
+
+    --color-untouched: rgba(255, 255, 255, 0.2);
+    --color-text-untouched: var(--color-untouched);
+    --color-slider-untouched: var(--color-untouched);
   }
 }
 
