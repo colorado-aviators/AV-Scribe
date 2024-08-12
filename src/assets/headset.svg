@@ -37,20 +37,4 @@
     <g>
         <use id="headset-icon" href="#headset" transform="scale(100)"/>
     </g>
-    <style>
-        path, circle, .av-font, .scribe-font {
-            fill: #000;
-        }
-        svg {
-            background-color: white;
-        }
-        @media (prefers-color-scheme: dark) {
-            path, circle, .av-font, .scribe-font {
-                fill: #fff;
-            }
-            svg {
-                background-color: #181818;
-            }
-        }
-    </style>
 </svg>
