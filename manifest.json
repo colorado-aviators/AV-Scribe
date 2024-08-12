@@ -1,7 +1,6 @@
 {
     "name": "AV Scribe",
     "short_name": "AV Scribe",
-    "start_url": "/",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
     "display": "fullscreen",
