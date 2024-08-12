@@ -277,7 +277,11 @@ function draw_logo() {
 function exportLogo() {
     let id = "logo";
     exportToSVG(id);
-    exportToPNG(id, 180, 180, "apple-touch-icon-180-180.png");
+    let size;
+    size = 180;
+    exportToPNG(id, size, size, `apple-touch-icon-${size}-${size}.png`);
+    size = 512;
+    exportToPNG(id, size, size, `google-touch-icon-${size}-${size}.png`);
 }
 
 function exportHeadset() {
