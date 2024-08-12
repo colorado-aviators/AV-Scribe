@@ -1,69 +1,24 @@
-<svg id="blah" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -30 100 60" onload="pieSlice()">
-    <defs>
-        <g id="headset" stroke-width="0">
-            <path
-                d="
-                M -.12 -.08
-                A .1 .1 0 0 1 .12 -.08
-                L .11 -.05
-                A .11 .1 0 0 0 -.11 -.05
-                "
-            />
-            <path
-                d="
-                M -.11 -.07
-                A .11 .08 0 0 0 -.11 .07
-                A .06 .1 0 0 0 -.11 -.07
-                "
-            />
-            <path
-                d="
-                M .11 -.07
-                A .11 .08 0 0 1 .11 .07
-                A .05 .1 0 0 1 .11 -.07
-                "
-            />
-            <path
-                d="
-                M .11 .07
-                A .10 .10 0 0 1 0 .14
-                L .01 .12
-                A .10 .10 0 0 0 .11 .07
-                "
-            />
-            <circle r=".02" cy=".13"/>
-        </g>
-    </defs>
-    <g transform="scale(100)">
-        <use href="#headset" x="-.185" y=".025" transform="scale(1.2)"/>
-        <text x="-.225" y=".025" class="av-font">AV</text>
-        <text x=".025" y=".025" class="scribe-font">Scribe</text>
-    </g>
-    <!-- Text -->
-    <style>
-        .scribe-font {
-            font: .16px proxima nova;
-            dominant-baseline: middle;
-            text-anchor: left;
-        }
-        .av-font {
-            font: .16px proxima nova;
-            dominant-baseline: middle;
-            text-anchor: middle;
-        }
-        path, circle, .av-font, .scribe-font {
+<svg xmlns="http://www.w3.org/2000/svg" id="lockup" onload="draw_lockup()" class="solid" viewBox="-.50 -.25 1.075 .50"><g stroke-width="0" class="contrast" transform="scale(.5) translate(-.5 .04)"><path d="&#10;        M -.36 -.24&#10;        A .33 .27 0 0 1 .36 -.24&#10;        L .33 -.15&#10;        A .33 .27 0 0 0 -.33 -.15&#10;    "/><path d="&#10;        M -.33 -.21&#10;        A .3 .24 0 0 0 -.33 .21&#10;        A .18 .3 0 0 0 -.33 -.21&#10;    "/><path d="&#10;        M .33 -.21&#10;        A .3 .24 0 0 1 .33 .21&#10;        A .18 .3 0 0 1 .33 -.21&#10;    "/><path d="&#10;        M .33 .21&#10;        A .3 .3 0 0 1 0 .42&#10;        L .03 .36&#10;        A .3 .3 0 0 0 .33 .21&#10;    "/><circle r=".06" cy=".39"/></g><text class="contrast" x="-0.25" y="0.04" style="font: 0.2px &quot;proxima nova&quot;; dominant-baseline: middle; text-anchor: middle;">AV</text><text class="contrast" x="0.025" y="0.04" style="font: 0.2px &quot;proxima nova&quot;; dominant-baseline: middle;">Scribe</text><style xmlns="http://www.w3.org/1999/xhtml" id="styles">
+      .contrast {
             fill: #000;
+      }
+
+      div {
+        width: 300px;
+        background-color: white;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .contrast {
+            fill: #fff;
         }
-        svg {
-            background-color: white;
+        div {
+          background-color: black;
         }
-        @media (prefers-color-scheme: dark) {
-            path, circle, .av-font, .scribe-font {
-                fill: #fff;
-            }
-            svg {
-                background-color: #181818;
-            }
-        }
-    </style>
-</svg>
+      }
+
+      svg {
+        height: auto();
+        background-color: transparent;
+      }
+  </style></svg>
