@@ -15,7 +15,7 @@ export default defineConfig({
             injectRegister: 'auto',
             registerType: 'autoUpdate',
             base: '/',
-            includeAssets: ['favicon.svg', 'logo.svg'],
+            includeAssets: ['favicon.svg'],
             manifest: {
                 name: 'AV Scribe',
                 short_name: 'av-scribe',
@@ -32,12 +32,6 @@ export default defineConfig({
                   },
                   {
                       src: "favicon.svg",
-                      sizes: "any",
-                      type: "image/svg+xml",
-                      purpose: "any maskable"
-                  },
-                  {
-                      src: "logo.svg",
                       sizes: "any",
                       type: "image/svg+xml",
                       purpose: "any maskable"
