@@ -14,6 +14,10 @@ utility, accuracy, or sufficiency of the functionality afforded by its use. DO N
 the failure of its functionality could put your safety or the safety of others at risk. By using this web app, you are
 agreeing to use it in a manner that will not conflict with FAA regulations or best practices of aviation.*
 
+.. image:: public/logo.svg
+  :width: 400
+  :alt: Alternative text
+
 Background
 ----------
 
