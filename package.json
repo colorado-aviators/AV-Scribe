@@ -2,7 +2,7 @@
   "name": "av-scribe",
   "description": "A web app that makes it easier to transcribe aviation weather data accessed over the radio",
   "author": "McGregor Joyner",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "homepage": "https://coloradoaviators.net/AV-Scribe",
   "license": "MIT",
   "type": "module",
