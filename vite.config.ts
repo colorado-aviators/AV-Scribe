@@ -12,9 +12,9 @@ export default defineConfig({
         {
             registerType: 'autoUpdate',
             includeAssets: [
-                'favicon.svg',
-                'apple-touch-icon-180-180.png',
-                'google-touch-icon-180-180.png'
+                './public/favicon.svg',
+                './public/apple-touch-icon-180-180.png',
+                './public/google-touch-icon-180-180.png'
             ],
             manifest: {
                 name: 'AV Scribe',
@@ -25,20 +25,19 @@ export default defineConfig({
                 display: "fullscreen",
                 icons: [
                     {
-                      src: "google-touch-icon.png",
+                      src: "./public/favicon.svg",
+                      type: "image/svg+xml",
+                      purpose: "any"
+                    },
+                    {
+                      src: "./public/google-touch-icon.png",
                       sizes: "512x512",
                       type: "image/png",
                       purpose: "any"
                   },
                   {
-                      src: "favicon.svg",
-                      sizes: "512x512",
-                      type: "image/svg",
-                      purpose: "any"
-                  },
-                  {
-                      src: "apple-touch-icon-180-180.png",
-                      sizes: "512x512",
+                      src: "./public/apple-touch-icon-180-180.png",
+                      sizes: "180x180",
                       type: "image/png",
                       purpose: "maskable"
                   }
