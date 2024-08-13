@@ -1,6 +1,6 @@
 .. highlight:: shell
-.. |repo| replace:: AVWX Scribe
-.. |plug| replace:: avwx-scribe
+.. |repo| replace:: AV Scribe
+.. |plug| replace:: av-scribe
 
 ============
 Contributing
@@ -17,7 +17,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/mcgsjoyner/AVWX-Scribe/issues.
+Report bugs at https://github.com/colorado-aviators/AV-Scribe/issues.
 
 If you are reporting a bug, please include:
 
@@ -47,7 +47,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/mcgsjoyner/AVWX-Scribe/issues.
+The best way to send feedback is to file an issue at https://github.com/colorado-aviators/AV-Scribe/issues.
 
 If you are proposing a feature:
 
@@ -86,7 +86,7 @@ Release Process
         git commit -am "update release docs" && git push
 
 7.  Open and merge a pull request from your branch onto main with the title "Release v0.2.0".
-8.  `Make a Release tag <https://github.com/mcgsjoyner/AVWX-Scribe/releases/new>`_ like "v0.2.0"
+8.  `Make a Release tag <https://github.com/colorado-aviators/AV-Scribe/releases/new>`_ like "v0.2.0"
     with the title "Release v0.2.0"
 
 Get Started!
@@ -99,13 +99,13 @@ Ready to contribute? Here's how to set up |plug| for local development.
 
     .. code-block:: shell
 
-        git clone git@github.com:your_name_here/avwx-scribe.git
+        git clone git@github.com:colorado-aviators/AV-Scribe.git
 
 3.  Install your local copy:
 
     .. code-block:: shell
 
-        cd avwx-scribe/
+        cd Av-Scribe/
         npm install
 
 4.  Create a branch for local development:

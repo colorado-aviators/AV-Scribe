@@ -20,7 +20,7 @@
     });
     const disablingCoverages = ["SKC", "NCD", "CLR", "VV"];
 
-    const ADDRESS = "https://mcgsjoyner.github.io/AVWX-Scribe/";
+    const ADDRESS = "https://coloradoaviators.net/AV-Scribe/";
 
     function get_airport_text() {
         return `Airport: ${props.airport}`;
@@ -122,7 +122,7 @@
             get_altimeter_text(),
             get_density_altitude_text(),
             '',
-            `Generated using <a href=${ADDRESS}>AVWX Scribe</a>`
+            `Generated using <a href=${ADDRESS}>AV Scribe</a>`
         ]
         let content = lines.filter(isNotNull).join("<br>");
 

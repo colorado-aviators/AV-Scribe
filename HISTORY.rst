@@ -1,4 +1,4 @@
-.. |repo| replace:: AVWX Scribe
+.. |repo| replace:: AV Scribe
 .. |bug| replace:: **Bug Fixes**
 .. |feat| replace:: **Features Added**
 .. |refactor| replace:: **Notable Refactors**
