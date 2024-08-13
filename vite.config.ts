@@ -22,32 +22,6 @@ export default defineConfig({
                 theme_color: '#ffffff',
                 background_color: "#ffffff",
                 display: "fullscreen",
-                icons: [
-                  {
-                      src: "google-touch-icon.png",
-                      sizes: "512x512",
-                      type: "image/png",
-                      purpose: "any maskable"
-                  },
-                  {
-                      src: "favicon.svg",
-                      sizes: "any",
-                      type: "image/svg+xml",
-                      purpose: "any maskable"
-                  },
-                  {
-                      src: "apple-touch-icon-180-180.png",
-                      sizes: "180x180",
-                      type: "image/png",
-                      purpose: "any maskable"
-                  },
-                  {
-                      src: "/apple-touch-icon-180-180.png",
-                      sizes: "180x180",
-                      type: "image/png",
-                      purpose: "any maskable"
-                  }
-                ]
             },
         }
     )
@@ -60,5 +34,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: "./"
+  base: ""
 })
