@@ -1,9 +1,9 @@
 {
-  "name": "avwx-scribe",
+  "name": "av-scribe",
   "description": "A web app that makes it easier to transcribe aviation weather data accessed over the radio",
   "author": "McGregor Joyner",
   "version": "0.5.0",
-  "homepage": "https://github.com/mcgsjoyner/AVWX-Scribe",
+  "homepage": "https://coloradoaviators.net/AV-Scribe",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mcgsjoyner/AVWX-Scribe.git"
+    "url": "git+https://github.com/colorado-aviators/AV-Scribe"
   },
   "directories": {
     "lib": "src/lib"

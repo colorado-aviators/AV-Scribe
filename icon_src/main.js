@@ -293,4 +293,5 @@ function exportHeadset() {
 function exportLockup() {
     let id = "lockup";
     exportToSVG(id);
+    exportToPNG(id, 640, 320);
 }

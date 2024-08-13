@@ -22,7 +22,7 @@
       showModal.value = false;
     }
 
-    const disclaimerAcknowledgedDate = "avwx-scribe-disclaimer-acknowledged-date";
+    const disclaimerAcknowledgedDate = "av-scribe-disclaimer-acknowledged-date";
     const disclaimerShelfLifeDays = 30;
     const showModal = ref(!getDisclaimerValid());
 </script>
@@ -45,7 +45,7 @@
 
       <footer class="modal-footer">
         <slot name="footer">
-            <a href="https://github.com/mcgsjoyner/AVWX-Scribe/blob/main/README.rst#disclaimer">
+            <a href="https://github.com/colorado-aviators/AV-Scribe/blob/main/README.rst#disclaimer">
                 <strong>Read full disclaimer here.</strong>
             </a>
         </slot>

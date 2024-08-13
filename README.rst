@@ -1,8 +1,8 @@
-===========
-AVWX Scribe
-===========
+=========
+AV Scribe
+=========
 
-A web app that makes it easier to transcribe aviation weather data accessed over the radio.
+A web app that makes it easier to transcribe aviation weather and other information accessed over the radio.
 
 * Free software: MIT license
 
@@ -37,7 +37,7 @@ essential skill because it is still the default when digital sources are not ava
 Features
 --------
 
-This app is an evolving project that is not yet feature-complete. Please refer to the `Issues tab <https://github.com/mcgsjoyner/AVWX-Scribe/issues>`_
+This app is an evolving project that is not yet feature-complete. Please refer to the `Issues tab <https://github.com/colorado-aviators/AV-Scribe/issues/>`_
 for a digest of proposed features, enhancements, and bug fixes.
 
 * Facilitates capture of aviation weather data in real time
