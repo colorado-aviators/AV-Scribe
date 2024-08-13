@@ -10,6 +10,19 @@
 History
 =======
 
+0.6.0 (2024-08-13)
+------------------
+Improves light/dark mode themes and introduces various icons.
+
+|refactor|
+* Rename AVWX-Scribe to AV-Scribe and move it from mcgsjoyner's GitHub to the new colorado-aviators GitHub account
+
+|doc|
+* Introduce link to Wiki page for UI guide.
+
+|ui|
+* Build various SVG and PNG assets using JavaScript and deploy them to the web app.
+
 0.5.0 (2024-08-01)
 ------------------
 Significant UI redesign for ease of use.
