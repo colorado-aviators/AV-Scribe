@@ -15,7 +15,6 @@ export default defineConfig({
             injectRegister: 'auto',
             registerType: 'autoUpdate',
             base: '/',
-            includeAssets: ['favicon.svg'],
             manifest: {
                 name: 'AV Scribe',
                 short_name: 'av-scribe',
