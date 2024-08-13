@@ -47,10 +47,10 @@
 
 <template>
   <header>
-    <div>
-      <h1 align="center">AVWX Scribe</h1>
-      <Disclaimer/>
+    <div align="center" style="width: 100%; height: 100vmin">
+        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg" width="100%" height="100%" />
     </div>
+    <Disclaimer/>
   </header>
 
   <main align="center">
@@ -107,28 +107,6 @@
         line-height: 1.5;
     }
 
-    .logo {
-      display: block;
-      margin: 0 auto 2rem;
-    }
-
-    @media (min-width: 1024px) {
-      header {
-        display: flex;
-        place-items: center;
-        //padding-right: calc(var(--section-gap) / 2);
-      }
-
-      .logo {
-        margin: 0 2rem 0 0;
-      }
-
-      header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
-      }
-    }
     footer {
         text-align: right;
         margin-bottom: 12px;

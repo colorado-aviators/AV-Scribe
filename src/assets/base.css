@@ -24,7 +24,6 @@
 /* semantic color variables for this project */
 :root {
     --color-light-blue: rgba(0, 0, 255, .2);
-
     --base-radius: 4px;
     --section-gap: 160px;
 
@@ -45,7 +44,6 @@
     --color-untouched: rgba(255, 255, 255, 0.2);
     --color-text-untouched: var(--color-untouched);
     --color-slider-untouched: var(--color-untouched);
-    --data-theme: light;
 }
 
 @media (prefers-color-scheme: light) {
