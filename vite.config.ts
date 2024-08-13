@@ -12,6 +12,7 @@ export default defineConfig({
     vue(),
     VitePWA(
         {
+            injectRegister: 'auto',
             registerType: 'autoUpdate',
             base: '/',
             includeAssets: ['favicon.svg'],
@@ -27,6 +28,12 @@ export default defineConfig({
                       src: "google-touch-icon.png",
                       sizes: "512x512",
                       type: "image/png",
+                      purpose: "maskable"
+                  },
+                  {
+                      src: "favicon.svg",
+                      sizes: "any",
+                      type: "image/svg+xml",
                   },
                   {
                       src: "apple-touch-icon-180-180.png",
@@ -44,10 +51,13 @@ export default defineConfig({
         }
     )
   ],
+  build: {
+    assetsInlineLimit: 0,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: './'
+  base: "./"
 })
