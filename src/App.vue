@@ -93,6 +93,7 @@
     />
   </main>
   <footer>
+    <a href="https://github.com/colorado-aviators/AV-Scribe/wiki/UI-guide">User Guide</a>
     <p>Version: 0.5.0</p>
     <p>Author: McGregor Joyner</p>
   </footer>
