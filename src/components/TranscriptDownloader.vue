@@ -17,6 +17,7 @@
         dewpoint: {type: Number, required: true},
         altimeter:  {type: Number, required: true},
         densityAltitude:  {type: Number, required: true},
+        notes: {type: String, required: false},
     });
     const disablingCoverages = ["SKC", "NCD", "CLR", "VV"];
 
@@ -95,6 +96,11 @@
         return `Density Altitude (est.): ${val} ft`;
     }
 
+    function get_notes_text() {
+        let val = props.notes;
+        return val;
+    }
+
     function download_transcript() {
         let isNotNull = (value: any) => value != null;
 
@@ -121,6 +127,8 @@
             get_spread_text(),
             get_altimeter_text(),
             get_density_altitude_text(),
+            '',
+            get_notes_text(),
             '',
             `Generated using <a href=${ADDRESS}>AV Scribe</a>`
         ]

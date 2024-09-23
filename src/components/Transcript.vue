@@ -19,6 +19,7 @@
         dewpoint: {type: Number, required: true},
         altimeter:  {type: Number, required: true},
         densityAltitude:  {type: Number, required: true},
+        notes: {type: String, required: false},
     });
 
     function get_airport_chunk() {
@@ -134,6 +135,7 @@
         :dewpoint="dewpoint"
         :temperature="temperature"
         :densityAltitude="densityAltitude"
+        :notes="notes"
     />
 </template>
 
