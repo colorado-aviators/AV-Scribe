@@ -3,15 +3,15 @@
   <body>
     <script src="main.js"></script>
     <div>
-      <svg id="headset" onload="draw_headset()" class="solid" viewBox="-.50 -.54 1 1"></svg>
+      <svg id="headset" onload="draw_headset()" viewBox="-.50 -.50 1 1"></svg>
       <button id="download-headset" onclick="exportHeadset()">DOWNLOAD</button>
     </div>
     <div>
-      <svg id="lockup" onload="draw_lockup()" class="solid" viewBox="-.50 -.25 1.075 .50"></svg>
+      <svg id="lockup" onload="draw_lockup()" class="change-with-theme" viewBox="-.50 -.25 1.075 .50"></svg>
       <button id="download-lockup" onclick="exportLockup()">DOWNLOAD</button>
     </div>
     <div>
-      <svg id="logo" onload="draw_logo()" class="solid" viewBox="-.40 -.40 .80 .80" width=".1em" height=".1em"></svg>
+      <svg id="logo" onload="draw_logo()" class="change-with-theme" viewBox="-.40 -.40 .80 .80"></svg>
       <button id="download-logo" onclick="exportLogo()">DOWNLOAD</button>
     </div>
   </body>
@@ -26,10 +26,10 @@
       }
 
       @media (prefers-color-scheme: dark) {
-        .contrast {
+        change-with-theme.contrast {
             fill: #fff;
         }
-        div {
+        change-with-theme.div {
           background-color: black;
         }
       }
