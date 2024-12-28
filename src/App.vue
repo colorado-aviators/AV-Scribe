@@ -61,7 +61,7 @@
         return windVel.value == 0.0;
     }
 
-    function updateWeatherRanges(weatherData) {
+    function updateWeatherRanges(weatherData: weather_data.WeatherData) {
         /* Admittedly, this involves some guess work.
         Setting the range of each input based on monthly average or average min / max
         is imperfect, but I've tried to leave a generous range.
@@ -83,17 +83,21 @@
         altimeterGradient.value = .85;
     }
 
-    function useAirportData(airportData) {
+    function useAirportData(airportData: airport_data.AirportData) {
         elevation.value = airportData.elevation_in_feet;
         weather_data.loadWeatherData(airportData.location).then((weatherData) => {
-            updateWeatherRanges(weatherData);
+            if (weatherData != null) {
+                updateWeatherRanges(weatherData);
+            }
         }).catch((error) => console.error(error));
     }
 
-    function switchAirport(airportID) {
+    function switchAirport(airportID: string) {
         airport.value = airportID;
         airport_data.loadAirportData(airportID).then((airportData) => {
-            useAirportData(airportData)
+            if (typeof airportData === typeof airport_data.AirportData) {
+                useAirportData(airportData);
+            }
         }).catch((error) => console.error(error));
     }
 </script>

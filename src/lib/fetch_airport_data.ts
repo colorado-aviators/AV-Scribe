@@ -7,29 +7,20 @@ const keyAirportID = "id";
 const keyElevation = "elevation-in-ft";
 const keyLatitude = "latitude";
 const keyLongitude = "longitude";
-const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+const indexedDB = window.indexedDB;
 
-class AirportData{
-    constructor(airportID, elevation_in_feet, location) {
+export class AirportData{
+    id: string;
+    elevation_in_feet: number;
+    location: Location;
+    constructor(airportID: string, elevation_in_feet: number, location: Location) {
         this.id = airportID;
         this.elevation_in_feet = elevation_in_feet;
         this.location = location;
     }
-    get elevation_in_feet() {
-        return this._elevation_in_feet;
-    }
-    set elevation_in_feet (val) {
-        this._elevation_in_feet = val;
-    }
-    get id () {
-        return this._id;
-    }
-    set id (val) {
-        this._id = val;
-    }
 }
 
-function getAviationFacilitiesURL(resultOffset){
+function getAviationFacilitiesURL(resultOffset: number){
     let outFields = [
         //"EFF_DATE",
         "ARPT_ID",
@@ -62,7 +53,7 @@ function getAviationFacilitiesURL(resultOffset){
     return url + query;
 }
 
-async function downloadDatabase(db) {
+async function downloadDatabase(db: IndexedDB) {
     db.createObjectStore(keyObjectStore, {keyPath: keyAirportID});
     var recordCount = 0;
     while (recordCount % 2000 == 0) {
@@ -95,11 +86,11 @@ async function downloadDatabase(db) {
     }
 }
 
-async function queryDatabase(event, airportID, RESOLVE, REJECT) {
+async function queryDatabase(event: any, airportID: string, RESOLVE: any, REJECT: any) {
     let db = event.target.result;
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).get(airportID);
 
-    getRequest.onsuccess = (getEvent) => {
+    getRequest.onsuccess = (getEvent: any) => {
         const data = getEvent.target.result;
         let location = new Location(
             Coordinate.fromInt(data[keyLatitude]),
@@ -113,12 +104,12 @@ async function queryDatabase(event, airportID, RESOLVE, REJECT) {
         RESOLVE(airportData);
     };
 
-    getRequest.onerror = (err) => {
+    getRequest.onerror = (err: any) => {
         REJECT(`Error to get student information: ${err}`);
     }
 }
 
-async function upgradeDatabase(event) {
+async function upgradeDatabase(event: any) {
     // the existing database version is less than current (or it doesn't exist)
     switch(event.oldVersion) { // existing db version
         case 0:
@@ -127,60 +118,11 @@ async function upgradeDatabase(event) {
     }
 };
 
-export function loadAirportData(airportID) {
-    return new Promise((RESOLVE, REJECT) => {
+export function loadAirportData(airportID: string) {
+    return new Promise((RESOLVE: any, REJECT: any) => {
         let openRequest = indexedDB.open(keyDatabase, 1);
-        openRequest.onupgradeneeded = (event) => {upgradeDatabase(event)};
-        openRequest.onsuccess = (event) => queryDatabase(event, airportID, RESOLVE, REJECT);
+        openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
+        openRequest.onsuccess = (event: any) => queryDatabase(event, airportID, RESOLVE, REJECT);
         openRequest.onerror = () => {console.error("Error", openRequest.error);};
     });
-}
-
-// UNUSED CODE FOR CHECKING VALIDITY OF ENTRIES
-
-const cacheShelfLifeDays = 31;
-function cacheIsValid() {
-    if (!cacheExists()) {
-        return false;
-    }
-    let now = new Date();
-    let effectiveDate = getCacheEffectiveDate();
-    let age = now.getTime() - Date.parse(effectiveDate);
-    let ms_per_day = 24 * 60 * 60 * 1000;
-    let limit = cacheShelfLifeDays * ms_per_day;
-    return age < limit;
-}
-
-// UNUSED CODE FOR ENCODING ICAO IDS EFFICIENTLY
-
-export function decodeICAOElement(encoded) {
-    let charCode = encoded + 48;
-    if (encoded > 9) {
-        charCode += 6;
-    }
-    let decoded = String.fromCharCode(charCode);
-    return decoded;
-}
-
-export function decodeICAO(encoded) {
-    let decoded = "";
-    let tmp = encoded;
-    for (let i = 1; i < 5; i ++) {
-        let element = tmp % 256;
-        decoded += decodeICAOElement(element);
-        tmp = (tmp - element) / 256;
-    }
-    return decoded;
-}
-
-export function encodeICAO(icao) {
-    let encoded = 0;
-    for (let i = 0; i < 4; i ++) {
-        let charCode = icao.charCodeAt(i) - 48;
-        if (charCode > 9) {
-            charCode -= 6;
-        }
-        encoded += charCode * (256 ** i);
-    }
-    return encoded;
 }

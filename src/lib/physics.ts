@@ -3,23 +3,24 @@ import * as math from 'mathjs'
 math.createUnit('inHg', `${math.unit(1, "in").toNumeric("mm")} mmHg`)
 
 export class Coordinate{
-    constructor(val: unit) {
-        this.val = val
+    val: math.Unit;
+    constructor(val: math.Unit) {
+        this.val = val;
     }
     toInt() {
         let [deg, arcmin] = this.val.splitUnit(["deg", "arcmin"]);
         let result = math.round(deg.toNumeric("deg") * 60 + arcmin.toNumeric("arcmin"));
         return result;
     }
-    static fromInt(int: Number) {
+    static fromInt(int: number) {
         let result = new Coordinate(math.unit(int , "arcmin"));
         return result;
     }
-    static fromDegArcminSign(deg: unit, arcmin: unit, sign: Number) {
+    static fromDegArcminSign(deg: math.Unit, arcmin: math.Unit, sign: number) {
         let result = new Coordinate(math.evaluate(`${sign} * (${deg} + ${arcmin})`));
         return result;
     }
-    static fromString(string: String) {
+    static fromString(string: string) {
         let result = Coordinate.fromDegArcminSign(
             math.unit(`${string.substring(0, string.length - 3)} deg`),
             math.unit(`${string.substring(string.length - 3), string.length - 1} arcmin`),
@@ -34,7 +35,7 @@ export class Location{
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    distanceTo(other) {
+    distanceTo(other: Location) {
         // NOTE: gets the job done for now, but definitely not accurate!
         let a = this.latitude.toInt() - other.latitude.toInt();
         let b = this.longitude.toInt() - other.longitude.toInt();
@@ -43,7 +44,7 @@ export class Location{
     }
 }
 
-export function stationPressureToAltimeterSetting(pressure: math.unit, elevation: math.unit) {
+export function stationPressureToAltimeterSetting(pressure: math.Unit, elevation: math.Unit) {
     const referencePressure = math.unit(1013.25, "mbar");  // static pressure at sea level
     const standardTempK = math.unit(288.15, "K");  // standard temp at sea level
     const lapseRate = math.unit(.0065, "K / m");  // Temperature lapse rate

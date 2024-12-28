@@ -1,4 +1,4 @@
-import { unit } from 'mathjs'
+import { unit, Unit } from 'mathjs'
 import { Coordinate, stationPressureToAltimeterSetting, Location } from './physics'
 
 const keyDatabase = "weather-data";
@@ -34,8 +34,13 @@ export const WeatherRecords = {
     // altimeterSettingLow: unit(25.69, "inHg"),
 }
 
-class WeatherData{
-    constructor(location: Location, elevation: unit, altimeterSetting: unit, meanMinTemp: unit, meanMaxTemp: unit) {
+export class WeatherData{
+    location: Location;
+    elevation: Unit;
+    altimeterSetting: Unit;
+    meanMinTemp: Unit;
+    meanMaxTemp: Unit;
+    constructor(location: Location, elevation: Unit, altimeterSetting: Unit, meanMinTemp: Unit, meanMaxTemp: Unit) {
         this.location = location;
         this.elevation = elevation;
         this.altimeterSetting = altimeterSetting;
@@ -44,8 +49,8 @@ class WeatherData{
     }
 }
 
-function nanmean(array2D) {
-    let result = new Int32Array(12);
+function nanmean(array2D: Array[Array]) {
+    let result = new Int16Array(12);
     for (let i = 0; i < array2D[0].length ; i++ ) {
         let sum = 0;
         let count = 0;
@@ -62,11 +67,11 @@ function nanmean(array2D) {
     return result;
 }
 
-function getDataForString(stringVal) {
+function getDataForString(stringVal: string) {
     return stringVal == "     " ? NaN : Number(stringVal);
 }
 
-async function downloadDatabase(db) {
+async function downloadDatabase(db: window.indexedDB) {
     var os = db.createObjectStore(keyObjectStore, {keyPath: keyStationID});
 
     var xhttp = new XMLHttpRequest();
@@ -77,11 +82,11 @@ async function downloadDatabase(db) {
             var objectStore = db.transaction(keyObjectStore, "readwrite").objectStore(keyObjectStore);
             let lines = xhttp.responseText.split("\n");
             var currentId = null;
-            var data = {};
+            var data = new Map();
             var featureData = [];
             var currentFeatureIndex = null;
-            var elevation = null;
-            for (let i in lines) {
+            var elevation = unit(0, "m");
+            for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
                 let stationId = Number(line.substring(2, 7));
                 let stationChanged = stationId != currentId;
@@ -125,22 +130,22 @@ async function downloadDatabase(db) {
                             currentFeatureIndex = featureIndex;
                     }
                     if (currentFeature !== null) {
-                        data[currentFeature] = means;
+                        data.set(currentFeature, means);
                     }
                 }
                 currentFeatureIndex = featureIndex;
 
                 if (stationChanged) {
                     currentId = stationId;
-                    if (Object.keys(data).length > 0) {
+                    if (data.size > 0) {
                         let request = objectStore.add(data);
-                        data = {};
+                        data = new Map();
                     }
                     elevation = unit(getDataForString(line.substring(67, 72)), "m");
-                    data[keyStationID] = stationId;
-                    data[keyLatitude] = Coordinate.fromString(line.substring(8, 13)).toInt();
-                    data[keyLongitude] = Coordinate.fromString(line.substring(13, 19)).toInt();
-                    data[keyElevation] = elevation.toNumber();
+                    data.set(keyStationID, stationId);
+                    data.set(keyLatitude, Coordinate.fromString(line.substring(8, 13)).toInt());
+                    data.set(keyLongitude, Coordinate.fromString(line.substring(13, 19)).toInt());
+                    data.set(keyElevation, elevation.toNumber());
                     featureData = [];
                 }
                 else {
@@ -152,7 +157,7 @@ async function downloadDatabase(db) {
                     featureData.push(monthlyData);
                 }
 
-                if (i == lines.length) {
+                if (i == lines.length - 1) {
                     let request = objectStore.add(data);
                 }
             }
@@ -162,7 +167,7 @@ async function downloadDatabase(db) {
     xhttp.send();
 }
 
-async function upgradeDatabase(event) {
+async function upgradeDatabase(event: any) {
     // the existing database version is less than current (or it doesn't exist)
     switch(event.oldVersion) { // existing db version
         case 0:
@@ -171,12 +176,12 @@ async function upgradeDatabase(event) {
     }
 };
 
-async function queryDatabase(event, location, RESOLVE, REJECT) {
+async function queryDatabase(event: any, location: Location, RESOLVE: any, REJECT: any) {
     let db = event.target.result;
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).getAll();
 
-    getRequest.onsuccess = (e) => {
-        const values = e.target.result;
+    getRequest.onsuccess = (event: any) => {
+        const values = event.target.result;
         let minDistance = 100000;
         let now = new Date();
         let currentMonth = now.getUTCMonth();
@@ -203,18 +208,18 @@ async function queryDatabase(event, location, RESOLVE, REJECT) {
         RESOLVE(weatherData);
     };
 
-    getRequest.onerror = (err) => {
+    getRequest.onerror = (err: any) => {
         REJECT(`Error to get student information: ${err}`);
     };
 }
 
-export function loadWeatherData(location) {
-    return new Promise((RESOLVE, REJECT) => {
-        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+export function loadWeatherData(location: Location) {
+    return new Promise((RESOLVE: any, REJECT: any) => {
+        var indexedDB = window.indexedDB;
         let openRequest = indexedDB.open(keyDatabase, 1);
 
-        openRequest.onupgradeneeded = (event) => upgradeDatabase(event);
+        openRequest.onupgradeneeded = (event: any) => upgradeDatabase(event);
         openRequest.onerror = () => {console.error("Error", openRequest.error)};
-        openRequest.onsuccess = (event) => queryDatabase(event, location, RESOLVE, REJECT);
+        openRequest.onsuccess = (event: any) => queryDatabase(event, location, RESOLVE, REJECT);
     });
 }
