@@ -15,7 +15,6 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "idb": "^8.0.1",
     "mathjs": "13.0.3",
     "vue": "^3.4.29"
   },
