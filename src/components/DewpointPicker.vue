@@ -4,18 +4,15 @@
 
     const title = "Dewpoint";
     const start = ref(0);
-    const high = ref(35);
-    const low = ref(-83);
-    const optimum = ref(0);
-    const gradient = ref(.9);
     const realValue = ref();
     const sketchy = ref();
     const bad = ref();
     const props = defineProps({
-        temp: {
-            type: Number,
-            required: true,
-        },
+        temp: {type: Number, required: true},
+        low: {type: Number, required: false},
+        high: {type: Number, required: false},
+        optimum: {type: Number, required: false},
+        gradient: {type: Number, required: false},
     });
 
     function get_read_out() {

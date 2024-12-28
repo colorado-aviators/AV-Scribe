@@ -1,7 +1,35 @@
-import * as physics from "../physics"
 import { unit } from 'mathjs'
-
 import { test, expect } from 'vitest'
+import * as physics from "../physics"
+
+test('stationPressureToAltimeterSetting', () => {
+    let pressureMB = 830;
+    let elevationMeters = 1729;
+    let expected = 1022.27;
+    let val = physics.stationPressureToAltimeterSetting(pressureMB, elevationMeters);
+    expect(val).toBeCloseTo(expected);
+})
+
+test('coordinateToInt', () => {
+    let coord = new physics.Coordinate(168, 41, 1);
+    let val = coord.toInt();
+    let expected = 10121;
+    expect(val).toBe(expected);
+})
+
+test('coordinateFromInt', () => {
+    let coord = physics.coordinateFromInt(-10121);
+    expect(coord.degree).toBe(168);
+    expect(coord.minute).toBe(41);
+    expect(coord.sign).toBe(-1);
+})
+
+test('coordinateFromString', () => {
+    let coord = physics.coordinateFromString("16841N");
+    expect(coord.degree).toBe(168);
+    expect(coord.minute).toBe(41);
+    expect(coord.sign).toBe(-1);
+})
 
 test('getDensityAltitude', () => {
     /*
