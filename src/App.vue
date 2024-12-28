@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref, watch} from "vue"
+    import {ref} from "vue"
 
     import * as airport_data from "./lib/fetch_airport_data"
     import * as weather_data from "./lib/fetch_weather_data"
@@ -59,38 +59,41 @@
     function isWindCalm() {
         return windVel.value == 0.0;
     }
-    function useAirportData() {
-        airport_data.loadAirportData(airport.value).then((airportData) => {
-            elevation.value = airportData.elevation_in_feet;
-            weather_data.loadWeatherData(airportData.location).then((weatherData) => {
-                /* Admittedly, this involves some guess work.
-                Setting the range of each input based on monthly average or average min / max
-                is imperfect, but I've tried to leave a generous range.
-                */
-                temperatureLow.value = weatherData.meanMinTemp - 25;
-                temperatureHigh.value = weatherData.meanMaxTemp + 25;
-                temperatureOptimum.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
-                temperature.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
-                temperatureGradient.value = .5;
 
-                dewpointHigh.value = dewpointHigh.value < temperatureHigh.value? dewpointHigh.value : temperatureHigh.value;
-                dewpointLow.value = temperatureLow.value;
+    function updateWeatherRanges(weatherData) {
+        /* Admittedly, this involves some guess work.
+        Setting the range of each input based on monthly average or average min / max
+        is imperfect, but I've tried to leave a generous range.
+        */
+        temperatureLow.value = weatherData.meanMinTemp - 25;
+        temperatureHigh.value = weatherData.meanMaxTemp + 25;
+        temperatureOptimum.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
+        temperature.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
+        temperatureGradient.value = .5;
 
-                altimeterLow.value = weatherData.altimeterSetting - 1.0;
-                altimeterHigh.value = weatherData.altimeterSetting + 1.0;
-                altimeterOptimum.value = weatherData.altimeterSetting;
-                altimeter.value = weatherData.altimeterSetting;
-                altimeterGradient.value = .85;
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+        dewpointHigh.value = dewpointHigh.value < temperatureHigh.value? dewpointHigh.value : temperatureHigh.value;
+        dewpointLow.value = temperatureLow.value;
+
+        altimeterLow.value = weatherData.altimeterSetting - 1.0;
+        altimeterHigh.value = weatherData.altimeterSetting + 1.0;
+        altimeterOptimum.value = weatherData.altimeterSetting;
+        altimeter.value = weatherData.altimeterSetting;
+        altimeterGradient.value = .85;
     }
 
+    function useAirportData(airportData) {
+        elevation.value = airportData.elevation_in_feet;
+        weather_data.loadWeatherData(airportData.location).then((weatherData) => {
+            updateWeatherRanges(weatherData);
+        }).catch((error) => console.error(error));
+    }
+
+    function switchAirport(airportID) {
+        airport.value = airportID;
+        airport_data.loadAirportData(airportID).then((airportData) => {
+            useAirportData(airportData)
+        }).catch((error) => console.error(error));
+    }
 </script>
 
 <template>
@@ -102,7 +105,7 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: string) => {airport = payload; useAirportData();}"/>
+    <AirportPicker @emit-airport="(payload: string) => switchAirport(payload)"/>
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
         :elevation-cached="elevation"
