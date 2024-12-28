@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import {ref} from "vue"
+    import * as math from "mathjs"
 
     import * as airport_data from "./lib/fetch_airport_data"
     import * as weather_data from "./lib/fetch_weather_data"
@@ -23,15 +24,15 @@
     import Transcript from './components/Transcript.vue'
 
     // these flexible references set the active slider ranges for each input
-    var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow);
-    var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh);
-    var temperatureOptimum = ref(weather_data.StandardConditions.temperatureC);
+    var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow.toNumeric("C"));
+    var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh.toNumeric("C"));
+    var temperatureOptimum = ref(weather_data.StandardConditions.temperature.toNumeric("C"));
     var temperatureGradient = ref(.9);
-    var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow);
-    var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh);
-    var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow);
-    var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh);
-    var altimeterOptimum = ref(weather_data.StandardConditions.pressure);
+    var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow.toNumeric("C"));
+    var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh.toNumeric("C"));
+    var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumeric("inHg"));
+    var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumeric("inHg"));
+    var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumeric("inHg"));
     var altimeterGradient = ref(.9);
 
     // these references will be used to capture the input values
@@ -65,19 +66,20 @@
         Setting the range of each input based on monthly average or average min / max
         is imperfect, but I've tried to leave a generous range.
         */
-        temperatureLow.value = weatherData.meanMinTemp - 25;
-        temperatureHigh.value = weatherData.meanMaxTemp + 25;
-        temperatureOptimum.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
-        temperature.value = (weatherData.meanMinTemp + weatherData.meanMaxTemp) / 2;
+        temperatureLow.value = math.evaluate(`${weatherData.meanMinTemp} - 25 C`).toNumeric("C");
+        temperatureHigh.value = math.evaluate(`${weatherData.meanMaxTemp} + 25 C`).toNumeric("C");
+        let meanMeanTemp = math.evaluate(`mean(${weatherData.meanMinTemp}, ${weatherData.meanMaxTemp})`);
+        temperatureOptimum.value = meanMeanTemp.toNumeric("C");
+        temperature.value = meanMeanTemp.toNumeric("C");
         temperatureGradient.value = .5;
 
         dewpointHigh.value = dewpointHigh.value < temperatureHigh.value? dewpointHigh.value : temperatureHigh.value;
         dewpointLow.value = temperatureLow.value;
 
-        altimeterLow.value = weatherData.altimeterSetting - 1.0;
-        altimeterHigh.value = weatherData.altimeterSetting + 1.0;
-        altimeterOptimum.value = weatherData.altimeterSetting;
-        altimeter.value = weatherData.altimeterSetting;
+        altimeterLow.value = math.evaluate(`${weatherData.altimeterSetting} - 1.0 inHg`).toNumeric("inHg");
+        altimeterHigh.value = math.evaluate(`${weatherData.altimeterSetting} + 1.0 inHg`).toNumeric("inHg");
+        altimeterOptimum.value = weatherData.altimeterSetting.toNumeric("inHg");
+        altimeter.value = weatherData.altimeterSetting.toNumeric("inHg");
         altimeterGradient.value = .85;
     }
 

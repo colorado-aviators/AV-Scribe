@@ -3,36 +3,39 @@ import * as math from 'mathjs'
 math.createUnit('inHg', `${math.unit(1, "in").toNumeric("mm")} mmHg`)
 
 export class Coordinate{
-    constructor(degree, minute, sign) {
-        this.degree = degree;
-        this.minute = minute;
-        this.sign = sign;
+    constructor(val: unit) {
+        this.val = val
     }
     toInt() {
-        let result = this.sign * (this.degree * 60 + this.minute);
+        let [deg, arcmin] = this.val.splitUnit(["deg", "arcmin"]);
+        let result = math.round(deg.toNumeric("deg") * 60 + arcmin.toNumeric("arcmin"));
         return result;
     }
-    static fromInt(int) {
-        let minute = int % 60;
-        let degree = (int - minute) / 60;
-        let sign = degree < 0 ? -1 : 1;
-        let result = new Coordinate(degree * sign, minute * sign, sign);
+    static fromInt(int: Number) {
+        let result = new Coordinate(math.unit(int , "arcmin"));
         return result;
     }
-    static fromString(string) {
-        let degree = Number(string.substring(0, string.length - 3));
-        let minute = Number(string.substring(string.length - 3, string.length - 1));
-        let sign = string.endsWith("N") || string.endsWith("W") ? -1 : 1;
-        return new Coordinate(degree, minute, sign);
+    static fromDegArcminSign(deg: unit, arcmin: unit, sign: Number) {
+        let result = new Coordinate(math.evaluate(`${sign} * (${deg} + ${arcmin})`));
+        return result;
+    }
+    static fromString(string: String) {
+        let result = Coordinate.fromDegArcminSign(
+            math.unit(`${string.substring(0, string.length - 3)} deg`),
+            math.unit(`${string.substring(string.length - 3), string.length - 1} arcmin`),
+            string.endsWith("N") || string.endsWith("W") ? -1 : 1,
+        );
+        return result;
     }
 }
 
 export class Location{
-    constructor(latitude, longitude) {
+    constructor(latitude: Coordinate, longitude: Coordinate) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
     distanceTo(other) {
+        // NOTE: gets the job done for now, but definitely not accurate!
         let a = this.latitude.toInt() - other.latitude.toInt();
         let b = this.longitude.toInt() - other.longitude.toInt();
         let c = (a ** 2 + b ** 2) ** (1/2);
@@ -40,14 +43,19 @@ export class Location{
     }
 }
 
-export function stationPressureToAltimeterSetting(pressureMB, elevationMeters) {
+export function stationPressureToAltimeterSetting(pressure: math.unit, elevation: math.unit) {
+    const referencePressure = math.unit(1013.25, "mbar");  // static pressure at sea level
+    const standardTempK = math.unit(288.15, "K");  // standard temp at sea level
+    const lapseRate = math.unit(.0065, "K / m");  // Temperature lapse rate
+
+    // not sure what these constants are about
+    const pressureExponent = 0.190284;
+    const pressureConstant = math.unit(0.3, "mbar");
+
     // https://www.weather.gov/media/epz/wxcalc/stationPressure.pdf
-    const A = 0.190284;  // not sure what this constant is
-    const referencePressure = 1013.25;  // static pressure at sea level (mBar)
-    const standardTempK = 288.15;  // standard temp (K) at sea level
-    const lapseRate = .0065;  // Temperature lapse rate (K / m)
-    let elevationAdjustment = referencePressure ** A * lapseRate / standardTempK * elevationMeters / ((pressureMB - 0.3) ** A);
-    let result = (pressureMB - 0.3) * (1 + elevationAdjustment) ** ( 1 / A );
+    let temperatureLapse = math.evaluate(`${lapseRate} / ${standardTempK} * ${elevation}`)
+    let elevationAdjustment = math.evaluate( `(${referencePressure} / (${pressure} - ${pressureConstant})) ^ ${pressureExponent} * ${temperatureLapse}`)
+    let result = math.evaluate(`(${pressure} - ${pressureConstant}) * (1 + ${elevationAdjustment}) ^ ( 1 / ${pressureExponent} )`);
     return result;
 }
 

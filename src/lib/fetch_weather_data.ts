@@ -12,32 +12,32 @@ const keyMeanMaxTemp = "meanMaxTemp";
 const keyMeanMinTemp = "meanMinTemp";
 
 export const StandardConditions = {
-    temperatureC: 0,
-    pressure: 29.92,
+    temperature: unit(0, "C"),
+    pressure: unit(29.92, "inHg"),
 }
 
 export const WeatherRecords = {
     /* These are world records. We can use them to set the max and min possible values,
     regardless of the airport's location.
     */
-    temperatureHigh: 57,
-    temperatureLow: -83,
-    dewpointHigh: 35,
+    temperatureHigh: unit(57, "C"),
+    temperatureLow: unit(-83, "C"),
+    dewpointHigh: unit(35, "C"),
     // I'm assuming this is the same as temp, but I haven't found a record.
-    dewpointLow: -83,
+    dewpointLow: unit(-83, "C"),
     // Agata, Russia (in Siberia) registered on December 31, 1968
-    altimeterSettingHigh: 32.01,
+    altimeterSettingHigh: unit(32.01, "inHg"),
     // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
     // Dutch Harbor, AK, on 10/25/1977 (record excludes tropical storms)
-    altimeterSettingLow: 27.31,
+    altimeterSettingLow: unit(27.31, "inHg"),
     // Guam, Super Typhoon "Tip" 10/12/1979
-    // altimeterSettingLow: 25.69,
+    // altimeterSettingLow: unit(25.69, "inHg"),
 }
 
 class WeatherData{
-    constructor(location, elevationMeters, altimeterSetting, meanMinTemp, meanMaxTemp) {
+    constructor(location: Location, elevation: unit, altimeterSetting: unit, meanMinTemp: unit, meanMaxTemp: unit) {
         this.location = location;
-        this.elevationMeters = elevationMeters;
+        this.elevation = elevation;
         this.altimeterSetting = altimeterSetting;
         this.meanMinTemp = meanMinTemp;
         this.meanMaxTemp = meanMaxTemp;
@@ -92,14 +92,25 @@ async function downloadDatabase(db) {
                     let means = nanmean(featureData);
                     featureData = [];
                     let currentFeature = null;
-                    let conversionFactor = unit(10, "kPa").to("inHg").toNumber();
                     switch (currentFeatureIndex) {
                         case 2:
-                            means = Int16Array.from(means, (val) => conversionFactor * stationPressureToAltimeterSetting(val / 10, elevation));
+                            means = Int16Array.from(means, (val) => {
+                                let stationPressure = unit(val / 10, "mbar");
+                                let altimeterSetting = stationPressureToAltimeterSetting(
+                                    stationPressure, elevation
+                                );
+                                return altimeterSetting.toNumeric("inHg") * 100;
+                            });
                             currentFeature = keyAltimeterSetting;
                             break;
                         case 3:
-                            means = Int16Array.from(means, (val) => conversionFactor * stationPressureToAltimeterSetting(val / 10, 0));
+                            means = Int16Array.from(means, (val) => {
+                                let stationPressure = unit(val / 10, "mbar");
+                                let altimeterSetting = stationPressureToAltimeterSetting(
+                                    stationPressure, unit(0, "m")
+                                );
+                                return altimeterSetting.toNumeric("inHg") * 100;
+                            });
                             currentFeature = keyAltimeterSetting;
                             break;
                         case 6: // mean daily maximum air temperature in tenths of Celsius degree
@@ -125,11 +136,11 @@ async function downloadDatabase(db) {
                         let request = objectStore.add(data);
                         data = {};
                     }
-                    elevation = getDataForString(line.substring(67, 72));
+                    elevation = unit(getDataForString(line.substring(67, 72)), "m");
                     data[keyStationID] = stationId;
                     data[keyLatitude] = Coordinate.fromString(line.substring(8, 13)).toInt();
                     data[keyLongitude] = Coordinate.fromString(line.substring(13, 19)).toInt();
-                    data[keyElevation] = elevation;
+                    data[keyElevation] = elevation.toNumber();
                     featureData = [];
                 }
                 else {
@@ -181,10 +192,10 @@ async function queryDatabase(event, location, RESOLVE, REJECT) {
                     minDistance = distance;
                     weatherData = new WeatherData(
                         entryLocation,
-                        entry[keyElevation],
-                        entry[keyAltimeterSetting][currentMonth] / 100.0,
-                        entry[keyMeanMinTemp][currentMonth] / 10.0,
-                        entry[keyMeanMaxTemp][currentMonth] / 10.0,
+                        unit(entry[keyElevation], "m"),
+                        unit(entry[keyAltimeterSetting][currentMonth] / 100.0, "inHg"),
+                        unit(entry[keyMeanMinTemp][currentMonth] / 10.0, "C"),
+                        unit(entry[keyMeanMaxTemp][currentMonth] / 10.0, "C"),
                     )
                 }
             }
@@ -204,6 +215,6 @@ export function loadWeatherData(location) {
 
         openRequest.onupgradeneeded = (event) => upgradeDatabase(event);
         openRequest.onerror = () => {console.error("Error", openRequest.error)};
-        openRequest.onsuccess = () => queryDatabase(event, location, RESOLVE, REJECT);
+        openRequest.onsuccess = (event) => queryDatabase(event, location, RESOLVE, REJECT);
     });
 }

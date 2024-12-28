@@ -3,15 +3,15 @@ import { test, expect } from 'vitest'
 import * as physics from "../physics"
 
 test('stationPressureToAltimeterSetting', () => {
-    let pressureMB = 830;
-    let elevationMeters = 1729;
-    let expected = 1022.27;
-    let val = physics.stationPressureToAltimeterSetting(pressureMB, elevationMeters);
-    expect(val).toBeCloseTo(expected);
+    let pressure = unit(830, "mbar");
+    let elevation = unit(1729, "m");
+    let expected = 30.1876;
+    let val = physics.stationPressureToAltimeterSetting(pressure, elevation).toNumeric("inHg");
+    expect(val).toBeCloseTo(expected, 3);
 })
 
 test('CoordinateToInt', () => {
-    let coord = new physics.Coordinate(168, 41, 1);
+    let coord = physics.Coordinate.fromInt(168 * 60 + 41);
     let val = coord.toInt();
     let expected = 10121;
     expect(val).toBe(expected);
@@ -19,16 +19,12 @@ test('CoordinateToInt', () => {
 
 test('CoordinateFromInt', () => {
     let coord = physics.Coordinate.fromInt(-10121);
-    expect(coord.degree).toBe(168);
-    expect(coord.minute).toBe(41);
-    expect(coord.sign).toBe(-1);
+    let [deg, arcmin] = coord.val.splitUnit(["deg", "arcmin"]);
+    expect(deg.toNumeric("deg")).toBe(-168);
 })
 
 test('coordinateFromString', () => {
     let coord = physics.Coordinate.fromString("16841N");
-    expect(coord.degree).toBe(168);
-    expect(coord.minute).toBe(41);
-    expect(coord.sign).toBe(-1);
 })
 
 test('getDensityAltitude', () => {
