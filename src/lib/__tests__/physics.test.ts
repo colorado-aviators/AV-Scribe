@@ -10,22 +10,22 @@ test('stationPressureToAltimeterSetting', () => {
     expect(val).toBeCloseTo(expected);
 })
 
-test('coordinateToInt', () => {
+test('CoordinateToInt', () => {
     let coord = new physics.Coordinate(168, 41, 1);
     let val = coord.toInt();
     let expected = 10121;
     expect(val).toBe(expected);
 })
 
-test('coordinateFromInt', () => {
-    let coord = physics.coordinateFromInt(-10121);
+test('CoordinateFromInt', () => {
+    let coord = physics.Coordinate.fromInt(-10121);
     expect(coord.degree).toBe(168);
     expect(coord.minute).toBe(41);
     expect(coord.sign).toBe(-1);
 })
 
 test('coordinateFromString', () => {
-    let coord = physics.coordinateFromString("16841N");
+    let coord = physics.Coordinate.fromString("16841N");
     expect(coord.degree).toBe(168);
     expect(coord.minute).toBe(41);
     expect(coord.sign).toBe(-1);
