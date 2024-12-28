@@ -73,8 +73,16 @@ async function downloadDatabase(db) {
             var objectStore = db.transaction(keyObjectStore, "readwrite").objectStore(keyObjectStore);
             for (let feat of json.features) {
                 let airport = {};
-                let latitude = new Coordinate(Number(feat.attributes.LAT_DEG), Number(feat.attributes.LAT_MIN), feat.attributes.LAT_HEMIS == "N" ? -1 : 1);
-                let longitude = new Coordinate(Number(feat.attributes.LONG_DEG), Number(feat.attributes.LONG_MIN), feat.attributes.LONG_HEMIS == "W" ? -1 : 1);
+                let latitude = new Coordinate(
+                    Number(feat.attributes.LAT_DEG),
+                    Number(feat.attributes.LAT_MIN),
+                    feat.attributes.LAT_HEMIS == "N" ? -1 : 1
+                );
+                let longitude = new Coordinate(
+                    Number(feat.attributes.LONG_DEG),
+                    Number(feat.attributes.LONG_MIN),
+                    feat.attributes.LONG_HEMIS == "W" ? -1 : 1
+                );
                 airport[keyAirportID] = feat.attributes.ARPT_ID;
                 airport[keyElevation] = Math.round(feat.attributes.ELEV);
                 airport[keyLatitude] = latitude.toInt();

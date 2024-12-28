@@ -92,14 +92,14 @@ async function downloadDatabase(db) {
                     let means = nanmean(featureData);
                     featureData = [];
                     let currentFeature = null;
-                    let conversionFactor = 10000 * unit(1, "Pa").to("inHg").toNumber();
+                    let conversionFactor = unit(10, "kPa").to("inHg").toNumber();
                     switch (currentFeatureIndex) {
                         case 2:
-                            means = Int16Array.from(means, (val, index) => conversionFactor * stationPressureToAltimeterSetting(val / 10, elevation));
+                            means = Int16Array.from(means, (val) => conversionFactor * stationPressureToAltimeterSetting(val / 10, elevation));
                             currentFeature = keyAltimeterSetting;
                             break;
                         case 3:
-                            means = Int16Array.from(means, (val, index) => conversionFactor * stationPressureToAltimeterSetting(val / 10, 0));
+                            means = Int16Array.from(means, (val) => conversionFactor * stationPressureToAltimeterSetting(val / 10, 0));
                             currentFeature = keyAltimeterSetting;
                             break;
                         case 6: // mean daily maximum air temperature in tenths of Celsius degree
@@ -133,7 +133,11 @@ async function downloadDatabase(db) {
                     featureData = [];
                 }
                 else {
-                    let monthlyData = Array.from(new Array(12), (val, index) => getDataForString(line.substring(index * 5 + 13, index * 5 + 18)));
+                    let monthlyData = Array.from(
+                        new Array(12), (val, index) => getDataForString(
+                            line.substring(index * 5 + 13, index * 5 + 18)
+                        )
+                    );
                     featureData.push(monthlyData);
                 }
 
