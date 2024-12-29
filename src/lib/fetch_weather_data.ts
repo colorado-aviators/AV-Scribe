@@ -218,13 +218,13 @@ async function queryDatabase(db: IDBDatabase, location: Location, RESOLVE: any, 
     };
 }
 
-var db;
+var db: IDBDatabase;
 let openRequest = indexedDB.open(keyDatabase, 1);
 openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
 openRequest.onerror = () => {console.error("Error", openRequest.error);};
 openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
-export function loadWeatherData(location: Location): Promise<IDBDatabase> {
+export function loadWeatherData(location: Location): Promise<WeatherData> {
     return new Promise((RESOLVE: any, REJECT: any) => {
         queryDatabase(db, location, RESOLVE, REJECT);
     });

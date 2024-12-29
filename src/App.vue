@@ -24,15 +24,15 @@
     import Transcript from './components/Transcript.vue'
 
     // these flexible references set the active slider ranges for each input
-    var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow.toNumeric("C"));
-    var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh.toNumeric("C"));
-    var temperatureOptimum = ref(weather_data.StandardConditions.temperature.toNumeric("C"));
+    var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow.toNumber("C"));
+    var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh.toNumber("C"));
+    var temperatureOptimum = ref(weather_data.StandardConditions.temperature.toNumber("C"));
     var temperatureGradient = ref(.9);
-    var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow.toNumeric("C"));
-    var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh.toNumeric("C"));
-    var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumeric("inHg"));
-    var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumeric("inHg"));
-    var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumeric("inHg"));
+    var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
+    var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
+    var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg"));
+    var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg"));
+    var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
     var altimeterGradient = ref(.9);
 
     // these references will be used to capture the input values
@@ -66,26 +66,26 @@
         Setting the range of each input based on monthly average or average min / max
         is imperfect, but I've tried to leave a generous range.
         */
-        temperatureLow.value = math.evaluate(`${weatherData.meanMinTemp} - 25 C`).toNumeric("C");
-        temperatureHigh.value = math.evaluate(`${weatherData.meanMaxTemp} + 25 C`).toNumeric("C");
+        temperatureLow.value = math.evaluate(`${weatherData.meanMinTemp} - 25 C`).toNumber("C");
+        temperatureHigh.value = math.evaluate(`${weatherData.meanMaxTemp} + 25 C`).toNumber("C");
         let meanMeanTemp = math.evaluate(`mean(${weatherData.meanMinTemp}, ${weatherData.meanMaxTemp})`);
-        temperatureOptimum.value = meanMeanTemp.toNumeric("C");
-        temperature.value = meanMeanTemp.toNumeric("C");
+        temperatureOptimum.value = meanMeanTemp.toNumber("C");
+        temperature.value = meanMeanTemp.toNumber("C");
         temperatureGradient.value = .5;
 
         dewpointHigh.value = dewpointHigh.value < temperatureHigh.value? dewpointHigh.value : temperatureHigh.value;
         dewpointLow.value = temperatureLow.value;
 
-        altimeterLow.value = math.evaluate(`${weatherData.altimeterSetting} - 1.0 inHg`).toNumeric("inHg");
-        altimeterHigh.value = math.evaluate(`${weatherData.altimeterSetting} + 1.0 inHg`).toNumeric("inHg");
-        altimeterOptimum.value = weatherData.altimeterSetting.toNumeric("inHg");
-        altimeter.value = weatherData.altimeterSetting.toNumeric("inHg");
+        altimeterLow.value = math.evaluate(`${weatherData.altimeterSetting} - 1.0 inHg`).toNumber("inHg");
+        altimeterHigh.value = math.evaluate(`${weatherData.altimeterSetting} + 1.0 inHg`).toNumber("inHg");
+        altimeterOptimum.value = weatherData.altimeterSetting.toNumber("inHg");
+        altimeter.value = weatherData.altimeterSetting.toNumber("inHg");
         altimeterGradient.value = .85;
     }
 
     function useAirportData(airportData: airport_data.AirportData) {
         elevation.value = airportData.elevation_in_feet;
-        weather_data.loadWeatherData(airportData.location).then((weatherData: null | weather_data.WeatherData) => {
+        weather_data.loadWeatherData(airportData.location).then((weatherData) => {
             updateWeatherRanges(weatherData);
         }).catch((error) => console.error(error));
     }

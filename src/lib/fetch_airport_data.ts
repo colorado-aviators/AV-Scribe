@@ -53,7 +53,7 @@ function getAviationFacilitiesURL(resultOffset: number){
     return url + query;
 }
 
-async function downloadDatabase(db: IndexedDB) {
+async function downloadDatabase(db: IDBDatabase) {
     let objectStoreCreation = db.createObjectStore(keyObjectStore, {keyPath: keyAirportID});
     objectStoreCreation.transaction.oncomplete = async (event) => {
         var recordCount = 0;
@@ -66,7 +66,7 @@ async function downloadDatabase(db: IndexedDB) {
                 let txn = db.transaction(keyObjectStore, "readwrite");
                 let objectStore = txn.objectStore(keyObjectStore);
                 for (let feat of json.features) {
-                    let airport = {};
+                    let data = new Map();
                     let latitude = Coordinate.fromDegArcminSign(
                         unit(`${feat.attributes.LAT_DEG} deg`),
                         unit(`${feat.attributes.LAT_MIN} arcmin`),
@@ -77,11 +77,12 @@ async function downloadDatabase(db: IndexedDB) {
                         unit(`${feat.attributes.LONG_MIN} arcmin`),
                         feat.attributes.LONG_HEMIS == "W" ? -1 : 1
                     );
-                    airport[keyAirportID] = feat.attributes.ARPT_ID;
-                    airport[keyElevation] = Math.round(feat.attributes.ELEV);
-                    airport[keyLatitude] = latitude.toInt();
-                    airport[keyLongitude] = longitude.toInt();
-                    let request = objectStore.add(airport);
+                    data.set(keyAirportID, feat.attributes.ARPT_ID);
+                    data.set(keyElevation, Math.round(feat.attributes.ELEV));
+                    data.set(keyLatitude, latitude.toInt());
+                    data.set(keyLongitude, longitude.toInt());
+                    let obj = Object.fromEntries(data);
+                    let request = objectStore.add(obj);
                     recordCount += 1;
                 }
             }
@@ -126,13 +127,13 @@ function upgradeDatabase(event: any) {
             console.log(`Built airport database.`);
     }
 };
-var db;
+var db: IDBDatabase;
 var openRequest = indexedDB.open(keyDatabase, 1);
 openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
 openRequest.onerror = () => {console.error("Error", openRequest.error);};
 openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
-export function loadAirportData(airportID: string): Promise<IDBDatabase> {
+export function loadAirportData(airportID: string): Promise<AirportData> {
     return new Promise((RESOLVE: any, REJECT: any) => {
         queryDatabase(db, airportID, RESOLVE, REJECT);
     });
