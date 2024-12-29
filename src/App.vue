@@ -85,17 +85,15 @@
 
     function useAirportData(airportData: airport_data.AirportData) {
         elevation.value = airportData.elevation_in_feet;
-        weather_data.loadWeatherData(airportData.location).then((weatherData) => {
-            if (weatherData != null) {
-                updateWeatherRanges(weatherData);
-            }
+        weather_data.loadWeatherData(airportData.location).then((weatherData: null | weather_data.WeatherData) => {
+            updateWeatherRanges(weatherData);
         }).catch((error) => console.error(error));
     }
 
     function switchAirport(airportID: string) {
         airport.value = airportID;
         airport_data.loadAirportData(airportID).then((airportData) => {
-            if (typeof airportData === typeof airport_data.AirportData) {
+            if (airportData !== null){
                 useAirportData(airportData);
             }
         }).catch((error) => console.error(error));

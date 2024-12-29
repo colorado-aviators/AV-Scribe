@@ -1,6 +1,6 @@
 import * as math from 'mathjs'
 
-math.createUnit('inHg', `${math.unit(1, "in").toNumeric("mm")} mmHg`)
+math.createUnit('inHg', `${math.unit(1, "in").toNumber("mm")} mmHg`)
 
 export class Coordinate{
     val: math.Unit;
@@ -9,7 +9,7 @@ export class Coordinate{
     }
     toInt() {
         let [deg, arcmin] = this.val.splitUnit(["deg", "arcmin"]);
-        let result = math.round(deg.toNumeric("deg") * 60 + arcmin.toNumeric("arcmin"));
+        let result = math.round(deg.toNumber("deg") * 60.0 + arcmin.toNumber("arcmin"));
         return result;
     }
     static fromInt(int: number) {
@@ -31,6 +31,8 @@ export class Coordinate{
 }
 
 export class Location{
+    latitude: Coordinate;
+    longitude: Coordinate;
     constructor(latitude: Coordinate, longitude: Coordinate) {
         this.latitude = latitude;
         this.longitude = longitude;

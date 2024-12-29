@@ -54,75 +54,86 @@ function getAviationFacilitiesURL(resultOffset: number){
 }
 
 async function downloadDatabase(db: IndexedDB) {
-    db.createObjectStore(keyObjectStore, {keyPath: keyAirportID});
-    var recordCount = 0;
-    while (recordCount % 2000 == 0) {
-        let url = getAviationFacilitiesURL(recordCount);
-        let response = await fetch(url);
-        if (response.ok) { // if HTTP-status is 200-299
-            // get the response body (the method explained below)
-            let json = await response.json();
-            var objectStore = db.transaction(keyObjectStore, "readwrite").objectStore(keyObjectStore);
-            for (let feat of json.features) {
-                let airport = {};
-                let latitude = Coordinate.fromDegArcminSign(
-                    unit(`${feat.attributes.LAT_DEG} deg`),
-                    unit(`${feat.attributes.LAT_MIN} arcmin`),
-                    feat.attributes.LAT_HEMIS == "N" ? -1 : 1
-                );
-                let longitude = Coordinate.fromDegArcminSign(
-                    unit(`${feat.attributes.LONG_DEG} deg`),
-                    unit(`${feat.attributes.LONG_MIN} arcmin`),
-                    feat.attributes.LONG_HEMIS == "W" ? -1 : 1
-                );
-                airport[keyAirportID] = feat.attributes.ARPT_ID;
-                airport[keyElevation] = Math.round(feat.attributes.ELEV);
-                airport[keyLatitude] = latitude.toInt();
-                airport[keyLongitude] = longitude.toInt();
-                let request = objectStore.add(airport);
-                recordCount += 1;
+    let objectStoreCreation = db.createObjectStore(keyObjectStore, {keyPath: keyAirportID});
+    objectStoreCreation.transaction.oncomplete = async (event) => {
+        var recordCount = 0;
+        while (recordCount % 2000 == 0) {
+            let url = getAviationFacilitiesURL(recordCount);
+            let response = await fetch(url);
+            if (response.ok) { // if HTTP-status is 200-299
+                // get the response body (the method explained below)
+                let json = await response.json();
+                let txn = db.transaction(keyObjectStore, "readwrite");
+                let objectStore = txn.objectStore(keyObjectStore);
+                for (let feat of json.features) {
+                    let airport = {};
+                    let latitude = Coordinate.fromDegArcminSign(
+                        unit(`${feat.attributes.LAT_DEG} deg`),
+                        unit(`${feat.attributes.LAT_MIN} arcmin`),
+                        feat.attributes.LAT_HEMIS == "N" ? -1 : 1
+                    );
+                    let longitude = Coordinate.fromDegArcminSign(
+                        unit(`${feat.attributes.LONG_DEG} deg`),
+                        unit(`${feat.attributes.LONG_MIN} arcmin`),
+                        feat.attributes.LONG_HEMIS == "W" ? -1 : 1
+                    );
+                    airport[keyAirportID] = feat.attributes.ARPT_ID;
+                    airport[keyElevation] = Math.round(feat.attributes.ELEV);
+                    airport[keyLatitude] = latitude.toInt();
+                    airport[keyLongitude] = longitude.toInt();
+                    let request = objectStore.add(airport);
+                    recordCount += 1;
+                }
             }
         }
     }
 }
 
-async function queryDatabase(event: any, airportID: string, RESOLVE: any, REJECT: any) {
-    let db = event.target.result;
+async function queryDatabase(db: IDBDatabase, airportID: string, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).get(airportID);
 
     getRequest.onsuccess = (getEvent: any) => {
         const data = getEvent.target.result;
-        let location = new Location(
-            Coordinate.fromInt(data[keyLatitude]),
-            Coordinate.fromInt(data[keyLongitude])
-        );
-        const airportData = new AirportData(
-            data[keyAirportID],
-            data[keyElevation],
-            location,
-        );
-        RESOLVE(airportData);
+        if (typeof data == 'undefined') {
+            RESOLVE(null);
+        }
+        else {
+            let location = new Location(
+                Coordinate.fromInt(data[keyLatitude]),
+                Coordinate.fromInt(data[keyLongitude])
+            );
+            const airportData = new AirportData(
+                data[keyAirportID],
+                data[keyElevation],
+                location,
+            );
+            RESOLVE(airportData);
+            console.log(`Retrieved airport data for ${airportID}.`);
+        }
     };
 
     getRequest.onerror = (err: any) => {
-        REJECT(`Error to get student information: ${err}`);
+        REJECT(`Error retrieving airport data for ${airportID}: ${err}.`);
     }
 }
 
-async function upgradeDatabase(event: any) {
+function upgradeDatabase(event: any) {
     // the existing database version is less than current (or it doesn't exist)
     switch(event.oldVersion) { // existing db version
         case 0:
             // version 0 means that the client had no database
             downloadDatabase(event.target.result);
+            console.log(`Built airport database.`);
     }
 };
+var db;
+var openRequest = indexedDB.open(keyDatabase, 1);
+openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
+openRequest.onerror = () => {console.error("Error", openRequest.error);};
+openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
-export function loadAirportData(airportID: string) {
+export function loadAirportData(airportID: string): Promise<IDBDatabase> {
     return new Promise((RESOLVE: any, REJECT: any) => {
-        let openRequest = indexedDB.open(keyDatabase, 1);
-        openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
-        openRequest.onsuccess = (event: any) => queryDatabase(event, airportID, RESOLVE, REJECT);
-        openRequest.onerror = () => {console.error("Error", openRequest.error);};
+        queryDatabase(db, airportID, RESOLVE, REJECT);
     });
 }

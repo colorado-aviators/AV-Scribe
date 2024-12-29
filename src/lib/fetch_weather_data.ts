@@ -10,6 +10,7 @@ const keyElevation = "elevation";
 const keyAltimeterSetting = "altimeterSetting";
 const keyMeanMaxTemp = "meanMaxTemp";
 const keyMeanMinTemp = "meanMinTemp";
+const indexedDB = window.indexedDB;
 
 export const StandardConditions = {
     temperature: unit(0, "C"),
@@ -49,7 +50,7 @@ export class WeatherData{
     }
 }
 
-function nanmean(array2D: Array[Array]) {
+function nanmean(array2D: Array<Array<number>>) {
     let result = new Int16Array(12);
     for (let i = 0; i < array2D[0].length ; i++ ) {
         let sum = 0;
@@ -71,7 +72,7 @@ function getDataForString(stringVal: string) {
     return stringVal == "     " ? NaN : Number(stringVal);
 }
 
-async function downloadDatabase(db: window.indexedDB) {
+async function downloadDatabase(db: IDBDatabase) {
     var os = db.createObjectStore(keyObjectStore, {keyPath: keyStationID});
 
     var xhttp = new XMLHttpRequest();
@@ -138,7 +139,8 @@ async function downloadDatabase(db: window.indexedDB) {
                 if (stationChanged) {
                     currentId = stationId;
                     if (data.size > 0) {
-                        let request = objectStore.add(data);
+                        let obj = Object.fromEntries(data);
+                        let request = objectStore.add(obj);
                         data = new Map();
                     }
                     elevation = unit(getDataForString(line.substring(67, 72)), "m");
@@ -158,7 +160,8 @@ async function downloadDatabase(db: window.indexedDB) {
                 }
 
                 if (i == lines.length - 1) {
-                    let request = objectStore.add(data);
+                    let obj = Object.fromEntries(data);
+                    let request = objectStore.add(obj);
                 }
             }
         }
@@ -173,11 +176,12 @@ async function upgradeDatabase(event: any) {
         case 0:
             // version 0 means that the client had no database
             downloadDatabase(event.target.result);
+            console.log(`Built weather database.`);
     }
 };
 
-async function queryDatabase(event: any, location: Location, RESOLVE: any, REJECT: any) {
-    let db = event.target.result;
+async function queryDatabase(db: IDBDatabase, location: Location, RESOLVE: any, REJECT: any) {
+    let locationString = `location ${location.latitude.toInt()} x ${location.longitude.toInt()}`
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).getAll();
 
     getRequest.onsuccess = (event: any) => {
@@ -206,20 +210,22 @@ async function queryDatabase(event: any, location: Location, RESOLVE: any, REJEC
             }
         }
         RESOLVE(weatherData);
+        console.log(`Retrieved weather data for ${locationString}.`);
     };
 
     getRequest.onerror = (err: any) => {
-        REJECT(`Error to get student information: ${err}`);
+        REJECT(`Error retrieving weather data for ${locationString}: ${err}.`);
     };
 }
 
-export function loadWeatherData(location: Location) {
-    return new Promise((RESOLVE: any, REJECT: any) => {
-        var indexedDB = window.indexedDB;
-        let openRequest = indexedDB.open(keyDatabase, 1);
+var db;
+let openRequest = indexedDB.open(keyDatabase, 1);
+openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
+openRequest.onerror = () => {console.error("Error", openRequest.error);};
+openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
-        openRequest.onupgradeneeded = (event: any) => upgradeDatabase(event);
-        openRequest.onerror = () => {console.error("Error", openRequest.error)};
-        openRequest.onsuccess = (event: any) => queryDatabase(event, location, RESOLVE, REJECT);
+export function loadWeatherData(location: Location): Promise<IDBDatabase> {
+    return new Promise((RESOLVE: any, REJECT: any) => {
+        queryDatabase(db, location, RESOLVE, REJECT);
     });
 }
