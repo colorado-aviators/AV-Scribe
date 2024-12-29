@@ -7,20 +7,23 @@ export class Coordinate{
     constructor(val: math.Unit) {
         this.val = val;
     }
-    toInt() {
+    toInt() : number {
         let [deg, arcmin] = this.val.splitUnit(["deg", "arcmin"]);
         let result = math.round(deg.toNumber("deg") * 60.0 + arcmin.toNumber("arcmin"));
         return result;
     }
-    static fromInt(int: number) {
+    static fromInt(int: number) : Coordinate {
         let result = new Coordinate(math.unit(int , "arcmin"));
         return result;
     }
-    static fromDegArcminSign(deg: math.Unit, arcmin: math.Unit, sign: number) {
+    static fromDegArcminSign(deg: math.Unit, arcmin: math.Unit, sign: number) : Coordinate {
         let result = new Coordinate(math.evaluate(`${sign} * (${deg} + ${arcmin})`));
         return result;
     }
-    static fromString(string: string) {
+    static fromString(string: string) : Coordinate {
+        /*
+        A special string processing function for geotagged data from NCEI's World Weather Record Clearinghouse.
+        */
         let result = Coordinate.fromDegArcminSign(
             math.unit(`${string.substring(0, string.length - 3)} deg`),
             math.unit(`${string.substring(string.length - 3), string.length - 1} arcmin`),
@@ -37,7 +40,7 @@ export class Location{
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    distanceTo(other: Location) {
+    distanceTo(other: Location) : number {
         // NOTE: gets the job done for now, but definitely not accurate!
         let a = this.latitude.toInt() - other.latitude.toInt();
         let b = this.longitude.toInt() - other.longitude.toInt();
@@ -46,7 +49,7 @@ export class Location{
     }
 }
 
-export function stationPressureToAltimeterSetting(pressure: math.Unit, elevation: math.Unit) {
+export function stationPressureToAltimeterSetting(pressure: math.Unit, elevation: math.Unit) : math.Unit {
     const referencePressure = math.unit(1013.25, "mbar");  // static pressure at sea level
     const standardTempK = math.unit(288.15, "K");  // standard temp at sea level
     const lapseRate = math.unit(.0065, "K / m");  // Temperature lapse rate
@@ -67,7 +70,7 @@ export function getDensityAltitude(
     dewpoint: math.Unit,
     altimeterSetting: math.Unit,
     elevation: math.Unit
-) {
+) : math.Unit {
     /*
     temperature and dewpoint in Celsius
     References
@@ -83,7 +86,7 @@ export function estimateDensityAltitude(
     temperature: math.Unit,
     stationPressure: math.Unit,
     dewpoint: math.Unit
-) {
+) : math.Unit {
     /*
     From the user, an air temperature (T), a station pressure (P ), and a dewpoint sta
     temperature (Td). The density altitude calculation is quite complex.
@@ -106,7 +109,7 @@ export function estimateDensityAltitude(
     return math.unit(densityAltitude, "feet");
 }
 
-export function getVaporPressure(dewpoint: math.Unit) {
+export function getVaporPressure(dewpoint: math.Unit) : math.Unit {
     /* dewpoint in Celsius
     References
     https://www.weather.gov/media/epz/wxcalc/vaporPressure.pdf
@@ -120,7 +123,7 @@ export function getVirtualTemperature(
     temperature: math.Unit,
     stationPressure: math.Unit,
     dewpoint: math.Unit
-) {
+) : math.Unit {
     var vaporPressure = getVaporPressure(dewpoint);
     let tmp = vaporPressure.toNumber("mbar") / stationPressure.toNumber("mbar");
     tmp = 1.0 - tmp * (1 - 0.622);

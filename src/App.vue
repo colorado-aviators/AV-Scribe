@@ -23,7 +23,10 @@
     import DensityAltitude from './components/DensityAltitude.vue'
     import Transcript from './components/Transcript.vue'
 
-    // these flexible references set the active slider ranges for each input
+    /*
+    These references set the active slider ranges for each input.
+    They can be updated using local historical averages via useAirportData()
+    */
     var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow.toNumber("C"));
     var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh.toNumber("C"));
     var temperatureOptimum = ref(weather_data.StandardConditions.temperature.toNumber("C"));
@@ -35,7 +38,7 @@
     var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
     var altimeterGradient = ref(.9);
 
-    // these references will be used to capture the input values
+    // These references will be used to capture the user's input and dispatch it to the transcript
     var airport = ref("");
     var information = ref("");
     var time = ref("");
@@ -64,7 +67,7 @@
     function updateWeatherRanges(weatherData: weather_data.WeatherData) {
         /* Admittedly, this involves some guess work.
         Setting the range of each input based on monthly average or average min / max
-        is imperfect, but I've tried to leave a generous range.
+        is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
         */
         temperatureLow.value = math.evaluate(`${weatherData.meanMinTemp} - 25 C`).toNumber("C");
         temperatureHigh.value = math.evaluate(`${weatherData.meanMaxTemp} + 25 C`).toNumber("C");
@@ -84,6 +87,9 @@
     }
 
     function useAirportData(airportData: airport_data.AirportData) {
+        /*
+        Based on the airport, we can retrieve some cached data to update slider ranges.
+        */
         elevation.value = airportData.elevation_in_feet;
         weather_data.loadWeatherData(airportData.location).then((weatherData) => {
             updateWeatherRanges(weatherData);
@@ -91,6 +97,9 @@
     }
 
     function switchAirport(airportID: string) {
+        /*
+        When the user changes the airport, we can update a few things based on local context.
+        */
         airport.value = airportID;
         airport_data.loadAirportData(airportID).then((airportData) => {
             if (airportData !== null){

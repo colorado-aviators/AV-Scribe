@@ -1,24 +1,14 @@
 import { unit, Unit } from 'mathjs'
 import { Coordinate, stationPressureToAltimeterSetting, Location } from './physics'
 
-const keyDatabase = "weather-data";
-const keyObjectStore = "weather-data";
-const keyStationID = "id";
-const keyLatitude = "latitude";
-const keyLongitude = "longitude";
-const keyElevation = "elevation";
-const keyAltimeterSetting = "altimeterSetting";
-const keyMeanMaxTemp = "meanMaxTemp";
-const keyMeanMinTemp = "meanMinTemp";
-const indexedDB = window.indexedDB;
-
 export const StandardConditions = {
     temperature: unit(0, "C"),
     pressure: unit(29.92, "inHg"),
 }
 
 export const WeatherRecords = {
-    /* These are world records. We can use them to set the max and min possible values,
+    /*
+    These are world records. We can use them to set the max and min possible values,
     regardless of the airport's location.
     */
     temperatureHigh: unit(57, "C"),
@@ -50,7 +40,33 @@ export class WeatherData{
     }
 }
 
-function nanmean(array2D: Array<Array<number>>) {
+const indexedDB = window.indexedDB;
+
+// These keys are used to store various data in the weather-data database.
+const keyDatabase = "weather-data";
+const keyObjectStore = "weather-data";
+const keyStationID = "id";
+const keyLatitude = "latitude";
+const keyLongitude = "longitude";
+const keyElevation = "elevation";
+const keyAltimeterSetting = "altimeterSetting";
+const keyMeanMaxTemp = "meanMaxTemp";
+const keyMeanMinTemp = "meanMinTemp";
+
+function getDataForString(stringVal: string) : number {
+    /*
+    A special helper function is used to decode NCEI's World Weather Records data.
+    */
+    return stringVal == "     " ? NaN : Number(stringVal);
+}
+
+function nanmean(array2D: Array<Array<number>>) : Int16Array {
+    /*
+    A special helper function to process annual records from the NCEI's World Weather Records dataset.
+    This function applies the following transformations to the input Array:
+        - reduces the first dimension via mean
+        - converts the result to a 16-bit integer array for storage efficiency
+    */
     let result = new Int16Array(12);
     for (let i = 0; i < array2D[0].length ; i++ ) {
         let sum = 0;
@@ -68,11 +84,14 @@ function nanmean(array2D: Array<Array<number>>) {
     return result;
 }
 
-function getDataForString(stringVal: string) {
-    return stringVal == "     " ? NaN : Number(stringVal);
-}
-
 async function downloadDatabase(db: IDBDatabase) {
+    /*
+    Download and parse relevant weather record data from the World Weather Records dataset
+    provided by the National Centers for Environmental Information.
+
+    References:
+    https://www.ncei.noaa.gov/data/world-weather-records/series-11/doc/WWR-data-format.txt
+    */
     var os = db.createObjectStore(keyObjectStore, {keyPath: keyStationID});
 
     var xhttp = new XMLHttpRequest();
@@ -105,7 +124,7 @@ async function downloadDatabase(db: IDBDatabase) {
                                 let altimeterSetting = stationPressureToAltimeterSetting(
                                     stationPressure, elevation
                                 );
-                                return altimeterSetting.toNumeric("inHg") * 100;
+                                return altimeterSetting.toNumber("inHg") * 100;
                             });
                             currentFeature = keyAltimeterSetting;
                             break;
@@ -115,7 +134,7 @@ async function downloadDatabase(db: IDBDatabase) {
                                 let altimeterSetting = stationPressureToAltimeterSetting(
                                     stationPressure, unit(0, "m")
                                 );
-                                return altimeterSetting.toNumeric("inHg") * 100;
+                                return altimeterSetting.toNumber("inHg") * 100;
                             });
                             currentFeature = keyAltimeterSetting;
                             break;
@@ -171,7 +190,7 @@ async function downloadDatabase(db: IDBDatabase) {
 }
 
 async function upgradeDatabase(event: any) {
-    // the existing database version is less than current (or it doesn't exist)
+    // What to do if the existing database version is less than current (or it doesn't exist)
     switch(event.oldVersion) { // existing db version
         case 0:
             // version 0 means that the client had no database
@@ -180,35 +199,47 @@ async function upgradeDatabase(event: any) {
     }
 };
 
+function getClosestWeatherData(entries: Array<any>, location: Location) : WeatherData | null {
+    /*
+    The idea here is to use the given airport location to look up weather records from the nearest
+    measurement location in the database. These records are returned as a WeatherData object.
+    */
+    let minDistance = 100000;
+    let now = new Date();
+    let currentMonth = now.getUTCMonth();
+    let weatherData = null;
+    for (let entry of entries) {
+        if ("meanMaxTemp" in entry && "meanMinTemp" in entry && keyAltimeterSetting in entry) {
+            let entryLocation = new Location(
+                Coordinate.fromInt(entry[keyLatitude]),
+                Coordinate.fromInt(entry[keyLongitude])
+            )
+            let distance = entryLocation.distanceTo(location);
+            if (distance < minDistance) {
+                minDistance = distance;
+                weatherData = new WeatherData(
+                    entryLocation,
+                    unit(entry[keyElevation], "m"),
+                    unit(entry[keyAltimeterSetting][currentMonth] / 100.0, "inHg"),
+                    unit(entry[keyMeanMinTemp][currentMonth] / 10.0, "C"),
+                    unit(entry[keyMeanMaxTemp][currentMonth] / 10.0, "C"),
+                )
+            }
+        }
+    }
+    if (typeof weatherData == "undefined") {
+        console.error("Problem getting closest weather data.");
+    }
+    return weatherData;
+}
+
 async function queryDatabase(db: IDBDatabase, location: Location, RESOLVE: any, REJECT: any) {
     let locationString = `location ${location.latitude.toInt()} x ${location.longitude.toInt()}`
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).getAll();
 
     getRequest.onsuccess = (event: any) => {
         const values = event.target.result;
-        let minDistance = 100000;
-        let now = new Date();
-        let currentMonth = now.getUTCMonth();
-        let weatherData = null;
-        for (let entry of values) {
-            if ("meanMaxTemp" in entry && "meanMinTemp" in entry && keyAltimeterSetting in entry) {
-                let entryLocation = new Location(
-                    Coordinate.fromInt(entry[keyLatitude]),
-                    Coordinate.fromInt(entry[keyLongitude])
-                )
-                let distance = entryLocation.distanceTo(location);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    weatherData = new WeatherData(
-                        entryLocation,
-                        unit(entry[keyElevation], "m"),
-                        unit(entry[keyAltimeterSetting][currentMonth] / 100.0, "inHg"),
-                        unit(entry[keyMeanMinTemp][currentMonth] / 10.0, "C"),
-                        unit(entry[keyMeanMaxTemp][currentMonth] / 10.0, "C"),
-                    )
-                }
-            }
-        }
+        let weatherData = getClosestWeatherData(event.target.result, location);
         RESOLVE(weatherData);
         console.log(`Retrieved weather data for ${locationString}.`);
     };
@@ -218,14 +249,14 @@ async function queryDatabase(db: IDBDatabase, location: Location, RESOLVE: any, 
     };
 }
 
-var db: IDBDatabase;
-let openRequest = indexedDB.open(keyDatabase, 1);
-openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
-openRequest.onerror = () => {console.error("Error", openRequest.error);};
-openRequest.onsuccess = (event: any) => {db = openRequest.result;};
-
 export function loadWeatherData(location: Location): Promise<WeatherData> {
     return new Promise((RESOLVE: any, REJECT: any) => {
         queryDatabase(db, location, RESOLVE, REJECT);
     });
 }
+
+var db: IDBDatabase;
+let openRequest = indexedDB.open(keyDatabase, 1);
+openRequest.onupgradeneeded = (event: any) => {upgradeDatabase(event)};
+openRequest.onerror = () => {console.error("Error", openRequest.error);};
+openRequest.onsuccess = (event: any) => {db = openRequest.result;};
