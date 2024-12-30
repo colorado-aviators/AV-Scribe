@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref, reactive} from "vue"
+    import {ref, reactive, watch} from "vue"
 
     const title = "Field Elevation (ft MSL)"
     // https://en.wikipedia.org/wiki/List_of_highest_airports
@@ -9,9 +9,17 @@
     const realValue = ref(0);
     const textColor = ref("var(--color-text-untouched)");
 
+    const props = defineProps({
+        elevationCached: {type: Number, required: true},
+    });
+
     function get_read_out() {
         return realValue.value.toFixed(0);
     };
+
+    watch(() => props.elevationCached, (newVal) => {
+        realValue.value = newVal;
+    })
 
     const emit = defineEmits<{
         (e: 'emitElevation', realValue: number): void
