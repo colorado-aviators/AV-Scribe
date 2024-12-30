@@ -108,6 +108,9 @@ async function downloadDatabase(db: IDBDatabase) {
             var elevation = unit(0, "m");
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
+                if (line.length == 0) {
+                    continue;
+                }
                 let stationId = Number(line.substring(2, 7));
                 let stationChanged = stationId != currentId;
                 let featureIndex = stationChanged ? null : Number(line[7]);
@@ -119,25 +122,29 @@ async function downloadDatabase(db: IDBDatabase) {
                     let currentFeature = null;
                     switch (currentFeatureIndex) {
                         case 2:
-                            means = Int16Array.from(means, (val) => {
-                                let stationPressure = unit(val / 10, "mbar");
-                                let altimeterSetting = stationPressureToAltimeterSetting(
-                                    stationPressure, elevation
-                                );
-                                return altimeterSetting.toNumber("inHg") * 100;
-                            });
-                            currentFeature = keyAltimeterSetting;
-                            break;
+                            if (!means.includes(0)){
+                                means = Int16Array.from(means, (val) => {
+                                    let stationPressure = unit(val / 10, "mbar");
+                                    let altimeterSetting = stationPressureToAltimeterSetting(
+                                        stationPressure, elevation
+                                    );
+                                    return altimeterSetting.toNumber("inHg") * 100;
+                                });
+                                currentFeature = keyAltimeterSetting;
+                                break;
+                            }
                         case 3:
-                            means = Int16Array.from(means, (val) => {
-                                let stationPressure = unit(val / 10, "mbar");
-                                let altimeterSetting = stationPressureToAltimeterSetting(
-                                    stationPressure, unit(0, "m")
-                                );
-                                return altimeterSetting.toNumber("inHg") * 100;
-                            });
-                            currentFeature = keyAltimeterSetting;
-                            break;
+                            if (!means.includes(0)){
+                                means = Int16Array.from(means, (val) => {
+                                    let stationPressure = unit(val / 10, "mbar");
+                                    let altimeterSetting = stationPressureToAltimeterSetting(
+                                        stationPressure, unit(0, "m")
+                                    );
+                                    return altimeterSetting.toNumber("inHg") * 100;
+                                });
+                                currentFeature = keyAltimeterSetting;
+                                break;
+                            }
                         case 6: // mean daily maximum air temperature in tenths of Celsius degree
                             means = new Int16Array(means);
                             currentFeature = "meanMaxTemp";
