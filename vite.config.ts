@@ -23,6 +23,7 @@ export default defineConfig({
                 background_color: "#ffffff",
                 display: "fullscreen",
             },
+            filename: '/AV-Scribe/sw.js',
         }
     )
   ],
