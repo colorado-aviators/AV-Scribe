@@ -78,3 +78,41 @@ test('getVirtualTemperature', () => {
     var val = result.toNumeric("K");
     expect(val).toBeCloseTo(302.74, 2);
 })
+
+test.each([
+    [10, -30, -10, -30, 20], // latitude flips hemispheres
+    [0, -30, 0, 30, 60], // longitude flips hemispheres across 0 degree meridian
+    [0, 170, 0, -170, 20], // longitude flips hemispheres across 180 degree meridian
+    [0, -10, 0, 170, 180], // longitude is inverted
+    [0, -10, 30, 170, 150], // mix lat and long changes
+])('greatCircleAngle([%i deg, %i deg], [%i deg, %i deg]) -> %i deg', (a, b, c, d, expected) => {
+    let pointA = new physics.Location(
+        new physics.Coordinate(unit(a, "deg")),
+        new physics.Coordinate(unit(b, "deg")),
+    );
+    let pointB = new physics.Location(
+        new physics.Coordinate(unit(c, "deg")),
+        new physics.Coordinate(unit(d, "deg")),
+    );
+    let actual = physics.greatCircleAngle(pointA, pointB).toNumber("deg");
+    expect(actual).toBeCloseTo(expected);
+})
+
+test.each([
+    [10, -30, -10, -30, physics.earthCircumference.toNumber("km") / 18], // latitude flips hemispheres
+    [0, -30, 0, 30, physics.earthCircumference.toNumber("km") / 6], // longitude flips hemispheres across 0 degree meridian
+    [0, 170, 0, -170, physics.earthCircumference.toNumber("km") / 18], // longitude flips hemispheres across 180 degree meridian
+    [0, -10, 0, 170, physics.earthCircumference.toNumber("km") / 2], // longitude is inverted
+    [0, -10, 30, 170, physics.earthCircumference.toNumber("km") / 12 * 5], // mix lat and long changes
+])('greatCircleDistance([%i deg, %i deg], [%i deg, %i deg]) -> %i deg', (a, b, c, d, expected) => {
+    let pointA = new physics.Location(
+        new physics.Coordinate(unit(a, "deg")),
+        new physics.Coordinate(unit(b, "deg")),
+    );
+    let pointB = new physics.Location(
+        new physics.Coordinate(unit(c, "deg")),
+        new physics.Coordinate(unit(d, "deg")),
+    );
+    let actual = physics.greatCircleDistance(pointA, pointB).toNumber("km");
+    expect(actual).toBeCloseTo(expected);
+})

@@ -1,6 +1,11 @@
 import * as math from 'mathjs'
 
-math.createUnit('inHg', `${math.unit(1, "in").toNumber("mm")} mmHg`)
+math.createUnit('inHg', `${math.unit(1, "in").toNumber("mm")} mmHg`);
+/*
+A reasonable assumption that Earth is spherical... makes the math way easier.
+(https://en.wikipedia.org/wiki/Earth's_circumference)
+*/
+export const earthCircumference = math.unit("40050 km");
 
 export class Coordinate{
     val: math.Unit;
@@ -33,6 +38,34 @@ export class Coordinate{
     }
 }
 
+export function greatCircleAngle(pointA: Location, pointB: Location) : math.Unit {
+    let lat = pointA.latitude.val.toNumber("rad");
+    let long = pointA.longitude.val.toNumber("rad");
+    let Az = Math.sin(lat);
+    let r = Math.cos(lat);
+    let Ax = r * Math.sin(long);
+    let Ay = r * Math.cos(long);
+    lat = pointB.latitude.val.toNumber("rad");
+    long = pointB.longitude.val.toNumber("rad");
+    let Bz = Math.sin(lat);
+    r = Math.cos(lat);
+    let Bx = r * Math.sin(long);
+    let By = r * Math.cos(long);
+    let euclideanDistance = Math.hypot(Ax - Bx, Ay - By, Az - Bz);
+    let angle = math.unit(Math.asin(euclideanDistance / 2) * 2, "rad");
+    return angle;
+}
+
+export function greatCircleDistance(pointA: Location, pointB: Location) : math.Unit {
+    /*
+    References:
+    https://en.wikipedia.org/wiki/Great-circle_distance
+    */
+    let angle = greatCircleAngle(pointA, pointB);
+    let distance = math.evaluate(`${angle} / pi / 2 rad * ${earthCircumference}`);
+    return distance;
+}
+
 export class Location{
     latitude: Coordinate;
     longitude: Coordinate;
@@ -41,11 +74,7 @@ export class Location{
         this.longitude = longitude;
     }
     distanceTo(other: Location) : number {
-        // NOTE: gets the job done for now, but definitely not accurate!
-        let a = this.latitude.toInt() - other.latitude.toInt();
-        let b = this.longitude.toInt() - other.longitude.toInt();
-        let c = (a ** 2 + b ** 2) ** (1/2);
-        return c;
+        let distance = greatCircleDistance(self, other);
     }
 }
 
