@@ -185,7 +185,7 @@
         set_slider_color();
     })
 
-    watch(() => (props.sketchy as number, props.bad as number), () => {
+    watch(() => (props.sketchy as number, props.bad as number, props.optimum as number), () => {
         updateSlider();
     })
 

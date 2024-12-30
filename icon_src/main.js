@@ -18,6 +18,7 @@ function exportToSVG(id, filename) {
 }
 
 function exportToPNG(id, w, h, filename) {
+    // unclear why, but you must manually execute this function twice in order for it to work!
     filename = filename ? filename : `${id}.png`;
     let orig = document.getElementById(id);
     backgroundColor = window.getComputedStyle(orig.parentElement).backgroundColor;
@@ -39,7 +40,7 @@ function exportToPNG(id, w, h, filename) {
     canvas.setAttribute('height', h)
 
     context.drawImage(image, 0, 0, w, h)
-    let dataUrl = canvas.toDataURL('image/png')
+    let dataUrl = canvas.toDataURL('image/png');
 
     let download = document.createElement('a');
     download.href = dataUrl;
@@ -56,10 +57,10 @@ function get_headset() {
 
     let headBand = document.createElementNS("http://www.w3.org/2000/svg", "path")
     d = `
-        M -.36 -.24
-        A .33 .27 0 0 1 .36 -.24
-        L .33 -.15
-        A .33 .27 0 0 0 -.33 -.15
+        M -.35 -.23
+        A .35 .27 0 0 1 .35 -.23
+        L .33 -.13
+        A .33 .27 0 0 0 -.33 -.13
     `
     headBand.setAttribute("d", d)
     headset.appendChild(headBand)
@@ -96,7 +97,6 @@ function get_headset() {
     micCircle.setAttribute("r", ".06");
     micCircle.setAttribute("cy", ".39");
     headset.appendChild(micCircle)
-    headset.setAttribute("class", "contrast")
 
     return headset;
 }
@@ -104,6 +104,15 @@ function get_headset() {
 function draw_headset() {
     const svg = document.getElementById("headset");
     headset = get_headset();
+    headset.setAttribute("transform", "scale(.9)");
+    headset.setAttribute("fill", "black");
+
+    let micCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle")
+    micCircle.setAttribute("r", ".5");
+    micCircle.setAttribute("cy", "0");
+    micCircle.setAttribute("fill", "white")
+
+    svg.appendChild(micCircle);
     svg.appendChild(headset);
 }
 

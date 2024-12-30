@@ -6,11 +6,14 @@
     const sketchy = 100;
     const bad = 100;
     const start = 0;
-    const high = 57;
-    const low = -83;
-    const optimum = 0;  // standard temperature
-    const gradient = .9;
     const realValue = ref();
+
+    const props = defineProps({
+        low: {type: Number, required: false},
+        high: {type: Number, required: false},
+        optimum: {type: Number, required: false},
+        gradient: {type: Number, required: false},
+    })
 
     function get_read_out() {
         return realValue.value + "\u00B0C";
