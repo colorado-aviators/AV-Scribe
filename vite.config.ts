@@ -14,7 +14,7 @@ export default defineConfig({
         {
             injectRegister: 'auto',
             registerType: 'autoUpdate',
-            base: '/',
+            base: '/AV-Scribe/',
             manifest: {
                 name: 'AV Scribe',
                 short_name: 'av-scribe',
