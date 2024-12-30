@@ -204,7 +204,7 @@ function getClosestWeatherData(entries: Array<any>, location: Location) : Weathe
     The idea here is to use the given airport location to look up weather records from the nearest
     measurement location in the database. These records are returned as a WeatherData object.
     */
-    let minDistance = 100000;
+    let minDistance = unit(Infinity, "km");
     let now = new Date();
     let currentMonth = now.getUTCMonth();
     let weatherData = null;

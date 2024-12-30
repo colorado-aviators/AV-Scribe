@@ -73,8 +73,9 @@ export class Location{
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    distanceTo(other: Location) : number {
-        let distance = greatCircleDistance(self, other);
+    distanceTo(other: Location) : math.Unit {
+        let distance = greatCircleDistance(this, other);
+        return distance;
     }
 }
 
