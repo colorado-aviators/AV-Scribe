@@ -142,14 +142,11 @@
 
     function get_caution_color(value: number) {
         // high|low values are associated with red|blue, high|low caution level
-        // value = 10
-        // low = 15
-        // high = 25
         var red = 0;
         if (props.gradient && props.sketchy && props.bad) {
-            let step = 1.0 / (props.bad - props.sketchy); // 25
-            let caution_level = value - props.sketchy; // -5
-            red = caution_level * step; // -125
+            let step = 1.0 / (props.bad - props.sketchy);
+            let caution_level = value - props.sketchy;
+            red = caution_level * step;
         }
         var blue = 1.0 - red;
 
@@ -185,7 +182,16 @@
         set_slider_color();
     })
 
-    watch(() => (props.sketchy as number, props.bad as number, props.optimum as number), () => {
+    watch(() => props.optimum as number, () => {
+        sliderValue.value = 0;
+        updateSlider();
+    })
+
+    watch(() => props.sketchy as number, () => {
+        updateSlider();
+    })
+
+    watch(() => props.bad as number, () => {
         updateSlider();
     })
 

@@ -5,12 +5,11 @@
     const title = "Dewpoint";
     const start = ref(0);
     const realValue = ref();
-    const sketchy = ref();
-    const bad = ref();
     const props = defineProps({
-        temp: {type: Number, required: true},
         low: {type: Number, required: false},
         high: {type: Number, required: false},
+        sketchy: {type: Number, required: false},
+        bad: {type: Number, required: false},
         optimum: {type: Number, required: false},
         gradient: {type: Number, required: false},
     });
@@ -25,17 +24,6 @@
         realValue.value = Math.round(realValue.value);
         emit('emitDewpoint', realValue.value);
     }
-    function updateCautionColor() {
-        sketchy.value = props.temp - 5;
-        bad.value = props.temp;
-    }
-    watch(() => props.temp as number, (newVal, oldVal) => {
-        // avoids changing color on initialization
-        if (oldVal !== Infinity) {
-            updateCautionColor();
-        }
-    })
-
     onInput();
 </script>
 

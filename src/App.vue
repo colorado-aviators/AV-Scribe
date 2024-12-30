@@ -34,6 +34,8 @@
     var temperatureGradient = ref(.9);
     var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
     var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
+    var dewpointBad = ref();
+    var dewpointSketchy = ref();
     var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg"));
     var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg"));
     var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
@@ -109,6 +111,12 @@
             }
         }).catch((error) => console.error(error));
     }
+
+    function useTemperature(val: number) {
+        temperature.value = val;
+        dewpointSketchy.value = val - 5;
+        dewpointBad.value = val;
+    }
 </script>
 
 <template>
@@ -144,7 +152,7 @@
         :cloud-coverage="cloudCoverage"
     />
     <TemperaturePicker
-        @emit-temperature="(payload: number) => {temperature = payload}"
+        @emit-temperature="(payload: number) => useTemperature(payload)"
         :gradient="temperatureGradient"
         :optimum="temperatureOptimum"
         :low="temperatureLow"
@@ -156,7 +164,8 @@
         :optimum="temperatureOptimum"
         :low="dewpointLow"
         :high="dewpointHigh"
-        :temp="temperature"
+        :bad="dewpointBad"
+        :sketchy="dewpointSketchy"
     />
     <AltimeterPicker
         @emit-altimeter="(payload: number) => {altimeter = payload}"
