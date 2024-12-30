@@ -98,7 +98,7 @@
 
     function get_remarks_text() {
         let val = props.remarks;
-        return val;
+        return `Remarks:<br>${val}`;
     }
 
     function download_transcript() {
