@@ -10,6 +10,22 @@
 History
 =======
 
+0.7.0 (2024-12-30)
+------------------
+
+|ui|
+* Make elevation value and weather slider ranges responsive to user's airport entry and current month.
+
+|feat|
+
+* Implement cached look-up database with historical weather records and airport characteristics.
+* Add free-form text entry field for miscellaneous "Remarks"
+
+|bug|
+
+* Fix manifest to enable PWA functionality.
+* Make dewpoint slider color respond to temperature input.
+
 0.6.0 (2024-08-13)
 ------------------
 Improves light/dark mode themes and introduces various icons.
