@@ -1,16 +1,16 @@
 <script setup lang="ts">
     import {ref, reactive} from "vue"
-    const title = "Notes"
-    const notes = ref('');
+    const title = "Remarks"
+    const remarks = ref('');
 
     const textColor = ref("var(--color-text-untouched)");
 
     const emit = defineEmits<{
-        (e: 'emitNotes', notes: string): void
+        (e: 'emitRemarks', remarks: string): void
     }>()
     const onChange = () => {
         textColor.value = "var(--color-text)";
-        emit('emitNotes', notes.value);
+        emit('emitRemarks', remarks.value);
     }
     const styleObject = reactive({
         color: textColor,
@@ -26,9 +26,9 @@
         </label>
         <div class="inputArea">
             <input
-                id="notesPicker"
+                id="remarksPicker"
                 type="text"
-                v-model.string="notes"
+                v-model.string="remarks"
                 @change="onChange"
                 :style="styleObject"
             >
