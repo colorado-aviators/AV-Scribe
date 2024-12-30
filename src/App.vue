@@ -20,6 +20,7 @@
     import DewpointPicker from './components/DewpointPicker.vue'
     import AltimeterPicker from './components/AltimeterPicker.vue'
     import ElevationPicker from './components/ElevationPicker.vue'
+    import Remarks from './components/Remarks.vue'
     import DensityAltitude from './components/DensityAltitude.vue'
     import Transcript from './components/Transcript.vue'
 
@@ -53,6 +54,7 @@
     var dewpoint = ref(0);
     var altimeter = ref(0);
     var elevation = ref(0);
+    var remarks = ref("");
     var densityAltitude = ref(0);
     var transcript = ref("");
 
@@ -163,6 +165,7 @@
         :low="altimeterLow"
         :high="altimeterHigh"
     />
+    <Remarks @emit-remarks="(payload: string) => {remarks = payload}"/>
     <DensityAltitude
         @emit-density-altitude="(payload: number) => {densityAltitude = payload}"
         :elevation="elevation"
@@ -185,6 +188,7 @@
         :dewpoint="dewpoint"
         :temperature="temperature"
         :densityAltitude="densityAltitude"
+        :remarks="remarks"
     />
   </main>
   <footer>
