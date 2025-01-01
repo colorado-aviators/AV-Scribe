@@ -6,9 +6,14 @@ function exportToSVG(id, filename) {
     svg.appendChild(style);
 
     let image = new Image()
-    let svgData = new XMLSerializer().serializeToString(svg)
-    let svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-    let svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
+    let svgData = new XMLSerializer().serializeToString(svg);
+    svgData = String(svgData).replace(/&#10;/g, '\n');
+
+    //add xml declaration
+    svgData = '<?xml version="1.0" standalone="no"?>\r\n' + svgData;
+
+    //convert svg source to URI data scheme.
+    let svgDataUrl = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svgData);
 
     let download = document.createElement('a');
     download.href = svgDataUrl;
