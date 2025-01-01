@@ -122,7 +122,7 @@
 <template>
   <header>
     <div align="center">
-        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg"  style="max-width:100%;min-width=100%"/>
+        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg"/>
     </div>
     <Disclaimer/>
   </header>
@@ -222,5 +222,9 @@
     }
     footer>p {
         font-size: 12px;
+    }
+    img.logo {
+        max-width: 100%;
+        min-width: 100%;
     }
 </style>
