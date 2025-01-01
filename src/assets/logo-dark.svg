@@ -46,23 +46,4 @@
         svg {
           background-color: transparent;
         }
-  </style><style xmlns="http://www.w3.org/1999/xhtml" id="light">
-        .contrast {
-              fill: #000;
-        }
-        svg {
-          background-color: transparent;
-        }
-  </style><style xmlns="http://www.w3.org/1999/xhtml" id="both">
-        .contrast {
-              fill: #000;
-        }
-        @media (prefers-color-scheme: dark) {
-          .contrast {
-              fill: #fff;
-          }
-        }
-        svg {
-          background-color: transparent;
-        }
   </style></svg>

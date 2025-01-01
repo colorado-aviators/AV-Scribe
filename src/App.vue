@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import { ref, onMounted } from 'vue';
     import * as math from "mathjs"
 
     import * as airport_data from "./lib/fetch_airport_data"
@@ -23,6 +23,7 @@
     import Remarks from './components/Remarks.vue'
     import DensityAltitude from './components/DensityAltitude.vue'
     import Transcript from './components/Transcript.vue'
+    import Logo from './components/Logo.vue'
 
     /*
     These references set the active slider ranges for each input.
@@ -117,13 +118,50 @@
         dewpointSketchy.value = val - 5;
         dewpointBad.value = val;
     }
+
+    export type UserTheme = 'light' | 'dark';
+
+    const setTheme = (theme: UserTheme) => {
+      localStorage.setItem('user-theme', theme);
+      userTheme.value = theme;
+      document.documentElement.className = theme;
+    };
+
+    const getTheme = (): UserTheme => {
+      return localStorage.getItem('user-theme') as UserTheme;
+    };
+
+    const toggleTheme = (): void => {
+      const activeTheme = localStorage.getItem('user-theme');
+      if (activeTheme === 'light') {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+    };
+
+    const getMediaPreference = (): UserTheme => {
+      const hasDarkPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (hasDarkPreference) {
+        return 'dark';
+      } else {
+        return 'light';
+      }
+    };
+
+    const userTheme = ref(getMediaPreference());
+
+    onMounted(() => setTheme(userTheme.value));
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      const newIsDark = e.matches;
+      setTheme(newIsDark ? 'dark' : 'light');
+    });
 </script>
 
 <template>
   <header>
-    <div align="center">
-        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg"/>
-    </div>
+    <Logo :user-theme="userTheme"/>
     <Disclaimer/>
   </header>
 
@@ -222,9 +260,5 @@
     }
     footer>p {
         font-size: 12px;
-    }
-    img.logo {
-        max-width: 100%;
-        min-width: 100%;
     }
 </style>

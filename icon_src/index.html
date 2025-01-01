@@ -38,26 +38,39 @@
           background-color: black;
         }
       }
-
       svg {
         background-color: transparent;
         max-width: 50vmin;
         max-height: 50vmin;
       }
   </style>
-  <style id="styles">
+  <style id="dark">
+        .contrast {
+              fill: #fff;
+        }
+        svg {
+          background-color: transparent;
+        }
+  </style>
+  <style id="light">
         .contrast {
               fill: #000;
         }
-
+        svg {
+          background-color: transparent;
+        }
+  </style>
+  <style id="both">
+        .contrast {
+              fill: #000;
+        }
         @media (prefers-color-scheme: dark) {
           .contrast {
               fill: #fff;
           }
         }
-
         svg {
           background-color: transparent;
         }
-    </style>
+  </style>
 </html>

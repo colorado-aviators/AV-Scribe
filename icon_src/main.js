@@ -1,10 +1,10 @@
 const fontFamily = "Verdana";
 
-function exportToSVG(id, filename) {
+function exportToSVG(id, filename, styleId) {
     filename = filename ? filename : `${id}.svg`;
 
     let svg = document.getElementById(id);
-    let style = document.getElementById("styles");
+    let style = document.getElementById(styleId);
     svg.appendChild(style);
 
     let image = new Image()
@@ -286,7 +286,9 @@ function draw_logo() {
 
 function exportLogo() {
     let id = "logo";
-    exportToSVG(id);
+    exportToSVG(id, "logo-dark.svg", 'dark');
+    exportToSVG(id, "logo-light.svg", 'light');
+    exportToSVG(id, "logo.svg", 'both');
     let size;
     size = 180;
     exportToPNG(id, size, size, `apple-touch-icon-${size}-${size}.png`);
