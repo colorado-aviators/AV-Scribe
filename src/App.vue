@@ -120,43 +120,19 @@
     }
 
     export type UserTheme = 'light' | 'dark';
+    const userTheme = ref("");
+    function setTheme(theme: UserTheme) {
+        console.log("Setting theme:" + theme)
+        localStorage.setItem('user-theme', theme);
+        userTheme.value = theme;
+        document.documentElement.className = theme;
+    }
 
-    const setTheme = (theme: UserTheme) => {
-      localStorage.setItem('user-theme', theme);
-      userTheme.value = theme;
-      document.documentElement.className = theme;
-    };
-
-    const getTheme = (): UserTheme => {
-      return localStorage.getItem('user-theme') as UserTheme;
-    };
-
-    const toggleTheme = (): void => {
-      const activeTheme = localStorage.getItem('user-theme');
-      if (activeTheme === 'light') {
-        setTheme('dark');
-      } else {
-        setTheme('light');
-      }
-    };
-
-    const getMediaPreference = (): UserTheme => {
-      const hasDarkPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (hasDarkPreference) {
-        return 'dark';
-      } else {
-        return 'light';
-      }
-    };
-
-    const userTheme = ref(getMediaPreference());
-
-    onMounted(() => setTheme(userTheme.value));
-
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      const newIsDark = e.matches;
-      setTheme(newIsDark ? 'dark' : 'light');
+    const colorSchemeIsDark = window.matchMedia('(prefers-color-scheme: dark)');
+    colorSchemeIsDark.addEventListener('change', e => {
+        setTheme(e.matches ? 'dark' : 'light');
     });
+    onMounted(() => setTheme(colorSchemeIsDark.matches ? 'dark' : 'light'));
 </script>
 
 <template>

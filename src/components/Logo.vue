@@ -3,17 +3,21 @@
 
     const fileNameLight = "logo-light";
     const fileNameDark = "logo-dark";
-    const filePath = ref(getImageUrl(fileNameDark));
+    const filePath = ref();
 
     const props = defineProps({
         userTheme: {type: String, required: true},
     });
-    watch(() => props.userTheme, (newVal) => {
-        filePath.value = getImageUrl(newVal == 'dark' ? fileNameDark : fileNameLight);
-    })
     function getImageUrl(name: String) {
         return new URL(`../assets/${name}.svg`, import.meta.url).href;
     }
+    function setFilePath(theme: String){
+        filePath.value = getImageUrl(theme == 'dark' ? fileNameDark : fileNameLight);
+    }
+    watch(() => props.userTheme, (newVal) => {
+        setFilePath(newVal);
+    })
+    setFilePath(props.userTheme.value);
 </script>
 
 <template>
