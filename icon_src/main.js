@@ -239,16 +239,10 @@ function draw_logo() {
     const spinner = document.createElementNS("http://www.w3.org/2000/svg", "g");
     for (i=-n; i<n; i++) {
         let gs = 255.0 / n * Math.abs(i);
-        let arc = drawPieSlice({ element: spinner, centreX: 0, centreY: 0, startAngleRadians: Math.PI * (.25 + i / n), sweepAngleRadians: Math.PI / n, radius:.05, fillColour: `rgb(${gs},${gs},${gs})` } );
+        let overlapFactor = .1;
+        let arc = drawPieSlice({ element: spinner, centreX: 0, centreY: 0, startAngleRadians: Math.PI * (.25 + i / n), sweepAngleRadians: (1.0 + overlapFactor) * Math.PI / n, radius:.05, fillColour: `rgb(${gs},${gs},${gs})` } );
         spinner.append(arc);
     }
-
-    let filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-    filter.id = "spinner-filter"
-    let blur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
-    blur.setAttribute("in", "SourceGraphic");
-    blur.setAttribute("stdDeviation", .002);
-    filter.appendChild(blur)
 
     let mask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
     mask.id = "spinner-mask"
@@ -257,11 +251,9 @@ function draw_logo() {
     circle.setAttribute("r", .05);
     mask.appendChild(circle)
 
-    defs.appendChild(filter);
     defs.appendChild(mask);
 
     spinner.setAttributeNS(null, "mask", "url(#spinner-mask)");
-    spinner.setAttributeNS(null, "filter", "url(#spinner-filter)");
     svg.appendChild(spinner);
 
     headset = get_headset();
