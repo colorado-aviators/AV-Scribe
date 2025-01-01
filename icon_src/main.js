@@ -1,3 +1,5 @@
+const fontFamily = "Verdana";
+
 function exportToSVG(id, filename) {
     filename = filename ? filename : `${id}.svg`;
 
@@ -134,7 +136,7 @@ function draw_lockup() {
     avText.setAttribute("class", "contrast")
     avText.setAttribute("x", -.25)
     avText.setAttribute("y", .04)
-    avText.style.font = '.16px verdana'
+    avText.style.font = `.16px ${fontFamily}`;
     avText.style.dominantBaseline = "middle";
     avText.style.textAnchor = "middle";
 
@@ -145,7 +147,7 @@ function draw_lockup() {
     scribeText.setAttribute("class", "contrast")
     scribeText.setAttribute("x", .025)
     scribeText.setAttribute("y", .04)
-    scribeText.style.font = '.16px verdana'
+    scribeText.style.font = `.16px ${fontFamily}`;
     scribeText.style.dominantBaseline = "middle";
     scribeText.style.textAnchor = "left";
     svg.appendChild(scribeText);
@@ -266,7 +268,7 @@ function draw_logo() {
     avText.setAttribute("x", .09)
     avText.setAttribute("y", -.166)
     avText.setAttribute("class", "contrast")
-    avText.style.font = '.10px verdana'
+    avText.style.font = `.10px ${fontFamily}`
     avText.style.dominantBaseline = "middle";
     avText.style.textAnchor = "middle";
     svg.appendChild(avText);
@@ -276,7 +278,7 @@ function draw_logo() {
     scribeText.setAttribute("x", -.3)
     scribeText.setAttribute("y", .2)
     scribeText.setAttribute("class", "contrast")
-    scribeText.style.font = '.14px verdana'
+    scribeText.style.font = `.14px ${fontFamily}`
     scribeText.style.dominantBaseline = "middle";
     scribeText.style.textAnchor = "left";
     svg.appendChild(scribeText);
