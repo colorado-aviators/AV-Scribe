@@ -121,8 +121,8 @@
 
 <template>
   <header>
-    <div align="center" style="width: 100%; height: 100vmin">
-        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg" width="100%" height="100%" />
+    <div align="center">
+        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg"  style="max-width:100%;min-width=100%"/>
     </div>
     <Disclaimer/>
   </header>

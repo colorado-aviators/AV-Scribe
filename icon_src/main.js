@@ -125,7 +125,8 @@ function draw_lockup() {
     const svg = document.getElementById("lockup");
 
     headset = get_headset();
-    headset.setAttribute("transform", "scale(.5) translate(-.5 .04)")
+    headset.setAttribute("transform", "scale(.5) translate(-.5 .04)");
+    headset.setAttribute("class", "contrast");
     svg.appendChild(headset);
 
     let avText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -265,6 +266,7 @@ function draw_logo() {
 
     headset = get_headset();
     headset.setAttribute("transform", "scale(.3) translate(.3 -.6)")
+    headset.setAttribute("class", "contrast");
     svg.appendChild(headset);
 
     let avText = document.createElementNS("http://www.w3.org/2000/svg", "text");

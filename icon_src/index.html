@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <body>
-    <script src="main.js"></script>
+  <body style="url(#viewer-styles)">
     <div>
-      <svg id="headset" onload="draw_headset()" viewBox="-.50 -.50 1 1"></svg>
+      <div>
+      <svg id="headset" onload="draw_headset()" viewBox="-.50 -.50 1 1" width="1000" height="1000"></svg>
       <button id="download-headset" onclick="exportHeadset()">DOWNLOAD</button>
+      </div>
+      <div>
+        <svg id="lockup" onload="draw_lockup()" class="change-with-theme" viewBox="-.50 -.25 1.075 .50" width="1000" height="1000"></svg>
+        <button id="download-lockup" onclick="exportLockup()">DOWNLOAD</button>
+      </div>
+      <div>
+        <svg id="logo" onload="draw_logo()" class="change-with-theme" viewBox="-.40 -.40 .80 .80" width="1000" height="1000"></svg>
+        <button id="download-logo" onclick="exportLogo()">DOWNLOAD</button>
+      </div>
     </div>
-    <div>
-      <svg id="lockup" onload="draw_lockup()" class="change-with-theme" viewBox="-.50 -.25 1.075 .50"></svg>
-      <button id="download-lockup" onclick="exportLockup()">DOWNLOAD</button>
-    </div>
-    <div>
-      <svg id="logo" onload="draw_logo()" class="change-with-theme" viewBox="-.40 -.40 .80 .80"></svg>
-      <button id="download-logo" onclick="exportLogo()">DOWNLOAD</button>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js"></script>
   </body>
-  <style id="styles">
+  <style id="viewer-styles">
       .contrast {
             fill: #000;
       }
 
       div {
-        width: 300px;
         background-color: white;
       }
 
@@ -32,11 +34,30 @@
         change-with-theme.div {
           background-color: black;
         }
+        div {
+          background-color: black;
+        }
       }
 
       svg {
-        height: auto();
         background-color: transparent;
+        max-width: 50vmin;
+        max-height: 50vmin;
       }
   </style>
+  <style id="styles">
+        .contrast {
+              fill: #000;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .contrast {
+              fill: #fff;
+          }
+        }
+
+        svg {
+          background-color: transparent;
+        }
+    </style>
 </html>

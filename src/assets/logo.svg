@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" id="logo" onload="draw_logo()" class="change-with-theme"
-     viewBox="-.40 -.40 .80 .80">
+     viewBox="-.40 -.40 .80 .80" width="1000" height="1000">
     <defs>
         <radialGradient id="wakeGradient" cx="0" cy="-0.4" r="0.8" fx="0" fy="-0.15"
                         gradientUnits="userSpaceOnUse">
@@ -160,7 +160,7 @@
         <path d="M0,0 L-0.038857298072848545,-0.03146601955249188 A0.05,0.05 0 0,1 -0.03535533905932737,-0.03535533905932738 Z"
               fill="rgb(246.5,246.5,246.5)"/>
     </g>
-    <g stroke-width="0" transform="scale(.3) translate(.3 -.6)">
+    <g stroke-width="0" transform="scale(.3) translate(.3 -.6)" class="contrast">
         <path d="
         M -.35 -.23
         A .35 .27 0 0 1 .35 -.23
@@ -196,22 +196,13 @@
         fill: #000;
         }
 
-        div {
-        width: 300px;
-        background-color: white;
-        }
-
         @media (prefers-color-scheme: dark) {
-        change-with-theme.contrast {
+        .contrast {
         fill: #fff;
-        }
-        change-with-theme.div {
-        background-color: black;
         }
         }
 
         svg {
-        height: auto();
         background-color: transparent;
         }
     </style>
