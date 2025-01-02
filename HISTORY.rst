@@ -10,16 +10,29 @@
 History
 =======
 
+0.7.1 (2025-01-01)
+------------------
+
+Fixes Safari rendering issues that cascade to iPhone.
+
+|ui|
+
+* switch to cross-platform font (Verdana)
+* set viewport width for Safari
+* remove feGaussianBlur filter so Safari can render spinner element
+* use dedicated light and dark SVG logos for Safari compatibility
+
 0.7.0 (2024-12-30)
 ------------------
 
 |ui|
+
 * Make elevation value and weather slider ranges responsive to user's airport entry and current month.
 
 |feat|
 
 * Implement cached look-up database with historical weather records and airport characteristics.
-* Add free-form text entry field for miscellaneous "Remarks"
+* Add free-form text entry field for miscellaneous "Remarks".
 
 |bug|
 
