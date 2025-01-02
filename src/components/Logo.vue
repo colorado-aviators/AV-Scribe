@@ -17,7 +17,7 @@
     watch(() => props.userTheme, (newVal) => {
         setFilePath(newVal);
     })
-    setFilePath(props.userTheme.value);
+    setFilePath(props.userTheme);
 </script>
 
 <template>
