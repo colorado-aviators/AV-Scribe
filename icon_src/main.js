@@ -1,14 +1,21 @@
-function exportToSVG(id, filename) {
+const fontFamily = "Verdana";
+
+function exportToSVG(id, filename, styleId) {
     filename = filename ? filename : `${id}.svg`;
 
     let svg = document.getElementById(id);
-    let style = document.getElementById("styles");
+    let style = document.getElementById(styleId);
     svg.appendChild(style);
 
     let image = new Image()
-    let svgData = new XMLSerializer().serializeToString(svg)
-    let svgDataBase64 = btoa(unescape(encodeURIComponent(svgData)))
-    let svgDataUrl = `data:image/svg+xml;charset=utf-8;base64,${svgDataBase64}`
+    let svgData = new XMLSerializer().serializeToString(svg);
+    svgData = String(svgData).replace(/&#10;/g, '\n');
+
+    //add xml declaration
+    svgData = '<?xml version="1.0" standalone="no"?>\r\n' + svgData;
+
+    //convert svg source to URI data scheme.
+    let svgDataUrl = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svgData);
 
     let download = document.createElement('a');
     download.href = svgDataUrl;
@@ -120,7 +127,8 @@ function draw_lockup() {
     const svg = document.getElementById("lockup");
 
     headset = get_headset();
-    headset.setAttribute("transform", "scale(.5) translate(-.5 .04)")
+    headset.setAttribute("transform", "scale(.5) translate(-.5 .04)");
+    headset.setAttribute("class", "contrast");
     svg.appendChild(headset);
 
     let avText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -128,7 +136,7 @@ function draw_lockup() {
     avText.setAttribute("class", "contrast")
     avText.setAttribute("x", -.25)
     avText.setAttribute("y", .04)
-    avText.style.font = ".20px proxima nova"
+    avText.style.font = `.16px ${fontFamily}`;
     avText.style.dominantBaseline = "middle";
     avText.style.textAnchor = "middle";
 
@@ -139,7 +147,7 @@ function draw_lockup() {
     scribeText.setAttribute("class", "contrast")
     scribeText.setAttribute("x", .025)
     scribeText.setAttribute("y", .04)
-    scribeText.style.font = ".20px proxima nova"
+    scribeText.style.font = `.16px ${fontFamily}`;
     scribeText.style.dominantBaseline = "middle";
     scribeText.style.textAnchor = "left";
     svg.appendChild(scribeText);
@@ -233,16 +241,10 @@ function draw_logo() {
     const spinner = document.createElementNS("http://www.w3.org/2000/svg", "g");
     for (i=-n; i<n; i++) {
         let gs = 255.0 / n * Math.abs(i);
-        let arc = drawPieSlice({ element: spinner, centreX: 0, centreY: 0, startAngleRadians: Math.PI * (.25 + i / n), sweepAngleRadians: Math.PI / n, radius:.05, fillColour: `rgb(${gs},${gs},${gs})` } );
+        let overlapFactor = .1;
+        let arc = drawPieSlice({ element: spinner, centreX: 0, centreY: 0, startAngleRadians: Math.PI * (.25 + i / n), sweepAngleRadians: (1.0 + overlapFactor) * Math.PI / n, radius:.05, fillColour: `rgb(${gs},${gs},${gs})` } );
         spinner.append(arc);
     }
-
-    let filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-    filter.id = "spinner-filter"
-    let blur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
-    blur.setAttribute("in", "SourceGraphic");
-    blur.setAttribute("stdDeviation", .002);
-    filter.appendChild(blur)
 
     let mask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
     mask.id = "spinner-mask"
@@ -251,15 +253,14 @@ function draw_logo() {
     circle.setAttribute("r", .05);
     mask.appendChild(circle)
 
-    defs.appendChild(filter);
     defs.appendChild(mask);
 
     spinner.setAttributeNS(null, "mask", "url(#spinner-mask)");
-    spinner.setAttributeNS(null, "filter", "url(#spinner-filter)");
     svg.appendChild(spinner);
 
     headset = get_headset();
     headset.setAttribute("transform", "scale(.3) translate(.3 -.6)")
+    headset.setAttribute("class", "contrast");
     svg.appendChild(headset);
 
     let avText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -267,7 +268,7 @@ function draw_logo() {
     avText.setAttribute("x", .09)
     avText.setAttribute("y", -.166)
     avText.setAttribute("class", "contrast")
-    avText.style.font = ".12px proxima nova"
+    avText.style.font = `.10px ${fontFamily}`
     avText.style.dominantBaseline = "middle";
     avText.style.textAnchor = "middle";
     svg.appendChild(avText);
@@ -277,7 +278,7 @@ function draw_logo() {
     scribeText.setAttribute("x", -.3)
     scribeText.setAttribute("y", .2)
     scribeText.setAttribute("class", "contrast")
-    scribeText.style.font = ".16px proxima nova"
+    scribeText.style.font = `.14px ${fontFamily}`
     scribeText.style.dominantBaseline = "middle";
     scribeText.style.textAnchor = "left";
     svg.appendChild(scribeText);
@@ -285,7 +286,9 @@ function draw_logo() {
 
 function exportLogo() {
     let id = "logo";
-    exportToSVG(id);
+    exportToSVG(id, "logo-dark.svg", 'dark');
+    exportToSVG(id, "logo-light.svg", 'light');
+    exportToSVG(id, "logo.svg", 'both');
     let size;
     size = 180;
     exportToPNG(id, size, size, `apple-touch-icon-${size}-${size}.png`);

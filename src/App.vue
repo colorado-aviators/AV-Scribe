@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import { ref, onMounted } from 'vue';
     import * as math from "mathjs"
 
     import * as airport_data from "./lib/fetch_airport_data"
@@ -23,6 +23,7 @@
     import Remarks from './components/Remarks.vue'
     import DensityAltitude from './components/DensityAltitude.vue'
     import Transcript from './components/Transcript.vue'
+    import Logo from './components/Logo.vue'
 
     /*
     These references set the active slider ranges for each input.
@@ -117,13 +118,26 @@
         dewpointSketchy.value = val - 5;
         dewpointBad.value = val;
     }
+
+    export type UserTheme = 'light' | 'dark';
+    const userTheme = ref("");
+    function setTheme(theme: UserTheme) {
+        console.log("Setting theme:" + theme)
+        localStorage.setItem('user-theme', theme);
+        userTheme.value = theme;
+        document.documentElement.className = theme;
+    }
+
+    const colorSchemeIsDark = window.matchMedia('(prefers-color-scheme: dark)');
+    colorSchemeIsDark.addEventListener('change', e => {
+        setTheme(e.matches ? 'dark' : 'light');
+    });
+    onMounted(() => setTheme(colorSchemeIsDark.matches ? 'dark' : 'light'));
 </script>
 
 <template>
   <header>
-    <div align="center" style="width: 100%; height: 100vmin">
-        <img align="center" alt="AV Scribe logo" class="logo" src="./assets/logo.svg" width="100%" height="100%" />
-    </div>
+    <Logo :user-theme="userTheme"/>
     <Disclaimer/>
   </header>
 
