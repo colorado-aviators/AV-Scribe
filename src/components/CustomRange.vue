@@ -64,8 +64,8 @@
     let computedStyle = getComputedStyle(document.documentElement);
     const disabledSliderColor = computedStyle.getPropertyValue('--color-slider-disabled');
     const initialSliderColor = computedStyle.getPropertyValue("--color-slider-untouched");
-    const sliderColor = ref(initialSliderColor);
-    const sliderValue = ref(props.start);
+    const sliderColor = ref();
+    const sliderValue = ref();
     const realValue = ref();
     var updated = false;
 
@@ -183,8 +183,7 @@
     })
 
     watch(() => props.optimum as number, () => {
-        sliderValue.value = 0;
-        updateSlider();
+        setDefaults();
     })
 
     watch(() => props.sketchy as number, () => {
@@ -198,6 +197,12 @@
     const emit = defineEmits<{
         (e: 'emitValue', realValue: number): void
     }>()
+
+    function setDefaults() {
+        sliderValue.value = props.start;
+        updated = false;
+        updateSlider();
+    }
 
     function updateSlider() {
         realValue.value = map_slider_to_weighted_range(sliderValue.value, props.high, props.low, props.optimum, props.gradient);
@@ -216,6 +221,7 @@
         accentColor: sliderColor,
     })
 
+    setDefaults();
     updateSlider();
 </script>
 

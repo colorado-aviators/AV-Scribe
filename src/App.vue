@@ -29,37 +29,67 @@
     These references set the active slider ranges for each input.
     They can be updated using local historical averages via useAirportData()
     */
-    var temperatureLow = ref(weather_data.WeatherRecords.temperatureLow.toNumber("C"));
-    var temperatureHigh = ref(weather_data.WeatherRecords.temperatureHigh.toNumber("C"));
-    var temperatureOptimum = ref(weather_data.StandardConditions.temperature.toNumber("C"));
-    var temperatureGradient = ref(.9);
-    var dewpointLow = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
-    var dewpointHigh = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
+    var temperatureLow = ref();
+    var temperatureHigh = ref();
+    var temperatureOptimum = ref();
+    var temperatureGradient = ref();
+    var dewpointLow = ref();
+    var dewpointHigh = ref();
     var dewpointBad = ref();
     var dewpointSketchy = ref();
-    var altimeterLow = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg"));
-    var altimeterHigh = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg"));
-    var altimeterOptimum = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
-    var altimeterGradient = ref(.9);
+    var altimeterLow = ref();
+    var altimeterHigh = ref();
+    var altimeterOptimum = ref();
+    var altimeterGradient = ref();
 
     // These references will be used to capture the user's input and dispatch it to the transcript
-    var airport = ref("");
-    var information = ref("");
-    var time = ref("");
-    var windCondition = ref("");
-    var windVel = ref(0);
-    var windDir = ref(0);
-    var windGust = ref(0);
-    var visibility = ref(0);
-    var cloudCoverage = ref("");
-    var ceiling = ref(0);
-    var temperature = ref(Infinity);
-    var dewpoint = ref(0);
-    var altimeter = ref(0);
-    var elevation = ref(0);
-    var remarks = ref("");
-    var densityAltitude = ref(0);
-    var transcript = ref("");
+    var airport = ref();
+    var information = ref();
+    var time = ref();
+    var windCondition = ref();
+    var windVel = ref();
+    var windDir = ref();
+    var windGust = ref();
+    var visibility = ref();
+    var cloudCoverage = ref();
+    var ceiling = ref();
+    var temperature = ref();
+    var dewpoint = ref();
+    var altimeter = ref();
+    var elevation = ref();
+    var remarks = ref();
+    var densityAltitude = ref();
+    var transcript = ref();
+
+    function setDefaults() {
+        temperatureLow.value = weather_data.WeatherRecords.temperatureLow.toNumber("C");
+        temperatureHigh.value = weather_data.WeatherRecords.temperatureHigh.toNumber("C");
+        temperatureOptimum.value = weather_data.StandardConditions.temperature.toNumber("C");
+        temperatureGradient.value = .9;
+        dewpointLow.value = weather_data.WeatherRecords.dewpointLow.toNumber("C");
+        dewpointHigh.value = weather_data.WeatherRecords.dewpointHigh.toNumber("C");
+        altimeterLow.value = weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg");
+        altimeterHigh.value = weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg");
+        altimeterOptimum.value = weather_data.StandardConditions.pressure.toNumber("inHg");
+        altimeterGradient.value = .9;
+        airport.value = "";
+        information.value = "";
+        time.value = "";
+        windCondition.value = "";
+        windVel.value = 0;
+        windDir.value = 0;
+        windGust.value = 0;
+        visibility.value = 0;
+        cloudCoverage.value = "";
+        ceiling.value = 0;
+        temperature.value = Infinity;
+        dewpoint.value = 0;
+        altimeter.value = 0;
+        elevation.value = 0;
+        remarks.value = "";
+        densityAltitude.value = 0;
+        transcript.value = "";
+    }
 
     function isWindVariable() {
         return windCondition.value == "Variable";
@@ -95,22 +125,16 @@
         /*
         Based on the airport, we can retrieve some cached data to update slider ranges.
         */
-        elevation.value = airportData.elevation_in_feet;
-        weather_data.loadWeatherData(airportData.location).then((weatherData) => {
-            updateWeatherRanges(weatherData);
-        }).catch((error) => console.error(error));
-    }
-
-    function switchAirport(airportID: string) {
-        /*
-        When the user changes the airport, we can update a few things based on local context.
-        */
-        airport.value = airportID;
-        airport_data.loadAirportData(airportID).then((airportData) => {
-            if (airportData !== null){
-                useAirportData(airportData);
-            }
-        }).catch((error) => console.error(error));
+        setDefaults();
+        airport.value = airportData.id;
+        if (typeof airportData.elevation_in_feet !== 'undefined'){
+            elevation.value = airportData.elevation_in_feet;
+        }
+        if (typeof airportData.location !== 'undefined'){
+            weather_data.loadWeatherData(airportData.location).then((weatherData) => {
+                updateWeatherRanges(weatherData);
+            }).catch((error) => console.error(error));
+        }
     }
 
     function useTemperature(val: number) {
@@ -128,6 +152,7 @@
         document.documentElement.className = theme;
     }
 
+    setDefaults();
     const colorSchemeIsDark = window.matchMedia('(prefers-color-scheme: dark)');
     colorSchemeIsDark.addEventListener('change', e => {
         setTheme(e.matches ? 'dark' : 'light');
@@ -142,7 +167,7 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: string) => switchAirport(payload)"/>
+    <AirportPicker @emit-airport="(payload: AirportData) => useAirportData(payload)"/>
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
         :elevation-cached="elevation"
