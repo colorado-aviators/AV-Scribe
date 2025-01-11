@@ -130,7 +130,7 @@
         if (typeof airportData.elevation_in_feet !== 'undefined'){
             elevation.value = airportData.elevation_in_feet;
         }
-        if (typeof airportData.location !== 'undefined'){
+        if (typeof airportData.location !== 'undefined' && airportData.location !== null){
             weather_data.loadWeatherData(airportData.location).then((weatherData) => {
                 updateWeatherRanges(weatherData);
             }).catch((error) => console.error(error));
@@ -167,7 +167,7 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: AirportData) => useAirportData(payload)"/>
+    <AirportPicker @emit-airport="(payload: airport_data.AirportData) => useAirportData(payload)"/>
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
         :elevation-cached="elevation"

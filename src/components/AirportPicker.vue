@@ -9,8 +9,8 @@
 
     class GeocodeSystem{
         name: string;
-        regex: string;
-        constructor(name: string, regex: string) {
+        regex: RegExp;
+        constructor(name: string, regex: RegExp) {
             this.name = name;
             this.regex = regex;
         }
@@ -32,7 +32,7 @@
     }
 
     const emit = defineEmits<{
-        (e: 'emitAirport', airport: string): void
+        (e: 'emitAirport', airport: airport_data.AirportData): void
     }>()
     const onChange = () => {
         airportID.value = format_airport(airportID.value);

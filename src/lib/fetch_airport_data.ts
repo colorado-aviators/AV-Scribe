@@ -19,10 +19,10 @@ export class AirportData{
     location: Location | null;
     constructor(
         id: string,
-        faa: string | null,
-        icao: string | null,
-        elevation_in_feet: number | null,
-        location: Location | null
+        faa: string | null = null,
+        icao: string | null = null,
+        elevation_in_feet: number | null = null,
+        location: Location | null = null
     ) {
         this.id = id;
         this.faa = faa;
@@ -106,17 +106,17 @@ async function fillDatabase(db: IDBDatabase) {
     const objectStoreCreation = db.createObjectStore(keyObjectStore, {keyPath: keyFAA});
     objectStoreCreation.createIndex(keyICAO, keyICAO, { unique: true });
     objectStoreCreation.createIndex(keyFAA, keyFAA, { unique: true });
-    objectStoreCreation.transaction.oncomplete = (event) => {
+    objectStoreCreation.transaction.oncomplete = () => {
         downloadDatabase().then((records) => {
             let txn = db.transaction(keyObjectStore, "readwrite");
             let objectStore = txn.objectStore(keyObjectStore);
             records.forEach((record) => {
                 let request = objectStore.add(record);
-                request.onsuccess = (event) => {
+                request.onsuccess = () => {
                   console.log('Record added successfully');
                 };
-                request.onerror = (event) => {
-                  console.error('Failed to add record', event.target.error);
+                request.onerror = () => {
+                  console.error('Failed to add record');
                 };
             });
         });
