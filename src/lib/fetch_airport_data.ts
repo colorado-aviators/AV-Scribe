@@ -153,10 +153,10 @@ function upgradeDatabase(event: any) {
     // the existing database version is less than current (or it doesn't exist)
     let db = event.target.result;
     switch(event.oldVersion) { // existing db version
-        case 0:
-            // version 0 means that the client had no database
         case 1:
             db.deleteObjectStore(keyObjectStore);
+        case 0:
+            // version 0 means that the client had no database
         default:
             fillDatabase(db).then(() => console.log(`Built airport database.`));
     }
