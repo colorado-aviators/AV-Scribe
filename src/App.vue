@@ -127,10 +127,10 @@
         */
         setDefaults();
         airport.value = airportData.id;
-        if (typeof airportData.elevation_in_feet !== 'undefined'){
+        if (airportData.elevation_in_feet !== null){
             elevation.value = airportData.elevation_in_feet;
         }
-        if (typeof airportData.location !== 'undefined' && airportData.location !== null){
+        if (airportData.location !== null){
             weather_data.loadWeatherData(airportData.location).then((weatherData) => {
                 updateWeatherRanges(weatherData);
             }).catch((error) => console.error(error));
@@ -172,23 +172,26 @@
         @emit-elevation="(payload: number) => {elevation = payload}"
         :elevation-cached="elevation"
     />
-    <InformationPicker @emit-information="(payload: string) => {information = payload}"/>
-    <TimePicker @emit-time="(payload: string) => {time = payload}"/>
-    <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}"/>
+    <InformationPicker @emit-information="(payload: string) => {information = payload}" :key="airport"/>
+    <TimePicker @emit-time="(payload: string) => {time = payload}" :key="airport"/>
+    <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}" :key="airport"/>
     <WindDirPicker
         @emit-wind-dir="(payload: number) => {windDir = payload}"
         :disabled="isWindVariable()"
+        :key="airport"
     />
-    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}"/>
+    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}" :key="airport"/>
     <WindGustPicker
         @emit-wind-gust="(payload: number) => {windGust = payload}"
         :disabled="isWindCalm() && !isWindVariable()"
+        :key="airport"
     />
-    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}"/>
-    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}"/>
+    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}" :key="airport"/>
+    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}" :key="airport"/>
     <CeilingPicker
         @emit-ceiling="(payload: number) => {ceiling = payload}"
         :cloud-coverage="cloudCoverage"
+        :key="airport"
     />
     <TemperaturePicker
         @emit-temperature="(payload: number) => useTemperature(payload)"
@@ -213,7 +216,7 @@
         :low="altimeterLow"
         :high="altimeterHigh"
     />
-    <Remarks @emit-remarks="(payload: string) => {remarks = payload}"/>
+    <Remarks @emit-remarks="(payload: string) => {remarks = payload}" :key="airport"/>
     <DensityAltitude
         @emit-density-altitude="(payload: number) => {densityAltitude = payload}"
         :elevation="elevation"
