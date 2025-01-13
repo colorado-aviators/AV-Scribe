@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
-    import * as airport_data from '../lib/fetch_airport_data.ts'
-    import * as weather_data from '../lib/fetch_weather_data.ts'
+    import * as airport_data from '../lib/fetch_airport_data'
+    import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Dewpoint";
     const numDigits = 0;
@@ -18,7 +18,7 @@
 
     const props = defineProps({
         airportData: {type: airport_data.AirportData, required: false, default: null},
-        temperature: {type: Number, required: false},
+        temperature: {type: Number, required: false, default: null},
     })
 
     function get_read_out() {
@@ -28,18 +28,20 @@
     const emit = defineEmits<{
         (e: 'emitDewpoint', realValue: number): void
     }>()
-    const onInput = (val) => {
+    const onInput = (val: number) => {
         let rounded = Math.round(val);
         emit('emitDewpoint', rounded);
         realValue.value = rounded;
     }
 
-    watch(() => props.temperature as const, (newVal) => {
-        sketchy.value = newVal - 5;
-        bad.value = newVal;
+    watch(() => props.temperature, (newVal) => {
+        if (newVal !== null) {
+            sketchy.value = newVal - 5;
+            bad.value = newVal;
+        }
     })
 
-    if (props.airportData !== null){
+    if (props.airportData !== null && props.airportData.location !== null){
         /* Admittedly, this involves some guess work.
         Setting the range of each input based on monthly average or average min / max
         is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.

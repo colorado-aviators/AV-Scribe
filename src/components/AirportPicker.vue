@@ -28,7 +28,7 @@
     }
 
     const emit = defineEmits<{
-        (e: 'emitAirport', airport: airport_data.AirportData): void
+        (e: 'emitAirport', airport: airport_data.AirportData | null): void
     }>()
     const onChange = () => {
         if (airportID.value.length == 0) {

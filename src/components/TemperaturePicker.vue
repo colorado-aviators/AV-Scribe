@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
-    import * as airport_data from '../lib/fetch_airport_data.ts'
-    import * as weather_data from '../lib/fetch_weather_data.ts'
+    import * as airport_data from '../lib/fetch_airport_data'
+    import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Temperature";
     const numDigits = 0;
@@ -25,13 +25,13 @@
     const emit = defineEmits<{
         (e: 'emitTemperature', realValue: number): void
     }>()
-    const onInput = (val) => {
+    const onInput = (val: number) => {
         let rounded = Math.round(val);
         emit('emitTemperature', rounded);
         realValue.value = rounded;
     }
 
-    if (props.airportData !== null){
+    if (props.airportData !== null && props.airportData.location !== null){
         /* Admittedly, this involves some guess work.
         Setting the range of each input based on monthly average or average min / max
         is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.

@@ -74,7 +74,7 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: airport_data.AirportData) => {airportData = payload; airportID = payload == null ? '' : payload.id}"/>
+    <AirportPicker @emit-airport="(payload: airport_data.AirportData | null) => {airportData = payload; airportID = payload == null ? '' : payload.id}"/>
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
         :airportData="airportData"

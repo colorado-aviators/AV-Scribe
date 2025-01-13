@@ -37,10 +37,12 @@
         },
         sketchy: {
             type: Number,
+            default: null,
             required: false,
         },
         bad: {
             type: Number,
+            default: null,
             required: false,
         },
         step: {

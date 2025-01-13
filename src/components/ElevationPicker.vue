@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import {ref, reactive} from "vue"
-    import * as airport_data from '../lib/fetch_airport_data.ts'
+    import * as airport_data from '../lib/fetch_airport_data'
 
     const title = "Field Elevation (ft MSL)"
     // https://en.wikipedia.org/wiki/List_of_highest_airports

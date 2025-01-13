@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import {ref} from "vue"
     import CustomRange from './CustomRange.vue'
-    import * as airport_data from '../lib/fetch_airport_data.ts'
-    import * as weather_data from '../lib/fetch_weather_data.ts'
+    import * as airport_data from '../lib/fetch_airport_data'
+    import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Altimeter"
     const numDigits = 2;
@@ -25,13 +25,13 @@
     const emit = defineEmits<{
         (e: 'emitAltimeter', realValue: number): void
     }>()
-    const onInput = (val) => {
+    const onInput = (val: number) => {
         let resolution = 10 ** numDigits;
         let rounded = Math.round(val * resolution) / resolution;
         emit('emitAltimeter', rounded);
         realValue.value = rounded;
     }
-    if (props.airportData !== null){
+    if (props.airportData !== null && props.airportData.location !== null){
         weather_data.loadWeatherData(props.airportData.location).then((weatherData) => {
             let meanVal = weatherData.altimeterSetting.toNumber("inHg");
 
