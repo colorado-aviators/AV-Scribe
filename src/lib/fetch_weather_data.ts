@@ -2,7 +2,7 @@ import { unit, Unit } from 'mathjs'
 import { Coordinate, stationPressureToAltimeterSetting, Location } from './physics'
 
 export const StandardConditions = {
-    temperature: unit(0, "C"),
+    temperature: unit(15, "C"),
     pressure: unit(29.92, "inHg"),
 }
 
@@ -14,15 +14,22 @@ export const WeatherRecords = {
     temperatureHigh: unit(57, "C"),
     temperatureLow: unit(-83, "C"),
     dewpointHigh: unit(35, "C"),
+
     // I'm assuming this is the same as temp, but I haven't found a record.
     dewpointLow: unit(-83, "C"),
+
     // Agata, Russia (in Siberia) registered on December 31, 1968
     altimeterSettingHigh: unit(32.01, "inHg"),
+
     // https://www.wunderground.com/blog/weatherhistorian/world-and-us-lowest-barometric-pressure-records.html
     // Dutch Harbor, AK, on 10/25/1977 (record excludes tropical storms)
     altimeterSettingLow: unit(27.31, "inHg"),
     // Guam, Super Typhoon "Tip" 10/12/1979
     // altimeterSettingLow: unit(25.69, "inHg"),
+
+    // Mount Washington (New Hampshire) Observatory on 12 April 1934
+    // https://en.wikipedia.org/wiki/Wind_speed#Non-tornadic
+    windVelocityHigh: unit(200.733, "kt"),
 }
 
 export class WeatherData{

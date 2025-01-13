@@ -3,7 +3,7 @@
     import CustomRange from './CustomRange.vue'
 
     const title = "Wind Velocity"
-    const start = -1.0;
+    const start = 0;
     const high = 201.0
     const low = 0.0;
     const optimum = 5.0;

@@ -31,13 +31,17 @@
         (e: 'emitAirport', airport: airport_data.AirportData): void
     }>()
     const onChange = () => {
-        airportID.value = format_airport(airportID.value);
+        if (airportID.value.length == 0) {
+            emit('emitAirport', null);
+        }
+        else {
+            airportID.value = format_airport(airportID.value);
 
-        airport_data.loadAirportData(airportID.value, systemChoice.value.name.toLowerCase()).then((airportData) => {
-            emit('emitAirport', airportData);
-        }).catch((error) => console.error(error));
-
-        textColor.value = "var(--color-text)";
+            airport_data.loadAirportData(airportID.value, systemChoice.value.name.toLowerCase()).then((airportData) => {
+                emit('emitAirport', airportData);
+            }).catch((error) => console.error(error));
+            textColor.value = "var(--color-text)";
+        }
     }
     const styleObject = reactive({
         color: textColor,

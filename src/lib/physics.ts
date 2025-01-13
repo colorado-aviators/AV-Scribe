@@ -1,6 +1,7 @@
 import * as math from 'mathjs'
 
 math.createUnit('inHg', `${math.unit(1, "in").toNumber("mm")} mmHg`);
+math.createUnit('knot', {definition: '0.514444 m/s', aliases: ['knots', 'kt', 'kts']});
 /*
 A reasonable assumption that Earth is spherical... makes the math way easier.
 (https://en.wikipedia.org/wiki/Earth's_circumference)

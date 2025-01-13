@@ -1,30 +1,61 @@
 <script setup lang="ts">
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
+    import * as airport_data from '../lib/fetch_airport_data.ts'
+    import * as weather_data from '../lib/fetch_weather_data.ts'
 
     const title = "Dewpoint";
-    const start = ref(0);
-    const realValue = ref();
+    const numDigits = 0;
+
+    const gradient = ref(.9);
+    const high = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
+    const low = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
+    const optimum = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const start = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const sketchy = ref();
+    const bad = ref();
+    const realValue = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+
     const props = defineProps({
-        low: {type: Number, required: false},
-        high: {type: Number, required: false},
-        sketchy: {type: Number, required: false},
-        bad: {type: Number, required: false},
-        optimum: {type: Number, required: false},
-        gradient: {type: Number, required: false},
-    });
+        airportData: {type: airport_data.AirportData, required: false, default: null},
+        temperature: {type: Number, required: false},
+    })
 
     function get_read_out() {
         return realValue.value + "\u00B0C";
-    };
+    }
+
     const emit = defineEmits<{
         (e: 'emitDewpoint', realValue: number): void
     }>()
-    const onInput = () => {
-        realValue.value = Math.round(realValue.value);
-        emit('emitDewpoint', realValue.value);
+    const onInput = (val) => {
+        let rounded = Math.round(val);
+        emit('emitDewpoint', rounded);
+        realValue.value = rounded;
     }
-    onInput();
+
+    watch(() => props.temperature as const, (newVal) => {
+        sketchy.value = newVal - 5;
+        bad.value = newVal;
+    })
+
+    if (props.airportData !== null){
+        /* Admittedly, this involves some guess work.
+        Setting the range of each input based on monthly average or average min / max
+        is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
+        */
+        weather_data.loadWeatherData(props.airportData.location).then((weatherData) => {
+            let meanMaxTemp = weatherData.meanMaxTemp.toNumber("C");
+            let meanMinTemp = weatherData.meanMinTemp.toNumber("C");
+            let meanMeanTemp = (meanMaxTemp + meanMinTemp) / 2;
+
+            high.value = high.value < meanMaxTemp + 25 ? high.value : meanMaxTemp + 25;
+            low.value = meanMinTemp - 25;
+            optimum.value = meanMeanTemp - 5;
+            start.value = meanMeanTemp - 5;
+            gradient.value = .5;
+        }).catch((error) => console.error(error));
+    }
 </script>
 
 <template>
@@ -37,9 +68,8 @@
         :gradient = "gradient"
         :sketchy = "sketchy"
         :bad = "bad"
-        :numDigits = 0
-        @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload; onInput();}"
+        :numDigits = "numDigits"
+        @emit-value="(payload: number) => onInput(payload)"
         :readOut = "get_read_out()"
     />
 </template>

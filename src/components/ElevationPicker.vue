@@ -1,5 +1,6 @@
 <script setup lang="ts">
-    import {ref, reactive, watch} from "vue"
+    import {ref, reactive} from "vue"
+    import * as airport_data from '../lib/fetch_airport_data.ts'
 
     const title = "Field Elevation (ft MSL)"
     // https://en.wikipedia.org/wiki/List_of_highest_airports
@@ -8,18 +9,15 @@
     const start = 0;
     const realValue = ref(0);
     const textColor = ref("var(--color-text-untouched)");
+    const disabled = ref(false);
 
     const props = defineProps({
-        elevationCached: {type: Number, required: true},
+        airportData: {type: airport_data.AirportData, required: false, default: null},
     });
 
     function get_read_out() {
         return realValue.value.toFixed(0);
     };
-
-    watch(() => props.elevationCached, (newVal) => {
-        realValue.value = newVal;
-    })
 
     const emit = defineEmits<{
         (e: 'emitElevation', realValue: number): void
@@ -29,13 +27,16 @@
         realValue.value = Math.round(realValue.value)
         emit('emitElevation', realValue.value);
     }
-    function initialize() {
-        emit('emitElevation', realValue.value);
-    }
     const styleObject = reactive({
         color: textColor,
     })
-    initialize();
+
+    if (props.airportData !== null){
+        let elevation = props.airportData.elevation_in_feet;
+        realValue.value = elevation == null ? 0 : elevation;
+        disabled.value = elevation !== null;
+        textColor.value = "var(--color-text)";
+    }
 </script>
 
 <template>
@@ -55,6 +56,7 @@
                 :min="low"
                 inputmode="numeric"
                 :style="styleObject"
+                :disabled="disabled"
             >
         </div>
     </div>

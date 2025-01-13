@@ -3,7 +3,7 @@
     import CustomRange from './CustomRange.vue'
 
     const title = "Wind Dir"
-    const start = 1.0;
+    const start = 360;
     const high = 360;
     const low = 10;
     const realValue = ref(high);
