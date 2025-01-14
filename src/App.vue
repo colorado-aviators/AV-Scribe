@@ -1,9 +1,7 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
-    import * as math from "mathjs"
 
     import * as airport_data from "./lib/fetch_airport_data"
-    import * as weather_data from "./lib/fetch_weather_data"
 
     import Disclaimer from './components/Disclaimer.vue'
     import AirportPicker from './components/AirportPicker.vue'
@@ -25,71 +23,25 @@
     import Transcript from './components/Transcript.vue'
     import Logo from './components/Logo.vue'
 
-    /*
-    These references set the active slider ranges for each input.
-    They can be updated using local historical averages via useAirportData()
-    */
-    var temperatureLow = ref();
-    var temperatureHigh = ref();
-    var temperatureOptimum = ref();
-    var temperatureGradient = ref();
-    var dewpointLow = ref();
-    var dewpointHigh = ref();
-    var dewpointBad = ref();
-    var dewpointSketchy = ref();
-    var altimeterLow = ref();
-    var altimeterHigh = ref();
-    var altimeterOptimum = ref();
-    var altimeterGradient = ref();
-
     // These references will be used to capture the user's input and dispatch it to the transcript
-    var airport = ref();
-    var information = ref();
-    var time = ref();
-    var windCondition = ref();
-    var windVel = ref();
-    var windDir = ref();
-    var windGust = ref();
-    var visibility = ref();
-    var cloudCoverage = ref();
-    var ceiling = ref();
-    var temperature = ref();
-    var dewpoint = ref();
-    var altimeter = ref();
-    var elevation = ref();
-    var remarks = ref();
-    var densityAltitude = ref();
-    var transcript = ref();
-
-    function setDefaults() {
-        temperatureLow.value = weather_data.WeatherRecords.temperatureLow.toNumber("C");
-        temperatureHigh.value = weather_data.WeatherRecords.temperatureHigh.toNumber("C");
-        temperatureOptimum.value = weather_data.StandardConditions.temperature.toNumber("C");
-        temperatureGradient.value = .9;
-        dewpointLow.value = weather_data.WeatherRecords.dewpointLow.toNumber("C");
-        dewpointHigh.value = weather_data.WeatherRecords.dewpointHigh.toNumber("C");
-        altimeterLow.value = weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg");
-        altimeterHigh.value = weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg");
-        altimeterOptimum.value = weather_data.StandardConditions.pressure.toNumber("inHg");
-        altimeterGradient.value = .9;
-        airport.value = "";
-        information.value = "";
-        time.value = "";
-        windCondition.value = "";
-        windVel.value = 0;
-        windDir.value = 0;
-        windGust.value = 0;
-        visibility.value = 0;
-        cloudCoverage.value = "";
-        ceiling.value = 0;
-        temperature.value = Infinity;
-        dewpoint.value = 0;
-        altimeter.value = 0;
-        elevation.value = 0;
-        remarks.value = "";
-        densityAltitude.value = 0;
-        transcript.value = "";
-    }
+    var airportID = ref("");
+    var airportData = ref();
+    var information = ref("");
+    var time = ref("");
+    var windCondition = ref("");
+    var windVel = ref(0);
+    var windDir = ref(0);
+    var windGust = ref(0);
+    var visibility = ref(0);
+    var cloudCoverage = ref("");
+    var ceiling = ref(0);
+    var temperature = ref(0);
+    var dewpoint = ref(0);
+    var altimeter = ref(0);
+    var elevation = ref(0);
+    var remarks = ref("");
+    var densityAltitude = ref(0);
+    var transcript = ref("");
 
     function isWindVariable() {
         return windCondition.value == "Variable";
@@ -97,50 +49,6 @@
 
     function isWindCalm() {
         return windVel.value == 0.0;
-    }
-
-    function updateWeatherRanges(weatherData: weather_data.WeatherData) {
-        /* Admittedly, this involves some guess work.
-        Setting the range of each input based on monthly average or average min / max
-        is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
-        */
-        temperatureLow.value = math.evaluate(`${weatherData.meanMinTemp} - 25 C`).toNumber("C");
-        temperatureHigh.value = math.evaluate(`${weatherData.meanMaxTemp} + 25 C`).toNumber("C");
-        let meanMeanTemp = math.evaluate(`mean(${weatherData.meanMinTemp}, ${weatherData.meanMaxTemp})`);
-        temperatureOptimum.value = meanMeanTemp.toNumber("C");
-        temperature.value = meanMeanTemp.toNumber("C");
-        temperatureGradient.value = .5;
-
-        dewpointHigh.value = dewpointHigh.value < temperatureHigh.value? dewpointHigh.value : temperatureHigh.value;
-        dewpointLow.value = temperatureLow.value;
-
-        altimeterLow.value = math.evaluate(`${weatherData.altimeterSetting} - 1.0 inHg`).toNumber("inHg");
-        altimeterHigh.value = math.evaluate(`${weatherData.altimeterSetting} + 1.0 inHg`).toNumber("inHg");
-        altimeterOptimum.value = weatherData.altimeterSetting.toNumber("inHg");
-        altimeter.value = weatherData.altimeterSetting.toNumber("inHg");
-        altimeterGradient.value = .85;
-    }
-
-    function useAirportData(airportData: airport_data.AirportData) {
-        /*
-        Based on the airport, we can retrieve some cached data to update slider ranges.
-        */
-        setDefaults();
-        airport.value = airportData.id;
-        if (airportData.elevation_in_feet !== null){
-            elevation.value = airportData.elevation_in_feet;
-        }
-        if (airportData.location !== null){
-            weather_data.loadWeatherData(airportData.location).then((weatherData) => {
-                updateWeatherRanges(weatherData);
-            }).catch((error) => console.error(error));
-        }
-    }
-
-    function useTemperature(val: number) {
-        temperature.value = val;
-        dewpointSketchy.value = val - 5;
-        dewpointBad.value = val;
     }
 
     export type UserTheme = 'light' | 'dark';
@@ -152,7 +60,6 @@
         document.documentElement.className = theme;
     }
 
-    setDefaults();
     const colorSchemeIsDark = window.matchMedia('(prefers-color-scheme: dark)');
     colorSchemeIsDark.addEventListener('change', e => {
         setTheme(e.matches ? 'dark' : 'light');
@@ -167,56 +74,50 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: airport_data.AirportData) => useAirportData(payload)"/>
+    <AirportPicker @emit-airport="(payload: airport_data.AirportData | null) => {airportData = payload; airportID = payload == null ? '' : payload.id}"/>
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
-        :elevation-cached="elevation"
+        :airportData="airportData"
+        :key="airportID"
     />
-    <InformationPicker @emit-information="(payload: string) => {information = payload}" :key="airport"/>
-    <TimePicker @emit-time="(payload: string) => {time = payload}" :key="airport"/>
-    <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}" :key="airport"/>
+    <InformationPicker @emit-information="(payload: string) => {information = payload}" :key="airportID"/>
+    <TimePicker @emit-time="(payload: string) => {time = payload}" :key="airportID"/>
+    <WindCondition @emit-wind-condition="(payload: string) => {windCondition = payload}" :key="airportID"/>
     <WindDirPicker
         @emit-wind-dir="(payload: number) => {windDir = payload}"
         :disabled="isWindVariable()"
-        :key="airport"
+        :key="airportID"
     />
-    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}" :key="airport"/>
+    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}" :key="airportID"/>
     <WindGustPicker
         @emit-wind-gust="(payload: number) => {windGust = payload}"
         :disabled="isWindCalm() && !isWindVariable()"
-        :key="airport"
+        :key="airportID"
     />
-    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}" :key="airport"/>
-    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}" :key="airport"/>
+    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}" :key="airportID"/>
+    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}" :key="airportID"/>
     <CeilingPicker
         @emit-ceiling="(payload: number) => {ceiling = payload}"
         :cloud-coverage="cloudCoverage"
-        :key="airport"
+        :key="airportID"
     />
     <TemperaturePicker
-        @emit-temperature="(payload: number) => useTemperature(payload)"
-        :gradient="temperatureGradient"
-        :optimum="temperatureOptimum"
-        :low="temperatureLow"
-        :high="temperatureHigh"
+        @emit-temperature="(payload: number) => temperature = payload"
+        :airportData="airportData"
+        :key="airportID"
     />
     <DewpointPicker
-        @emit-dewpoint="(payload: number) => {dewpoint = payload}"
-        :gradient="temperatureGradient"
-        :optimum="temperatureOptimum"
-        :low="dewpointLow"
-        :high="dewpointHigh"
-        :bad="dewpointBad"
-        :sketchy="dewpointSketchy"
+        @emit-dewpoint="(payload: number) => dewpoint = payload"
+        :airportData="airportData"
+        :key="airportID"
+        :temperature="temperature"
     />
     <AltimeterPicker
-        @emit-altimeter="(payload: number) => {altimeter = payload}"
-        :gradient="altimeterGradient"
-        :optimum="altimeterOptimum"
-        :low="altimeterLow"
-        :high="altimeterHigh"
+        @emit-altimeter="(payload: number) => altimeter = payload"
+        :key="airportID"
+        :airportData="airportData"
     />
-    <Remarks @emit-remarks="(payload: string) => {remarks = payload}" :key="airport"/>
+    <Remarks @emit-remarks="(payload: string) => {remarks = payload}" :key="airportID"/>
     <DensityAltitude
         @emit-density-altitude="(payload: number) => {densityAltitude = payload}"
         :elevation="elevation"
@@ -227,7 +128,7 @@
     <Transcript
         :information="information"
         :altimeter="altimeter"
-        :airport="airport"
+        :airportID="airportID"
         :visibility="visibility"
         :cloudCoverage="cloudCoverage"
         :ceiling="ceiling"
@@ -253,11 +154,9 @@
     h1 {
         font-size: 72px;
     }
-
     header {
         line-height: 1.5;
     }
-
     footer {
         text-align: right;
         margin-bottom: 12px;

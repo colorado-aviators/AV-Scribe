@@ -3,8 +3,8 @@
     import CustomRange from './CustomRange.vue'
 
     const title = "Visibility"
-    const start = 1.0;
-    const high = 10.0
+    const start = 10.0;
+    const high = 10.0;
     const low = 0.0;
     const optimum = 5.0;
     const gradient = 0.5;

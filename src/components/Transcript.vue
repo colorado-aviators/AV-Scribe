@@ -5,7 +5,7 @@
     const atisText = ref("");
     const disablingCoverages = ["SKC", "NCD", "CLR", "VV"];
     const props = defineProps({
-        airport: {type: String, required: true},
+        airportID: {type: String, required: true},
         information: {type: String, required: false},
         time:  {type: String, required: true},
         windCondition: {type: String, required: true},
@@ -23,7 +23,7 @@
     });
 
     function get_airport_chunk() {
-        return props.airport;
+        return props.airportID;
     }
 
     function get_information_chunk() {
@@ -102,7 +102,7 @@
             props.visibility,
             props.cloudCoverage,
             props.ceiling,
-            props.airport,
+            props.airportID,
             props.information,
             props.time,
             props.altimeter,
@@ -123,7 +123,7 @@
         :atisText="atisText"
         :information="information"
         :altimeter="altimeter"
-        :airport="airport"
+        :airportID="airportID"
         :visibility="visibility"
         :cloudCoverage="cloudCoverage"
         :ceiling="ceiling"

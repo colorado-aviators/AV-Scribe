@@ -3,7 +3,7 @@
 
     const props = defineProps({
         atisText: {type: String, required: true},
-        airport: {type: String, required: true},
+        airportID: {type: String, required: true},
         information: {type: String, required: false},
         time:  {type: String, required: true},
         windCondition: {type: String, required: true},
@@ -24,7 +24,7 @@
     const ADDRESS = "https://coloradoaviators.net/AV-Scribe/";
 
     function get_airport_text() {
-        return `Airport: ${props.airport}`;
+        return `Airport: ${props.airportID}`;
     }
 
     function get_information_text() {
@@ -106,7 +106,7 @@
 
         // Add file name
         let tags = [
-            props.airport,
+            props.airportID,
             props.information,
             props.time.replace(/\s/g, "") + 'Z',
         ]

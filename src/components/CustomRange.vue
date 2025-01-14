@@ -37,10 +37,12 @@
         },
         sketchy: {
             type: Number,
+            default: null,
             required: false,
         },
         bad: {
             type: Number,
+            default: null,
             required: false,
         },
         step: {
@@ -143,7 +145,7 @@
     function get_caution_color(value: number) {
         // high|low values are associated with red|blue, high|low caution level
         var red = 0;
-        if (props.gradient && props.sketchy && props.bad) {
+        if (props.gradient !== null && props.sketchy !== null && props.bad !== null) {
             let step = 1.0 / (props.bad - props.sketchy);
             let caution_level = value - props.sketchy;
             red = caution_level * step;
@@ -199,7 +201,13 @@
     }>()
 
     function setDefaults() {
-        sliderValue.value = props.start;
+        sliderValue.value = map_weighted_range_to_slider(
+            props.start,
+            props.high,
+            props.low,
+            props.optimum,
+            props.gradient,
+        );
         updated = false;
         updateSlider();
     }
