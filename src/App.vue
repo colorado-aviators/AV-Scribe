@@ -154,11 +154,9 @@
     h1 {
         font-size: 72px;
     }
-
     header {
         line-height: 1.5;
     }
-
     footer {
         text-align: right;
         margin-bottom: 12px;
