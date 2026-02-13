@@ -75,12 +75,16 @@ function nanmean(array2D: Array<Array<number>>) : Int16Array {
         - converts the result to a 16-bit integer array for storage efficiency
     */
     let result = new Int16Array(12);
+    if (array2D[0] === undefined){
+        return result;
+    }
     for (let i = 0; i < array2D[0].length ; i++ ) {
         let sum = 0;
         let count = 0;
         for (let row of array2D) {
-            if (!Number.isNaN(row[i])) {
-                sum += row[i];
+            let cell = row[i]
+            if (!Number.isNaN(row[i]) && cell !== undefined) {
+                sum += cell;
                 count += 1;
             }
         }
@@ -115,6 +119,9 @@ async function downloadDatabase(db: IDBDatabase) {
             var elevation = unit(0, "m");
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
+                if (typeof line !== 'string') {
+                    throw new Error("Problem requesting weather records.")
+                }
                 if (line.length == 0) {
                     continue;
                 }
