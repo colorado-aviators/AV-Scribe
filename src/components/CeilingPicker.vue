@@ -31,6 +31,15 @@
         return disabled.value ? "NONE" : valid;
     };
 
+    const emit = defineEmits<{
+        (e: 'emitCeiling', ceiling: number): void
+    }>()
+
+    const onInput = (val) => {
+        realValue.value = val;
+        emit('emitCeiling', val);
+    }
+
     watch(() => props.cloudCoverage, (newVal) => {
         if (disablingCoverages.includes(newVal)) {
             disabled.value = true;
@@ -55,18 +64,8 @@
             }
         }
         start.value = value;
-        realValue.value = value;
-        emit('emitCeiling', value);
+        onInput(value);
     })
-
-    const emit = defineEmits<{
-        (e: 'emitCeiling', ceiling: number): void
-    }>()
-    const onInput = () => {
-        realValue.value = Math.round(realValue.value / 100) * 100;
-        emit('emitCeiling', realValue.value);
-    }
-    onInput();
 </script>
 
 <template>
@@ -79,10 +78,9 @@
         :gradient = "gradient"
         :sketchy = "sketchy"
         :bad = "bad"
-        @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload}"
+        :numDigits = -2
+        @emit-value="(payload: number) => onInput(payload)"
         :readOut = "get_read_out()"
         :disabled = "disabled"
-        :numDigits = -2
     />
 </template>

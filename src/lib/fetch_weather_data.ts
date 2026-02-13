@@ -334,56 +334,82 @@ export function loadWeatherData(location: Location): Promise<WeatherData> {
     });
 }
 
-async function queryMetar(icao: string, location: Location, RESOLVE: any, REJECT: any) {
-    try {
-        var closestIcao = icao;
-        var metarUrl = `https://api.weather.gov/stations/${closestIcao}/observations/latest?require_qc=false`;
-        var response = await fetch(metarUrl);
+function collectMetar(jsonData: object, location: Location): Metar {
+    const rawMetarData = jsonData.properties;
 
-        if (!response.ok) {
-            if (response.status === 404) {
-                let entries = await airport_data.loadNearbyAirports(location);
-                for (let entry of entries){
-                    metarUrl = `https://api.weather.gov/stations/${entry.icao}/observations/latest?require_qc=false`
-                    response = await fetch(metarUrl);
-                    if (response.ok) {
-                        closestIcao = entry.icao;
-                        break;
-                    }
-                }
-            }
-            else {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    // Special handling for cloud layer logic
+    let cloudBase = null;
+    let cloudAmount = "SKC";
+    if (rawMetarData.cloudLayers.length > 0) {
+        let layer = rawMetarData.cloudLayers[0];
+        cloudAmount = layer.amount;
+        if (layer.base.value !== null) {
+            cloudBase = unit(layer.base.value, "m");
         }
-
-        const jsonData = await response.json();
-        const rawMetarData = jsonData.properties;
-        console.log(rawMetarData)
-        let metar = new Metar(
-            location,
-            closestIcao,
-            rawMetarData.elevation.value == null ? null : unit(rawMetarData.elevation.value, "m"),
-            rawMetarData.barometricPressure.value == null ? null : unit(rawMetarData.barometricPressure.value, "Pa"),
-            rawMetarData.temperature.value == null ? null : unit(rawMetarData.temperature.value, "C"),
-            rawMetarData.dewpoint.value == null ? null : unit(rawMetarData.dewpoint.value, "C"),
-            rawMetarData.visibility.value == null ? null : unit(rawMetarData.visibility.value, "m"),
-            rawMetarData.cloudLayers.length == 0 ? null : (rawMetarData.cloudLayers[0].base.value == null ? null : unit(rawMetarData.cloudLayers[0].base.value, "m")),
-            rawMetarData.cloudLayers.length == 0 ? "SKC" : rawMetarData.cloudLayers[0].amount,
-            rawMetarData.windDirection.value == null ? null : unit(rawMetarData.windDirection.value, "deg"),
-            rawMetarData.windSpeed.value == null ? null : unit(rawMetarData.windSpeed.value, "km/h"),
-            rawMetarData.windGust.value == null ? null : unit(rawMetarData.windGust.value, "km/h"),
-        )
-        RESOLVE(metar);
-        console.log(`Retrieved METAR data for ${closestIcao}.`);
-    } catch (error) {
-        REJECT(`Error retrieving METAR data for ${icao}: ${error}.`);
     }
+
+    return new Metar(
+        location,
+        rawMetarData.stationId,
+        rawMetarData.elevation.value == null ? null : unit(rawMetarData.elevation.value, "m"),
+        rawMetarData.barometricPressure.value == null ? null : unit(rawMetarData.barometricPressure.value, "Pa"),
+        rawMetarData.temperature.value == null ? null : unit(rawMetarData.temperature.value, "C"),
+        rawMetarData.dewpoint.value == null ? null : unit(rawMetarData.dewpoint.value, "C"),
+        rawMetarData.visibility.value == null ? null : unit(rawMetarData.visibility.value, "m"),
+        cloudBase,
+        cloudAmount,
+        rawMetarData.windDirection.value == null ? null : unit(rawMetarData.windDirection.value, "deg"),
+        rawMetarData.windSpeed.value == null ? null : unit(rawMetarData.windSpeed.value, "km/h"),
+        rawMetarData.windGust.value == null ? null : unit(rawMetarData.windGust.value, "km/h"),
+    )
 }
 
-export function loadMetar(icao: string, location: Location): Promise<Metar> {
-    return new Promise((RESOLVE: any, REJECT: any) => {
-        queryMetar(icao, location, RESOLVE, REJECT);
+async function queryMetar(icao: string): Metar | null {
+    var metarUrl = `https://api.weather.gov/stations/${icao}/observations/latest?require_qc=false`;
+    var response = await fetch(metarUrl);
+    let metar = null;
+    if (response.status != 404) {
+        metar = collectMetar(await response.json(), location);
+    }
+    return metar;
+}
+
+export function loadMetar(icao: string): Promise<Metar | null> {
+    return new Promise(async (RESOLVE: any, REJECT: any) => {
+        let metar = null;
+        try {
+            metar = await queryMetar(icao);
+        }
+        catch (error) {
+            REJECT(`Can't get METAR data for ${icao}.`)
+        }
+        if (metar != null) {
+            console.log(`Retrieved METAR data for ${icao}.`);
+        }
+        RESOLVE(metar);
+    });
+}
+
+export function loadNearestMetar(location: Location): Promise<Metar> {
+    return new Promise(async (RESOLVE: any, REJECT: any) => {
+        let metar = null;
+        let entries = await airport_data.loadNearbyAirports(location);
+        for (let entry of entries){
+            try {
+                metar = await queryMetar(entry.icao);
+            }
+            catch (error) {
+                REJECT(`Can't get METAR data right now.`);
+            }
+            if (metar != null) {
+                console.log(`Retrieved METAR data for ${entry.icao}.`);
+                break;
+            }
+        }
+        if (metar == null) {
+            REJECT(`Couldn't find METAR data near airport location.`);
+        }
+        RESOLVE(metar);
     });
 }
 

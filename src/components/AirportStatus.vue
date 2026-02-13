@@ -27,9 +27,4 @@
     p {
         font-size: 12px;
     }
-    button {
-        margin-bottom: 30px;
-        margin-top: 30px;
-        padding: 10px;
-    }
 </style>

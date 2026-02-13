@@ -3,14 +3,10 @@
     import CustomRange from './CustomRange.vue'
     import * as weather_data from '../lib/fetch_weather_data'
 
-    const props = defineProps({
-        disabled: Boolean,
-        metarData: {type: weather_data.Metar, required: false, default: null},
-    });
-
     const title = "Wind Gust";
     const displayUnit = "kt";
     const defaultValue = 0;
+    const numDigits = 0;
     const start = ref(defaultValue);
     const high = ref(201.0);
     const low = 0.0;
@@ -20,6 +16,11 @@
     const bad = 25;
     const realValue = ref();
 
+    const props = defineProps({
+        disabled: Boolean,
+        metarData: {type: weather_data.Metar, required: false, default: null},
+    });
+
     function get_read_out() {
         return realValue.value == 0.0 ? 'None' : `${realValue.value} KT`;
     };
@@ -27,8 +28,9 @@
     const emit = defineEmits<{
         (e: 'emitWindGust', realValue: number): void
     }>()
-    const onInput = () => {
-        realValue.value = Math.round(realValue.value);
+
+    const onInput = (val) => {
+        realValue.value = val;
         emit('emitWindGust', realValue.value);
     }
 
@@ -48,10 +50,8 @@
             optimum.value = value;
         }
         start.value = value;
-        emit('emitWindGust', value);
+        onInput(value);
     })
-
-    onInput();
 </script>
 
 <template>
@@ -64,8 +64,8 @@
         :gradient = "gradient"
         :sketchy = "sketchy"
         :bad = "bad"
-        @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload; onInput();}"
+        :numDigits = "numDigits"
+        @emit-value="(payload: number) => onInput(payload)"
         :readOut = "get_read_out()"
         :disabled=props.disabled
     />

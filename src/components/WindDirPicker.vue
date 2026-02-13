@@ -5,6 +5,7 @@
 
     const title = "Wind Dir"
     const displayUnit = "deg";
+    const numDigits = -1;
     const defaultValue = 360;
     const start = ref(defaultValue);
     const high = 360;
@@ -26,8 +27,9 @@
         (e: 'emitWindDir', realValue: number): void
     }>()
 
-    const onInput = () => {
-        emit('emitWindDir', realValue.value);
+    const onInput = (val) => {
+        realValue.value = val;
+        emit('emitWindDir', val);
     }
 
     watch(() => props.metarData, (newVal) => {
@@ -44,10 +46,8 @@
             }
         }
         start.value = value;
-        emit('emitWindDir', value);
+        onInput(value);
     })
-
-    onInput();
 </script>
 
 <template>
@@ -56,10 +56,9 @@
         :start = "start"
         :high = "high"
         :low = "low"
-        @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload; onInput();}"
+        :numDigits = "numDigits"
+        @emit-value="(payload: number) => onInput(payload)"
         :readOut = "get_read_out()"
         :disabled="disabled"
-        :numDigits=-1
     />
 </template>

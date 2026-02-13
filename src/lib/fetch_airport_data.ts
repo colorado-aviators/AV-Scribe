@@ -123,7 +123,7 @@ async function fillDatabase(db: IDBDatabase) {
     }
 }
 
-async function queryDatabase(db: IDBDatabase, airportID: string, system: string, RESOLVE: any, REJECT: any) {
+async function queryAirportWithSystem(db: IDBDatabase, airportID: string, system: string, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).index(system).get(airportID);
 
     const airportData = new AirportData(airportID);
@@ -149,7 +149,7 @@ async function queryDatabase(db: IDBDatabase, airportID: string, system: string,
     }
 }
 
-async function sortByProximity(db: IDBDatabase, location, RESOLVE: any, REJECT: any) {
+async function queryAirportsNearLocation(db: IDBDatabase, location, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).index(keyICAO).getAll();
 
     getRequest.onsuccess = (getEvent: any) => {
@@ -197,12 +197,12 @@ openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
 export function loadAirportData(airportID: string, system: string): Promise<AirportData> {
     return new Promise((RESOLVE: any, REJECT: any) => {
-        queryDatabase(db, airportID, system, RESOLVE, REJECT);
+        queryAirportWithSystem(db, airportID, system, RESOLVE, REJECT);
     });
 }
 
 export function loadNearbyAirports(location: Location): Promise<Array<AirportData>> {
     return new Promise((RESOLVE: any, REJECT: any) => {
-        sortByProximity(db, location, RESOLVE, REJECT);
+        queryAirportsNearLocation(db, location, RESOLVE, REJECT);
     });
 }

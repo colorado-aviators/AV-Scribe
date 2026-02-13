@@ -71,14 +71,25 @@
         }
         else {
             if (newAirportData.location !== null) {
-                wxModel.value = null;
                 weather_data.loadWeatherData(newAirportData.location).then((response) => {
                     wxModel.value = response;
-                }).catch((error) => console.error(error));
-                metarData.value = null;
-                weather_data.loadMetar(newAirportData.icao, newAirportData.location).then((response) => {
-                    metarData.value = response;
-                }).catch((error) => console.error(error));
+                }).catch((error) => {
+                    wxModel.value = null;
+                    console.error(error);
+                });
+                weather_data.loadMetar(newAirportData.icao).then((value) => {
+                    if (value == null) {
+                        weather_data.loadNearestMetar(newAirportData.location).then((value) => {
+                            metarData.value = value;
+                        })
+                    }
+                    else {
+                        metarData.value = value;
+                    }
+                }).catch((error) => {
+                    metarData.value = null;
+                    console.error(error);
+                });
             }
             airportID = newAirportData.id;
         }

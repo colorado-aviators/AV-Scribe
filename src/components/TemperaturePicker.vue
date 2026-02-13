@@ -4,14 +4,15 @@
     import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Temperature";
+    const displayUnit = "C";
     const numDigits = 0;
-
+    const defaultValue = weather_data.StandardConditions.temperature.toNumber(displayUnit);
     const gradient = ref(.9);
-    const high = ref(weather_data.WeatherRecords.temperatureHigh.toNumber("C"));
-    const low = ref(weather_data.WeatherRecords.temperatureLow.toNumber("C"));
-    const optimum = ref(weather_data.StandardConditions.temperature.toNumber("C"));
-    const start = ref(weather_data.StandardConditions.temperature.toNumber("C"));
-    const realValue = ref(weather_data.StandardConditions.temperature.toNumber("C"));
+    const high = ref(weather_data.WeatherRecords.temperatureHigh.toNumber(displayUnit));
+    const low = ref(weather_data.WeatherRecords.temperatureLow.toNumber(displayUnit));
+    const optimum = ref(defaultValue);
+    const start = ref(defaultValue);
+    const realValue = ref(defaultValue);
 
     const props = defineProps({
         wxModel: {type: weather_data.WeatherData, required: false, default: null},
@@ -25,10 +26,10 @@
     const emit = defineEmits<{
         (e: 'emitTemperature', realValue: number): void
     }>()
+
     const onInput = (val: number) => {
-        let rounded = Math.round(val);
-        realValue.value = rounded;
-        emit('emitTemperature', rounded);
+        realValue.value = val;
+        emit('emitTemperature', val);
     }
 
     watch(() => props.wxModel, (newVal) => {
@@ -37,8 +38,8 @@
             Setting the range of each input based on monthly average or average min / max
             is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
             */
-            let meanMaxTemp = newVal.meanMaxTemp.toNumber("C");
-            let meanMinTemp = newVal.meanMinTemp.toNumber("C");
+            let meanMaxTemp = newVal.meanMaxTemp.toNumber(displayUnit);
+            let meanMinTemp = newVal.meanMinTemp.toNumber(displayUnit);
             let meanMeanTemp = (meanMaxTemp + meanMinTemp) / 2;
 
             high.value = meanMaxTemp + 25;
@@ -49,15 +50,19 @@
         }
     })
     watch(() => props.metarData, (newVal) => {
-        if (newVal !== null && newVal.temperature !== null){
-            let lastValue = newVal.temperature.toNumeric("C");
-
-            high.value = lastValue + 10;
-            low.value = lastValue - 10;
-            optimum.value = lastValue;
-            start.value = lastValue;
-            gradient.value = .5;
+        let value = defaultValue;
+        if (newVal !== null) {
+            let field = newVal.temperature;
+            if (field !== null) {
+                let lastValue = field.toNumeric(displayUnit);
+                high.value = lastValue + 10;
+                low.value = lastValue - 10;
+                optimum.value = lastValue;
+                start.value = lastValue;
+                gradient.value = .5;
+            }
         }
+        onInput(value);
     })
 </script>
 

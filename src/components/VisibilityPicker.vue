@@ -4,9 +4,10 @@
     import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Visibility"
+    const displayUnit = "mile";
     const numDigits = 0;
-
-    const start = ref(10);
+    const defaultValue = 10;
+    const start = ref(defaultValue);
     const high = 10.0;
     const low = 0.0;
     const optimum = 5.0;
@@ -26,27 +27,27 @@
     const emit = defineEmits<{
         (e: 'emitVisibility', realValue: number): void
     }>()
+
     const onInput = (val: number) => {
-        let rounded = Math.round(val);
-        realValue.value = rounded;
-        emit('emitVisibility', rounded);
+        realValue.value = val;
+        emit('emitVisibility', val);
     }
 
     watch(() => props.metarData, (newVal) => {
-        if (newVal === null) {
-            return;
+        let value = defaultValue;
+        if (newVal !== null) {
+            let field = newVal.visibility;
+            if (field !== null) {
+                if (typeof field.toNumeric === 'function') {
+                    value = field.toNumeric(displayUnit);
+                    if (value > high || value < low) {
+                        value = defaultValue;
+                    }
+                }
+            }
         }
-        if (newVal.visibility === null) {
-            return;
-        }
-        if (typeof newVal.visibility.toNumeric !== 'function') {
-            return;
-        }
-        let miles = newVal.visibility.toNumeric("mile");
-        if (miles > high.value || miles < low.value) {
-            return;
-        }
-        start.value = miles;
+        start.value = value;
+        onInput(value);
     })
 </script>
 

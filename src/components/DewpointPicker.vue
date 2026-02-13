@@ -4,16 +4,17 @@
     import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Dewpoint";
+    const displayUnit = "C";
     const numDigits = 0;
-
+    const defaultValue = weather_data.StandardConditions.temperature.toNumber(displayUnit) - 5;
     const gradient = ref(.9);
-    const high = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
-    const low = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
-    const optimum = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
-    const start = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const high = ref(weather_data.WeatherRecords.dewpointHigh.toNumber(displayUnit));
+    const low = ref(weather_data.WeatherRecords.dewpointLow.toNumber(displayUnit));
+    const optimum = ref(defaultValue);
+    const start = ref(defaultValue);
     const sketchy = ref();
     const bad = ref();
-    const realValue = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const realValue = ref(defaultValue);
 
     const props = defineProps({
         wxModel: {type: weather_data.WeatherData, required: false, default: null},
@@ -47,8 +48,8 @@
             Setting the range of each input based on monthly average or average min / max
             is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
             */
-            let meanMaxTemp = newVal.meanMaxTemp.toNumber("C");
-            let meanMinTemp = newVal.meanMinTemp.toNumber("C");
+            let meanMaxTemp = newVal.meanMaxTemp.toNumber(displayUnit);
+            let meanMinTemp = newVal.meanMinTemp.toNumber(displayUnit);
             let meanMeanTemp = (meanMaxTemp + meanMinTemp) / 2;
 
             high.value = high.value < meanMaxTemp + 25 ? high.value : meanMaxTemp + 25;
@@ -60,15 +61,19 @@
     })
 
     watch(() => props.metarData, (newVal) => {
-        if (newVal !== null && newVal.dewpoint !== null){
-            let lastValue = newVal.dewpoint.toNumeric("C");
-
-            high.value = lastValue + 10;
-            low.value = lastValue - 10;
-            optimum.value = lastValue;
-            start.value = lastValue;
-            gradient.value = .5;
+        let value = defaultValue;
+        if (newVal !== null) {
+            let field = newVal.dewpoint;
+            if (field !== null) {
+                let lastValue = field.toNumeric(displayUnit);
+                high.value = lastValue + 10;
+                low.value = lastValue - 10;
+                optimum.value = lastValue;
+                start.value = lastValue;
+                gradient.value = .5;
+            }
         }
+        onInput(value);
     })
 </script>
 

@@ -5,13 +5,15 @@
 
     const title = "Altimeter"
     const numDigits = 2;
+    const displayUnit = "inHg";
+    const defaultValue = weather_data.StandardConditions.pressure.toNumber(displayUnit);
 
     const gradient = ref(.9);
-    const high = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumber("inHg"));
-    const low = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumber("inHg"));
-    const optimum = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
-    const start = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
-    const realValue = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
+    const high = ref(weather_data.WeatherRecords.altimeterSettingHigh.toNumber(displayUnit));
+    const low = ref(weather_data.WeatherRecords.altimeterSettingLow.toNumber(displayUnit));
+    const optimum = ref(defaultValue);
+    const start = ref(defaultValue);
+    const realValue = ref(defaultValue);
 
     const props = defineProps({
         wxModel: {type: weather_data.WeatherData, required: false, default: null},
@@ -26,15 +28,13 @@
         (e: 'emitAltimeter', realValue: number): void
     }>()
     const onInput = (val: number) => {
-        let resolution = 10 ** numDigits;
-        let rounded = Math.round(val * resolution) / resolution;
-        emit('emitAltimeter', rounded);
-        realValue.value = rounded;
+        realValue.value = val;
+        emit('emitAltimeter', val);
     }
 
     watch(() => props.wxModel, (newVal) => {
         if (props.metarData == null & newVal !== null){
-            let meanVal = newVal.altimeterSetting.toNumber("inHg");
+            let meanVal = newVal.altimeterSetting.toNumber(displayUnit);
 
             high.value = meanVal + 1.0;
             low.value = meanVal - 1.0;
@@ -44,15 +44,19 @@
         }
     })
     watch(() => props.metarData, (newVal) => {
-        if (newVal !== null && newVal.altimeterSetting !== null){
-            let lastValue = newVal.altimeterSetting.toNumber("inHg");
+        let value = defaultValue;
+        if (newVal !== null) {
+            if (newVal.altimeterSetting !== null) {
+                value = newVal.altimeterSetting.toNumber(displayUnit);
 
-            high.value = lastValue + 0.2;
-            low.value = lastValue - 0.2;
-            optimum.value = lastValue;
-            start.value = lastValue;
-            gradient.value = .85;
+                high.value = value + 0.2;
+                low.value = value - 0.2;
+                optimum.value = value;
+                start.value = value;
+                gradient.value = .85;
+            }
         }
+        onInput(value);
     })
 </script>
 

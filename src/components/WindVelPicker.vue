@@ -6,6 +6,7 @@
     const title = "Wind Velocity"
     const displayUnit = "kt";
     const defaultValue = 0;
+    const numDigits = 0;
     const start = ref(defaultValue);
     const high = ref(201.0);
     const low = 0.0;
@@ -27,9 +28,9 @@
         (e: 'emitWindVel', realValue: number): void
     }>()
 
-    const onInput = () => {
-        realValue.value = Math.round(realValue.value);
-        emit('emitWindVel', realValue.value);
+    const onInput = (val: number) => {
+        realValue.value = val;
+        emit('emitWindVel', val);
     }
 
     watch(() => props.metarData, (newVal) => {
@@ -42,18 +43,14 @@
                     if (value > high.value || value < low) {
                         value = defaultValue;
                     }
-                    else {
-                        high.value = Math.max(value, 10) * 2
-                        optimum.value = value;
-                    }
                 }
             }
+            high.value = Math.max(value, 10) * 2
+            optimum.value = value;
         }
         start.value = value;
-        emit('emitWindVel', value);
+        onInput(value);
     })
-
-    onInput();
 </script>
 
 <template>
@@ -66,8 +63,8 @@
         :gradient = "gradient"
         :sketchy = "sketchy"
         :bad = "bad"
-        @input = "onInput"
-        @emit-value="(payload: number) => {realValue = payload; onInput();}"
+        :numDigits = "numDigits"
+        @emit-value="(payload: number) => onInput(payload)"
         :readOut = "get_read_out()"
     />
 </template>
