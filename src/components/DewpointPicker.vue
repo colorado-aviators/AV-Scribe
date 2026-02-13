@@ -1,23 +1,24 @@
 <script setup lang="ts">
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
-    import * as airport_data from '../lib/fetch_airport_data'
     import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Dewpoint";
+    const displayUnit = "C";
     const numDigits = 0;
-
+    const defaultValue = weather_data.StandardConditions.temperature.toNumber(displayUnit) - 5;
     const gradient = ref(.9);
-    const high = ref(weather_data.WeatherRecords.dewpointHigh.toNumber("C"));
-    const low = ref(weather_data.WeatherRecords.dewpointLow.toNumber("C"));
-    const optimum = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
-    const start = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const high = ref(weather_data.WeatherRecords.dewpointHigh.toNumber(displayUnit));
+    const low = ref(weather_data.WeatherRecords.dewpointLow.toNumber(displayUnit));
+    const optimum = ref(defaultValue);
+    const start = ref(defaultValue);
     const sketchy = ref();
     const bad = ref();
-    const realValue = ref(weather_data.StandardConditions.temperature.toNumber("C") - 5);
+    const realValue = ref(defaultValue);
 
     const props = defineProps({
-        airportData: {type: airport_data.AirportData, required: false, default: null},
+        wxModel: {type: weather_data.WeatherData, required: false, default: null},
+        metarData: {type: weather_data.Metar, required: false, default: null},
         temperature: {type: Number, required: false, default: null},
     })
 
@@ -30,8 +31,8 @@
     }>()
     const onInput = (val: number) => {
         let rounded = Math.round(val);
-        emit('emitDewpoint', rounded);
         realValue.value = rounded;
+        emit('emitDewpoint', rounded);
     }
 
     watch(() => props.temperature, (newVal) => {
@@ -41,14 +42,14 @@
         }
     })
 
-    if (props.airportData !== null && props.airportData.location !== null){
-        /* Admittedly, this involves some guess work.
-        Setting the range of each input based on monthly average or average min / max
-        is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
-        */
-        weather_data.loadWeatherData(props.airportData.location).then((weatherData) => {
-            let meanMaxTemp = weatherData.meanMaxTemp.toNumber("C");
-            let meanMinTemp = weatherData.meanMinTemp.toNumber("C");
+    watch(() => props.wxModel, (newVal) => {
+        if (props.metarData == null && newVal !== null){
+            /* Admittedly, this involves some guess work.
+            Setting the range of each input based on monthly average or average min / max
+            is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
+            */
+            let meanMaxTemp = newVal.meanMaxTemp.toNumber(displayUnit);
+            let meanMinTemp = newVal.meanMinTemp.toNumber(displayUnit);
             let meanMeanTemp = (meanMaxTemp + meanMinTemp) / 2;
 
             high.value = high.value < meanMaxTemp + 25 ? high.value : meanMaxTemp + 25;
@@ -56,8 +57,24 @@
             optimum.value = meanMeanTemp - 5;
             start.value = meanMeanTemp - 5;
             gradient.value = .5;
-        }).catch((error) => console.error(error));
-    }
+        }
+    })
+
+    watch(() => props.metarData, (newVal) => {
+        let value = defaultValue;
+        if (newVal !== null) {
+            let field = newVal.dewpoint;
+            if (field !== null) {
+                let lastValue = field.toNumber(displayUnit);
+                high.value = lastValue + 10;
+                low.value = lastValue - 10;
+                optimum.value = lastValue;
+                start.value = lastValue;
+                gradient.value = .5;
+            }
+        }
+        onInput(value);
+    })
 </script>
 
 <template>

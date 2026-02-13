@@ -123,7 +123,7 @@ async function fillDatabase(db: IDBDatabase) {
     }
 }
 
-async function queryDatabase(db: IDBDatabase, airportID: string, system: string, RESOLVE: any, REJECT: any) {
+async function queryAirportWithSystem(db: IDBDatabase, airportID: string, system: string, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).index(system).get(airportID);
 
     const airportData = new AirportData(airportID);
@@ -149,6 +149,33 @@ async function queryDatabase(db: IDBDatabase, airportID: string, system: string,
     }
 }
 
+async function queryAirportsNearLocation(db: IDBDatabase, location: Location, RESOLVE: any, REJECT: any) {
+    const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).index(keyICAO).getAll();
+
+    getRequest.onsuccess = (getEvent: any) => {
+        let entries = getEvent.target.result.filter((entry: any) => (
+            Math.abs(entry.latitude - location.latitude.toInt()) + Math.abs(entry.longitude - location.longitude.toInt()) < 100
+        ))
+        entries.sort(function(a: any, b: any) {
+            let aDistance = new Location(
+                Coordinate.fromInt(a[keyLatitude]),
+                Coordinate.fromInt(a[keyLongitude])
+            ).distanceTo(location).toNumber("m");
+            let bDistance = new Location(
+                Coordinate.fromInt(b[keyLatitude]),
+                Coordinate.fromInt(b[keyLongitude])
+            ).distanceTo(location).toNumber("m");
+            return aDistance - bDistance;
+        });
+
+        RESOLVE(entries);
+    };
+
+    getRequest.onerror = (err: any) => {
+        REJECT(`Error retrieving airport data for ${location}: ${err}.`);
+    }
+}
+
 function upgradeDatabase(event: any) {
     // the existing database version is less than current (or it doesn't exist)
     let db = event.target.result;
@@ -170,6 +197,12 @@ openRequest.onsuccess = (event: any) => {db = openRequest.result;};
 
 export function loadAirportData(airportID: string, system: string): Promise<AirportData> {
     return new Promise((RESOLVE: any, REJECT: any) => {
-        queryDatabase(db, airportID, system, RESOLVE, REJECT);
+        queryAirportWithSystem(db, airportID, system, RESOLVE, REJECT);
+    });
+}
+
+export function loadNearbyAirports(location: Location): Promise<Array<AirportData>> {
+    return new Promise((RESOLVE: any, REJECT: any) => {
+        queryAirportsNearLocation(db, location, RESOLVE, REJECT);
     });
 }

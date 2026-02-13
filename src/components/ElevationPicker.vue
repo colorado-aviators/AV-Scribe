@@ -22,11 +22,13 @@
     const emit = defineEmits<{
         (e: 'emitElevation', realValue: number): void
     }>()
+
     const onInput = () => {
         textColor.value = "var(--color-text)";
         realValue.value = Math.round(realValue.value)
         emit('emitElevation', realValue.value);
     }
+
     const styleObject = reactive({
         color: textColor,
     })
@@ -35,7 +37,7 @@
         let elevation = props.airportData.elevation_in_feet;
         realValue.value = elevation == null ? 0 : elevation;
         disabled.value = elevation !== null;
-        textColor.value = "var(--color-text)";
+        onInput();
     }
 </script>
 
