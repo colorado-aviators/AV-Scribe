@@ -33,7 +33,7 @@
     }
 
     watch(() => props.wxModel, (newVal) => {
-        if (props.metarData == null & newVal !== null){
+        if (props.metarData == null && newVal !== null){
             let meanVal = newVal.altimeterSetting.toNumber(displayUnit);
 
             high.value = meanVal + 1.0;

@@ -51,33 +51,30 @@ export class WeatherData{
 }
 
 export class Metar{
-    location: Location;
-    station: string;
-    elevation: Unit;
-    altimeterSetting: Unit;
-    temperature: Unit;
-    dewpoint: Unit;
-    visibility: Unit;
+    station: string | null;
+    elevation: Unit | null;
+    altimeterSetting: Unit | null;
+    temperature: Unit | null;
+    dewpoint: Unit | null;
+    visibility: Unit | null;
     cloudBase: Unit | null;
-    cloudAmount: string;
+    cloudAmount: string | null;
     windDirection: Unit | null;
     windSpeed: Unit | null;
     windGust: Unit | null;
     constructor(
-        location: Location,
-        station: string,
-        elevation: Unit,
-        altimeterSetting: Unit,
-        temperature: Unit,
-        dewpoint: Unit,
-        visibility: Unit,
+        station: string | null,
+        elevation: Unit | null,
+        altimeterSetting: Unit | null,
+        temperature: Unit | null,
+        dewpoint: Unit | null,
+        visibility: Unit | null,
         cloudBase: Unit | null,
-        cloudAmount: string,
+        cloudAmount: string | null,
         windDirection: Unit | null,
         windSpeed: Unit | null,
         windGust: Unit | null,
     ) {
-        this.location = location;
         this.station = station;
         this.elevation = elevation;
         this.altimeterSetting = altimeterSetting;
@@ -278,15 +275,15 @@ function getClosestWeatherData(entries: Array<any>, location: Location) : Weathe
         "meanMaxTemp" in entry && "meanMinTemp" in entry && keyAltimeterSetting in entry
     )).filter((entry) => (
         Math.abs(entry.latitude - location.latitude.toInt()) + Math.abs(entry.longitude - location.longitude.toInt()) < 250
-    )).sort(function(a, b) {
-        let aDistance = new Location(
+    )).sort(function(a: any, b: any) {
+        let aDistance: number = new Location(
             Coordinate.fromInt(a[keyLatitude]),
             Coordinate.fromInt(a[keyLongitude])
-        ).distanceTo(location).toNumeric("m");
-        let bDistance = new Location(
+        ).distanceTo(location).toNumber("m");
+        let bDistance: number = new Location(
             Coordinate.fromInt(b[keyLatitude]),
             Coordinate.fromInt(b[keyLongitude])
-        ).distanceTo(location).toNumeric("m");
+        ).distanceTo(location).toNumber("m");
         return aDistance - bDistance;
     });
     let closestEntry = entries[0];
@@ -313,17 +310,22 @@ function getClosestWeatherData(entries: Array<any>, location: Location) : Weathe
 
 async function queryDatabase(db: IDBDatabase, location: Location, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).getAll();
+    let locationString = `location ${location.latitude.toInt()} x ${location.longitude.toInt()}`
 
     getRequest.onsuccess = (event: any) => {
         const values = event.target.result;
         let weatherData = getClosestWeatherData(event.target.result, location);
-        let locationString = `location ${weatherData.location.latitude.toInt()} x ${weatherData.location.longitude.toInt()}`
-        RESOLVE(weatherData);
-        console.log(`Retrieved weather data for ${locationString}.`);
+        if (weatherData !== null) {
+            let locationString = `location ${weatherData.location.latitude.toInt()} x ${weatherData.location.longitude.toInt()}`
+            RESOLVE(weatherData);
+            console.log(`Retrieved weather data for ${locationString}.`);
+        }
+        else {
+            REJECT(`Error retrieving weather data for ${locationString}.`);
+        }
     };
 
     getRequest.onerror = (err: any) => {
-        let locationString = `location ${location.latitude.toInt()} x ${location.longitude.toInt()}`
         REJECT(`Error retrieving weather data for ${locationString}: ${err}.`);
     };
 }
@@ -334,7 +336,7 @@ export function loadWeatherData(location: Location): Promise<WeatherData> {
     });
 }
 
-function collectMetar(jsonData: object, location: Location): Metar {
+function collectMetar(jsonData: any): Metar {
     const rawMetarData = jsonData.properties;
 
     // Special handling for cloud layer logic
@@ -349,7 +351,6 @@ function collectMetar(jsonData: object, location: Location): Metar {
     }
 
     return new Metar(
-        location,
         rawMetarData.stationId,
         rawMetarData.elevation.value == null ? null : unit(rawMetarData.elevation.value, "m"),
         rawMetarData.barometricPressure.value == null ? null : unit(rawMetarData.barometricPressure.value, "Pa"),
@@ -364,20 +365,23 @@ function collectMetar(jsonData: object, location: Location): Metar {
     )
 }
 
-async function queryMetar(icao: string): Metar | null {
+async function queryMetar(icao: string): Promise<Metar | null> {
     var metarUrl = `https://api.weather.gov/stations/${icao}/observations/latest?require_qc=false`;
     var response = await fetch(metarUrl);
     let metar = null;
     if (response.status != 404) {
-        metar = collectMetar(await response.json(), location);
+        metar = collectMetar(await response.json());
     }
     return metar;
 }
 
-export function loadMetar(icao: string): Promise<Metar | null> {
+export function loadMetar(icao: string | null): Promise<Metar | null> {
     return new Promise(async (RESOLVE: any, REJECT: any) => {
         let metar = null;
         try {
+            if (icao == null) {
+                throw new Error("Empty ICAO ID");
+            }
             metar = await queryMetar(icao);
         }
         catch (error) {
@@ -396,6 +400,9 @@ export function loadNearestMetar(location: Location): Promise<Metar> {
         let entries = await airport_data.loadNearbyAirports(location);
         for (let entry of entries){
             try {
+                if (entry.icao == null) {
+                    throw new Error("Empty ICAO ID");
+                }
                 metar = await queryMetar(entry.icao);
             }
             catch (error) {

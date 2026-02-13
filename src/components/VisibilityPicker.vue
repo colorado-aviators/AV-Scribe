@@ -38,8 +38,8 @@
         if (newVal !== null) {
             let field = newVal.visibility;
             if (field !== null) {
-                if (typeof field.toNumeric === 'function') {
-                    value = field.toNumeric(displayUnit);
+                if (typeof field.toNumber === 'function') {
+                    value = field.toNumber(displayUnit);
                     if (value > high || value < low) {
                         value = defaultValue;
                     }

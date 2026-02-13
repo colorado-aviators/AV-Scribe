@@ -64,10 +64,10 @@
         document.documentElement.className = theme;
     }
 
-    function switchAirport(newAirportData: airport_data.AirportData) {
+    function switchAirport(newAirportData: airport_data.AirportData | null) {
         airportData.value = newAirportData;
         if (newAirportData == null) {
-            airportID = '';
+            airportID.value = '';
         }
         else {
             if (newAirportData.location !== null) {
@@ -78,7 +78,7 @@
                     console.error(error);
                 });
                 weather_data.loadMetar(newAirportData.icao).then((value) => {
-                    if (value == null) {
+                    if (value == null && newAirportData.location != null) {
                         weather_data.loadNearestMetar(newAirportData.location).then((value) => {
                             metarData.value = value;
                         })
@@ -91,7 +91,7 @@
                     console.error(error);
                 });
             }
-            airportID = newAirportData.id;
+            airportID.value = newAirportData.id;
         }
     }
 

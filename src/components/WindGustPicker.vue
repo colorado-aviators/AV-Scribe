@@ -29,7 +29,7 @@
         (e: 'emitWindGust', realValue: number): void
     }>()
 
-    const onInput = (val) => {
+    const onInput = (val: number) => {
         realValue.value = val;
         emit('emitWindGust', realValue.value);
     }
@@ -39,8 +39,8 @@
         if (newVal !== null) {
             let field = newVal.windGust;
             if (field !== null) {
-                if (typeof field.toNumeric === 'function') {
-                    value = field.toNumeric(displayUnit);
+                if (typeof field.toNumber === 'function') {
+                    value = field.toNumber(displayUnit);
                     if (value > high.value || value < low) {
                         value = defaultValue;
                     }

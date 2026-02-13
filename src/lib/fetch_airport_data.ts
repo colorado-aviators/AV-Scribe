@@ -149,22 +149,22 @@ async function queryAirportWithSystem(db: IDBDatabase, airportID: string, system
     }
 }
 
-async function queryAirportsNearLocation(db: IDBDatabase, location, RESOLVE: any, REJECT: any) {
+async function queryAirportsNearLocation(db: IDBDatabase, location: Location, RESOLVE: any, REJECT: any) {
     const getRequest = db.transaction(keyObjectStore).objectStore(keyObjectStore).index(keyICAO).getAll();
 
     getRequest.onsuccess = (getEvent: any) => {
-        let entries = getEvent.target.result.filter((entry) => (
+        let entries = getEvent.target.result.filter((entry: any) => (
             Math.abs(entry.latitude - location.latitude.toInt()) + Math.abs(entry.longitude - location.longitude.toInt()) < 100
         ))
-        entries.sort(function(a, b) {
+        entries.sort(function(a: any, b: any) {
             let aDistance = new Location(
                 Coordinate.fromInt(a[keyLatitude]),
                 Coordinate.fromInt(a[keyLongitude])
-            ).distanceTo(location).toNumeric("m");
+            ).distanceTo(location).toNumber("m");
             let bDistance = new Location(
                 Coordinate.fromInt(b[keyLatitude]),
                 Coordinate.fromInt(b[keyLongitude])
-            ).distanceTo(location).toNumeric("m");
+            ).distanceTo(location).toNumber("m");
             return aDistance - bDistance;
         });
 

@@ -38,8 +38,8 @@
         if (newVal !== null) {
             let field = newVal.windSpeed;
             if (field !== null) {
-                if (typeof field.toNumeric === 'function') {
-                    value = field.toNumeric(displayUnit);
+                if (typeof field.toNumber === 'function') {
+                    value = field.toNumber(displayUnit, );
                     if (value > high.value || value < low) {
                         value = defaultValue;
                     }

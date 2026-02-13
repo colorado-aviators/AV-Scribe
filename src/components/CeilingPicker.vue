@@ -35,7 +35,7 @@
         (e: 'emitCeiling', ceiling: number): void
     }>()
 
-    const onInput = (val) => {
+    const onInput = (val: number) => {
         realValue.value = val;
         emit('emitCeiling', val);
     }
@@ -55,8 +55,8 @@
         if (newVal !== null) {
             let field = newVal.cloudBase;
             if (field !== null) {
-                if (typeof field.toNumeric === 'function') {
-                    value = field.toNumeric(displayUnit);
+                if (typeof field.toNumber === 'function') {
+                    value = field.toNumber(displayUnit);
                     if (value > high || value < low) {
                         value = defaultValue;
                     }

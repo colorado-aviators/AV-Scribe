@@ -43,7 +43,7 @@
     })
 
     watch(() => props.wxModel, (newVal) => {
-        if (props.metarData == null & newVal !== null){
+        if (props.metarData == null && newVal !== null){
             /* Admittedly, this involves some guess work.
             Setting the range of each input based on monthly average or average min / max
             is imperfect, but I've tried to leave a generous range to accommodate temporal extremes.
@@ -65,7 +65,7 @@
         if (newVal !== null) {
             let field = newVal.dewpoint;
             if (field !== null) {
-                let lastValue = field.toNumeric(displayUnit);
+                let lastValue = field.toNumber(displayUnit);
                 high.value = lastValue + 10;
                 low.value = lastValue - 10;
                 optimum.value = lastValue;
