@@ -15,6 +15,9 @@ export class Coordinate{
     }
     toInt() : number {
         let [deg, arcmin] = this.val.splitUnit(["deg", "arcmin"]);
+        if (typeof deg === 'undefined' || typeof arcmin === 'undefined'){
+            throw new Error(`Problem with Coordinate ${this.val}`);
+        }
         let result = math.round(deg.toNumber("deg") * 60.0 + arcmin.toNumber("arcmin"));
         return result;
     }
