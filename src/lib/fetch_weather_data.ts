@@ -367,21 +367,6 @@ async function queryMetar(icao: string, location: Location, RESOLVE: any, REJECT
             rawMetarData.windSpeed.value == null ? null : unit(rawMetarData.windSpeed.value, "km/h"),
             rawMetarData.windGust.value == null ? null : unit(rawMetarData.windGust.value, "km/h"),
         )
-        /*
-        let metar = new Metar(
-            location,
-            unit(200, "m"),
-            unit(101000, "Pa"),
-            unit(2, "C"),
-            unit(-2, "C"),
-            unit(7, "mile"),
-            unit(1300, "m"),
-            "FEW",
-            unit(240, "deg"),
-            unit(10, "km/h"),
-            unit(20, "km/h"),
-        )
-        */
         RESOLVE(metar);
         console.log(`Retrieved METAR data for ${closestIcao}.`);
     } catch (error) {
