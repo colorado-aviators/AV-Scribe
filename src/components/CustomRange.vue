@@ -196,6 +196,10 @@
         updateSlider();
     })
 
+    watch(() => props.start as number, () => {
+        setDefaults();
+    })
+
     const emit = defineEmits<{
         (e: 'emitValue', realValue: number): void
     }>()

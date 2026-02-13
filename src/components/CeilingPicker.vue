@@ -1,10 +1,13 @@
 <script setup lang="ts">
     import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
+    import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Ceiling"
+    const displayUnit = "feet";
+    const defaultValue = 0;
+    const start = ref(defaultValue);
     const realValue = ref(0);
-    const start = 1.0;
     const high = 20000;
     const low = 0;
     const optimum = 5000;
@@ -19,7 +22,8 @@
             type: String,
             default: "SKC",
             required: true,
-        }
+        },
+        metarData: {type: weather_data.Metar, required: false, default: null},
     });
 
     function get_read_out() {
@@ -28,7 +32,31 @@
     };
 
     watch(() => props.cloudCoverage, (newVal) => {
-        disabled.value = disablingCoverages.includes(newVal);
+        if (disablingCoverages.includes(newVal)) {
+            disabled.value = true;
+            start.value = defaultValue;
+            realValue.value = defaultValue;
+        }
+        else {
+            disabled.value = false;
+        }
+    })
+    watch(() => props.metarData, (newVal) => {
+        let value = defaultValue;
+        if (newVal !== null) {
+            let field = newVal.cloudBase;
+            if (field !== null) {
+                if (typeof field.toNumeric === 'function') {
+                    value = field.toNumeric(displayUnit);
+                    if (value > high || value < low) {
+                        value = defaultValue;
+                    }
+                }
+            }
+        }
+        start.value = value;
+        realValue.value = value;
+        emit('emitCeiling', value);
     })
 
     const emit = defineEmits<{

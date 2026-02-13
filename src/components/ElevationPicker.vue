@@ -35,7 +35,7 @@
         let elevation = props.airportData.elevation_in_feet;
         realValue.value = elevation == null ? 0 : elevation;
         disabled.value = elevation !== null;
-        textColor.value = "var(--color-text)";
+        onInput();
     }
 </script>
 

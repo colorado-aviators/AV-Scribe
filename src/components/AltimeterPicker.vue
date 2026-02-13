@@ -1,7 +1,6 @@
 <script setup lang="ts">
-    import {ref} from "vue"
+    import {ref, watch} from "vue"
     import CustomRange from './CustomRange.vue'
-    import * as airport_data from '../lib/fetch_airport_data'
     import * as weather_data from '../lib/fetch_weather_data'
 
     const title = "Altimeter"
@@ -15,7 +14,8 @@
     const realValue = ref(weather_data.StandardConditions.pressure.toNumber("inHg"));
 
     const props = defineProps({
-        airportData: {type: airport_data.AirportData, required: false, default: null},
+        wxModel: {type: weather_data.WeatherData, required: false, default: null},
+        metarData: {type: weather_data.Metar, required: false, default: null},
     })
 
     function get_read_out() {
@@ -31,17 +31,29 @@
         emit('emitAltimeter', rounded);
         realValue.value = rounded;
     }
-    if (props.airportData !== null && props.airportData.location !== null){
-        weather_data.loadWeatherData(props.airportData.location).then((weatherData) => {
-            let meanVal = weatherData.altimeterSetting.toNumber("inHg");
+
+    watch(() => props.wxModel, (newVal) => {
+        if (props.metarData == null & newVal !== null){
+            let meanVal = newVal.altimeterSetting.toNumber("inHg");
 
             high.value = meanVal + 1.0;
             low.value = meanVal - 1.0;
             optimum.value = meanVal;
             start.value = meanVal;
             gradient.value = .85;
-        }).catch((error) => console.error(error));
-    }
+        }
+    })
+    watch(() => props.metarData, (newVal) => {
+        if (newVal !== null && newVal.altimeterSetting !== null){
+            let lastValue = newVal.altimeterSetting.toNumber("inHg");
+
+            high.value = lastValue + 0.2;
+            low.value = lastValue - 0.2;
+            optimum.value = lastValue;
+            start.value = lastValue;
+            gradient.value = .85;
+        }
+    })
 </script>
 
 <template>

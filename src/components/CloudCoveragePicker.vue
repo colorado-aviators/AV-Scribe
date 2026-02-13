@@ -1,10 +1,15 @@
 <script setup lang="ts">
-    import {ref, reactive} from "vue"
+    import {ref, watch, reactive} from "vue"
+    import * as weather_data from '../lib/fetch_weather_data'
     const title = "Cloud condition"
     const cloudCoverage = ref("SKC");
     // https://en.wikipedia.org/wiki/METAR#Cloud_reporting
     const myOptionsArray = ["SKC", "NCD", "CLR", "FEW", "SCT", "BKN", "OVC", "VV"];
     const textColor = ref("var(--color-text-untouched)");
+
+    const props = defineProps({
+        metarData: {type: weather_data.Metar, required: false, default: null},
+    })
 
     const emit = defineEmits<{
         (e: 'emitCloudCoverage', cloudCoverage: string): void
@@ -19,6 +24,21 @@
     const styleObject = reactive({
         color: textColor,
     })
+
+    watch(() => props.metarData, (newVal) => {
+        if (newVal === null) {
+            return;
+        }
+        if (typeof newVal.cloudAmount !== 'string') {
+            return;
+        }
+        if (!myOptionsArray.includes(newVal.cloudAmount)) {
+            return;
+        }
+        cloudCoverage.value = newVal.cloudAmount;
+        emit('emitCloudCoverage', cloudCoverage.value);
+    })
+
     initialize();
 </script>
 

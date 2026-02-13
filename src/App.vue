@@ -2,9 +2,11 @@
     import { ref, onMounted } from 'vue';
 
     import * as airport_data from "./lib/fetch_airport_data"
+    import * as weather_data from './lib/fetch_weather_data'
 
     import Disclaimer from './components/Disclaimer.vue'
     import AirportPicker from './components/AirportPicker.vue'
+    import AirportStatus from './components/AirportStatus.vue'
     import InformationPicker from './components/InformationPicker.vue'
     import TimePicker from './components/TimePicker.vue'
     import WindCondition from './components/WindCondition.vue'
@@ -26,6 +28,8 @@
     // These references will be used to capture the user's input and dispatch it to the transcript
     var airportID = ref("");
     var airportData = ref();
+    var wxModel = ref();
+    var metarData = ref();
     var information = ref("");
     var time = ref("");
     var windCondition = ref("");
@@ -60,6 +64,26 @@
         document.documentElement.className = theme;
     }
 
+    function switchAirport(newAirportData: airport_data.AirportData) {
+        airportData.value = newAirportData;
+        if (newAirportData == null) {
+            airportID = '';
+        }
+        else {
+            if (newAirportData.location !== null) {
+                wxModel.value = null;
+                weather_data.loadWeatherData(newAirportData.location).then((response) => {
+                    wxModel.value = response;
+                }).catch((error) => console.error(error));
+                metarData.value = null;
+                weather_data.loadMetar(newAirportData.icao, newAirportData.location).then((response) => {
+                    metarData.value = response;
+                }).catch((error) => console.error(error));
+            }
+            airportID = newAirportData.id;
+        }
+    }
+
     const colorSchemeIsDark = window.matchMedia('(prefers-color-scheme: dark)');
     colorSchemeIsDark.addEventListener('change', e => {
         setTheme(e.matches ? 'dark' : 'light');
@@ -74,7 +98,12 @@
   </header>
 
   <main align="center">
-    <AirportPicker @emit-airport="(payload: airport_data.AirportData | null) => {airportData = payload; airportID = payload == null ? '' : payload.id}"/>
+    <AirportPicker @emit-airport="(payload: airport_data.AirportData | null) => {switchAirport(payload)}"/>
+    <AirportStatus
+        :metarData="metarData"
+        :wxModel="wxModel"
+        :key="airportID"
+    />
     <ElevationPicker
         @emit-elevation="(payload: number) => {elevation = payload}"
         :airportData="airportData"
@@ -86,36 +115,54 @@
     <WindDirPicker
         @emit-wind-dir="(payload: number) => {windDir = payload}"
         :disabled="isWindVariable()"
+        :metarData="metarData"
         :key="airportID"
     />
-    <WindVelPicker @emit-wind-vel="(payload: number) => {windVel = payload}" :key="airportID"/>
+    <WindVelPicker
+        @emit-wind-vel="(payload: number) => {windVel = payload}"
+        :metarData="metarData"
+        :key="airportID"
+    />
     <WindGustPicker
         @emit-wind-gust="(payload: number) => {windGust = payload}"
         :disabled="isWindCalm() && !isWindVariable()"
+        :metarData="metarData"
         :key="airportID"
     />
-    <VisibilityPicker @emit-visibility="(payload: number) => {visibility = payload}" :key="airportID"/>
-    <CloudCoveragePicker @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}" :key="airportID"/>
+    <VisibilityPicker
+        @emit-visibility="(payload: number) => visibility = payload"
+        :metarData="metarData"
+        :key="airportID"
+    />
+    <CloudCoveragePicker
+        @emit-cloud-coverage="(payload: string) => {cloudCoverage = payload}"
+        :metarData="metarData"
+        :key="airportID"
+    />
     <CeilingPicker
         @emit-ceiling="(payload: number) => {ceiling = payload}"
         :cloud-coverage="cloudCoverage"
+        :metarData="metarData"
         :key="airportID"
     />
     <TemperaturePicker
         @emit-temperature="(payload: number) => temperature = payload"
-        :airportData="airportData"
+        :wxModel="wxModel"
+        :metarData="metarData"
         :key="airportID"
     />
     <DewpointPicker
         @emit-dewpoint="(payload: number) => dewpoint = payload"
-        :airportData="airportData"
+        :wxModel="wxModel"
+        :metarData="metarData"
         :key="airportID"
         :temperature="temperature"
     />
     <AltimeterPicker
         @emit-altimeter="(payload: number) => altimeter = payload"
         :key="airportID"
-        :airportData="airportData"
+        :wxModel="wxModel"
+        :metarData="metarData"
     />
     <Remarks @emit-remarks="(payload: string) => {remarks = payload}" :key="airportID"/>
     <DensityAltitude
