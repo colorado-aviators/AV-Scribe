@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import {ref, reactive} from "vue"
-    function get_time_string(time_elapsed: number) {
+    function get_time_string(time_elapsed: number): string {
         var now = new Date();
         var time = new Date(now.getTime() - 1000 * 60 * time_elapsed);
         var dd = time.getUTCDate().toString().padStart(2, '0');
@@ -10,8 +10,11 @@
         return timeString;
     };
     const title = "ATIS Time"
-    const myOptionsArray = Array.from(new Array(60),(val,index) => get_time_string(index));
-    const selected = ref(myOptionsArray[0]);
+    const myOptionsArray: string[] = Array.from({length: 60}, (_, index) => get_time_string(index));
+    if (myOptionsArray[0] === undefined) {
+        throw new Error ("Undefined time option");
+    }
+    const selected = ref<string>(myOptionsArray[0]);
     const textColor = ref("var(--color-text-untouched)");
 
     const emit = defineEmits<{

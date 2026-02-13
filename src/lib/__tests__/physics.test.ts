@@ -20,6 +20,9 @@ test('CoordinateToInt', () => {
 test('CoordinateFromInt', () => {
     let coord = physics.Coordinate.fromInt(-10121);
     let [deg, arcmin] = coord.val.splitUnit(["deg", "arcmin"]);
+    if (deg === undefined) {
+        throw new Error("Undefined deg unit.");
+    }
     expect(deg.toNumeric("deg")).toBe(-168);
 })
 
